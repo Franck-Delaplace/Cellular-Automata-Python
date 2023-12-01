@@ -230,7 +230,7 @@ def ShowSimulation(
         )[0]
         for i, category in enumerate(types)}
 
-    # check box button for curves
+    # Check box button for curves
     chxboxheight = len(types) * 0.05                                            # depends on the number of categories
     chxboxwidth = 0.05 + max([len(category) for category in types]) * 0.006     # depends on the maximal string length of the categories
     axcurvebox = plt.axes(
@@ -260,7 +260,7 @@ def ShowSimulation(
     ax_autorun_button = plt.axes([X0, Y0 - 0.05, 0.015, 0.03])  # on the left side of slider
     _autorun_button = Button(ax_autorun_button, " ")
 
-    # button labeling to show the autorun status.
+    # Button labeling to show the autorun status.
     def buttonlabeling(state: bool):  # Set the label ON/OFF to the button w.r.t. to a Boolean state.
         OFF_ICON = "$\u25a0$"  # square
         ON_ICON = "$\u25B6$"   # right triangle
