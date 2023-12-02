@@ -8,27 +8,28 @@ from cellularautomata import CountType, GuiCA
 from random import random
 
 # The simulation studies the spread of a fire in a forest.
-# When a tree is on fire, neighboring trees can burn with a given probability (e.g. 0.2).
-# The likelihood of being burned for a tree is proportional to the number of neighboring trees in fire.
-# After a certain time, a tree turns to ash.
+# If a tree catches fire, there is a certain probability that neighboring trees will also burn. (e.g. 0.2).
+# The probability that a tree will be on fire is proportional to the number of neighboring burning trees.
+# After a certain time, a burning tree turns to ash.
 
 TFIRE = 7
-FIRING = 0.2
+ONFIRE = 0.2
+
 
 def FoF(cell, neighbors: list):
     category, time = cell
     match category:
         case 'Tree':
-            if  random() < CountType(neighbors, 'Fire') * FIRING:
+            if random() < CountType(neighbors, 'Fire') * ONFIRE:
                 return ('Fire', TFIRE)
             else:
-                return(cell)
+                return cell
         case 'Fire':
             if time == 0:
                 return ('Ash', None)
             else:
                 return ('Fire', time - 1)
-        case _ :
+        case _:
             return cell
 
 

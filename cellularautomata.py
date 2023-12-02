@@ -219,7 +219,7 @@ def ShowSimulation(
         category: [sum([CountType(row, category) for row in ca]) for ca in simulation]
         for category in types}
 
-    isvisible = [color != "white" for color in colors]   # All curves are visible but the white ones.
+    isvisible = [color != "white" for color in colors]  # All curves are visible but the white ones.
     curves = {                                          # The curves are collected to a dictionary {type: counting curve}
         category: axcurve.plot(
             [0],

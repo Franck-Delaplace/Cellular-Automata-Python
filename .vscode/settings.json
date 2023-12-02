@@ -3,9 +3,12 @@
         "axduration",
         "buttonlabeling",
         "canew",
+        "CATCHFIRE",
         "caview",
         "cellautomaton",
         "clickbutton",
+        "darkgray",
+        "forestgreen",
         "FRMLEFT",
         "FRMSIZE",
         "gridsize",
@@ -22,6 +25,7 @@
         "SLIDLEFT",
         "SLIDSIZE",
         "SLIDSTART",
+        "TFIRE",
         "updateanimation"
     ]
 }
