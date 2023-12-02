@@ -229,8 +229,8 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
         for i, category in enumerate(types)}
 
     # Check box button for curves
-    chxboxheight = len(types) * 0.05                                            # depends on the number of categories
-    chxboxwidth = 0.05 + max([len(category) for category in types]) * 0.006     # depends on the maximal string length of the categories
+    chxboxheight = len(types) * 0.05                    # depends on the number of categories
+    chxboxwidth = 0.05 + max(map(len, types)) * 0.006   # depends on the maximal string length of the categories
     axcurvebox = plt.axes(
         [X0 + 0.52, Y0 + CHEIGHT - chxboxheight, chxboxwidth, chxboxheight])    # The check box are located in the upper left of the curve graphics
 
@@ -260,8 +260,8 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
 
     # Button labeling to indicate autorun status.
     def buttonlabeling(state: bool):  # Set the label ON/OFF to the button w.r.t. to a Boolean state.
-        OFF_ICON = "$\u25a0$"  # square - use '||' otherwise
-        ON_ICON = "$\u25B6$"   # right triangle - use '>>' otherwise
+        OFF_ICON = "$\u25a0$"  # square
+        ON_ICON = "$\u25B6$"   # right triangle
         _autorun_button.label.set_text({False: ON_ICON, True: OFF_ICON}[state])
 
     buttonlabeling(autorun.get())  # Initialize button label from the initial autorun state.
