@@ -18,6 +18,7 @@
         "isweight",
         "maxlabel",
         "numsteps",
+        "ONFIRE",
         "runclick",
         "SLIDCOLOR",
         "SLIDDIST",
