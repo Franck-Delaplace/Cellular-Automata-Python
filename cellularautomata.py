@@ -153,9 +153,7 @@ _autorun_button = None  # Button of ShowSimulation, must be global to properly w
 _curve_button = None    # CheckBox Button for curves, must be global to properly work.
 
 
-def ShowSimulation(
-    simulation: list, cellcolors: dict[tuple, str], figsize: int = 5, delay: int = 100
-):
+def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int = 5, delay: int = 100):
     """Display the simulation trace of a cellular automaton.
 
     Args:
@@ -202,7 +200,7 @@ def ShowSimulation(
     Y0 = 0.1
     axca = fig.add_axes([X0, Y0, 0.45, 0.9])
 
-    # CA initialization where the cells are encoded by their index in types.
+    # CA initialization where the cells are encoded by their index of type in types.
     CAcoded = np.array([[types.index(cell[TYPE]) for cell in row] for row in simulation[0]])
     caview = DrawCA(CAcoded, colors, axca).collections[0]
 
