@@ -17,7 +17,7 @@ TYPE = 0  # index of the type in a cell.
 
 
 def CountByPos(cells: list, pos: int, value) -> int:
-    """count the element from a position in a list of tuples or a list of lists.
+    """Count the element from a position in a list of tuples or a list of lists.
     Args:
         cells (list): list of tuples representing cells
         pos (int): expected position
@@ -132,7 +132,7 @@ def SimulateCA(cellautomaton0: np.ndarray, f, numsteps: int = 100) -> list:
     return simulation
 
 
-# for managing the autorun in ShowSimulation
+# For managing the autorun in ShowSimulation.
 class Switch:
     "Boolean value toggling for switch control."
     state: bool
@@ -148,7 +148,7 @@ class Switch:
         return self.state
 
 
-_autorun_button = None  # Button of ShowSimulation must be global to properly work.
+_autorun_button = None  # Button of ShowSimulation, must be global to properly work.
 _curve_button = None    # CheckBox Button for curves, must be global to properly work.
 
 
@@ -190,7 +190,7 @@ def ShowSimulation(
     # Define  integer correspondence with types
     types = [cell[TYPE] for cell in cellcolors]                 # Get all types of cells
     types.sort()                                                # Sort types
-    encode = {category: i for i, category in enumerate(types)}   # IMPORTANT: name coded as integer where the code is its order.
+    encode = {category: i for i, category in enumerate(types)}  # IMPORTANT: name coded as integer where the code is its order.
 
     # Retrieve the colors.
     # The order of the pairs follow the order of the type. Then the type order matches with the colors order.
@@ -198,7 +198,7 @@ def ShowSimulation(
     keys.sort()
     colors = list(map(cellcolors.get, keys))
 
-    # Axe of CA + initialization of the CA display
+    # Axe of CA + initialization of the CA display.
     X0 = 0.02  # left bottom position of the CA
     Y0 = 0.1
     axca = fig.add_axes([X0, Y0, 0.45, 0.9])
@@ -220,7 +220,7 @@ def ShowSimulation(
         for category in types}
 
     isvisible = [color != "white" for color in colors]  # All curves are visible but the white ones.
-    curves = {                                          # The curves are collected to a dictionary {type: counting curve}
+    curves = {                                          # The curves are collected to a dictionary {type: counting curve}.
         category: axcurve.plot(
             [0],
             typescount[category][0],
@@ -239,34 +239,34 @@ def ShowSimulation(
     _curve_button = CheckButtons(axcurvebox, types, isvisible)
 
     def chxboxupdate(category: str) -> bool:  # update the check boxes
-        return curves[category].set_visible(not curves[category].get_visible())  # toggle the visibility of the curve
+        return curves[category].set_visible(not curves[category].get_visible())  # Toggle the visibility of curve.
     _curve_button.on_clicked(chxboxupdate)
 
     # Slider
-    axslider = plt.axes([X0 + 0.02, Y0 - 0.07, 0.432, 0.07])    # the slider is  below the cellular automaton display
+    axslider = plt.axes([X0 + 0.02, Y0 - 0.07, 0.432, 0.07])    # The slider is located below the cellular automaton display
     slider = Slider(axslider, "", 0, n - 1, valstep=1, valinit=0, facecolor="gray", valfmt="%3d")
 
     xrange = np.arange(0, n, 1, dtype=int)
 
-    def updateslider(step):  # update from slider
+    def updateslider(step):  # Update of slider.
         CAcode = np.array([[encode[c[TYPE]] for c in row] for row in simulation[step]])
         caview.set_array(CAcode.ravel())    # Update CA
         for category in types:              # Update type count curves
             curves[category].set_data(xrange[:step], typescount[category][:step])
         return curves
-    slider.on_changed(updateslider)  # Event on slider
+    slider.on_changed(updateslider)  # Event on slider.
 
     # ON/OFF autorun Button
-    ax_autorun_button = plt.axes([X0, Y0 - 0.05, 0.015, 0.03])  # on the left side of slider
+    ax_autorun_button = plt.axes([X0, Y0 - 0.05, 0.015, 0.03])  # ON/OFF button is on the left side of slider.
     _autorun_button = Button(ax_autorun_button, " ")
 
-    # Button labeling to show the autorun status.
+    # Button labeling to indicate autorun status.
     def buttonlabeling(state: bool):  # Set the label ON/OFF to the button w.r.t. to a Boolean state.
         OFF_ICON = "$\u25a0$"  # square
         ON_ICON = "$\u25B6$"   # right triangle
         _autorun_button.label.set_text({False: ON_ICON, True: OFF_ICON}[state])
 
-    buttonlabeling(autorun.get())  # Initialize button label from the current autorun state.
+    buttonlabeling(autorun.get())  # Initialize button label from the initial autorun state.
 
     def clickbutton(_):
         autorun.switch()                        # Switch the autorun.
@@ -279,8 +279,7 @@ def ShowSimulation(
             step = (slider.val + 1) % slider.valmax
             slider.set_val(step)    # updating slider value also triggers the updateslider function
 
-    animation = FuncAnimation(fig, updateanimation, interval=delay, save_count=n)
-
+    animation = FuncAnimation(fig, updateanimation, interval=delay, save_count=n)  # Run animation.
     plt.show()  # Show the simulation
     return animation
 
@@ -296,13 +295,13 @@ class Weights:
     def __init__(self, types: list, value: float = 0.0):
         self.weights = {state: value for state in types}
 
-    def set(self, state: int, val):  # set the weight of a state
+    def set(self, state: int, val):  # Set the weight of a state.
         self.weights[state] = val
 
-    def get(self, state):  # get the weight of a state
+    def get(self, state):  # Get the weight of a state.
         return self.weights[state]
 
-    def check(self):  # check whether the weights are consistent. i.e. 0 <= w <= 1
+    def check(self):  # Check whether the weights are consistent. i.e. 0 <= w <= 1.
         isweight = True
         for w in self.weights.values():
             isweight = isweight and 0.0 <= w <= 1.0
@@ -312,7 +311,7 @@ class Weights:
 # Global variables used for passing parameters to sliders and buttons
 _gridsize = 1       # CA grid size
 _duration = 1       # Duration of the simulation
-_animation = None   # Variable storing the visualization  - must be global
+_animation = None   # Variable storing the visualization, must be global.
 
 
 def GuiCA(
@@ -337,8 +336,8 @@ def GuiCA(
     )  # Check that keys are tuples!
     assert all(
         [isinstance(cell[0], str) for cell in cellcolors]
-    )  # check that the type is a string
-    assert len(cellcolors) <= 10  # limited to 10 parameters see program
+    )  # check that the types are strings!
+    assert len(cellcolors) <= 10  # limited to 10 parameters - see program to understand this limitation.
     assert figsize > 0
     assert gridsize > 0
     assert duration > 0
@@ -364,16 +363,14 @@ def GuiCA(
     types = list(map(lambda c: c[TYPE], cellcolors.keys()))  # get all types of cells
     types.sort()  # sort types
     n = len(types)
-    weights = Weights(types, 0.5)  # create weights from types.
+    weights = Weights(types, 0.5)  # Create weights from types.
 
     # Initialization of the figure
-    plt.rcParams["toolbar"] = "None"    # no tool bars on GUI figure.
+    plt.rcParams["toolbar"] = "None"    # No tool bars on GUI figure.
     plt.rcParams["font.family"] = "sans"
     plt.rcParams["font.size"] = 8
 
-    maxlabel = max(map(len, types))     # maxi label type size.
-
-    fig = plt.figure(figsize=(GUIWIDTH + maxlabel * GUISTEP, GUIHEIGHT), num="GUI")
+    fig = plt.figure(figsize=(GUIWIDTH + max(map(len, types)) * GUISTEP, GUIHEIGHT), num="GUI")
     ax = fig.add_axes([0, 0, 1, 1])
 
     # Grid size slider ======
@@ -392,7 +389,6 @@ def GuiCA(
     def update_slider_size(val: int):
         global _gridsize
         _gridsize = val
-
     size_slider.on_changed(update_slider_size)  # Event on size slider
 
     # Duration/Time sliders ======
@@ -411,7 +407,6 @@ def GuiCA(
     def update_slider_duration(val: int):
         global _duration
         _duration = val
-
     duration_slider.on_changed(update_slider_duration)  # Event on duration slider
 
     # Weights  sliders ======
@@ -483,12 +478,11 @@ def GuiCA(
         for v in weights.weights.values():
             all0 = all0 and (v == 0.0)
         if all0:
-            print("** ERROR: at least a weight must be different to 0.")
+            print("** WARNING: at least one weight must be different to 0.")
         else:
             CA = GenerateCA(_gridsize, cellcolors, weights.weights)
             simulation = SimulateCA(CA, local_fun, numsteps=_duration)
             _animation = ShowSimulation(simulation, cellcolors, figsize=figsize)
-
     run_button.on_clicked(runclick)  # Event on button
 
     plt.show()
