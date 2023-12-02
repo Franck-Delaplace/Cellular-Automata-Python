@@ -19,7 +19,6 @@ from cellularautomata import CountType, GuiCA
 # for GoL the cell type (name) suffices therefore the state is useless and set to None.
 
 def GoL(cell, neighbors: list):             # Game of life evolution function for a cell
-    TYPE = 0
     type, _ = cell
     alive = CountType(neighbors, 'Alive')   # count the number of alive cells
     if alive == 2 and type == 'Alive':      # 2 neighbors and being alive => still alive.
