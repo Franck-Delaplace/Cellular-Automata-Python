@@ -8,16 +8,17 @@ from cellularautomata import CountType, GuiCA
 
 
 # A cell of CA is composed by a tuple (type, states ...) where:
-#  - type indicates the category/type of the cell - usually a string
+#  - type indicates the category/type of the cell which must be a string
 #  - states indicate the internal states of the cell which depends on the simulation.
+# The evolution function has two parameters: the cell and the list of neighboring cells.
 
 # GAME OF LIFE RULE
 # A dead cell with exactly three living neighbors becomes alive (is born)
 # A living cell with two or three living neighbors remains so.
 # Otherwise, the cell dies or stay died.
-# for GoL the cell type (name) suffices therefore the state is useless and set to None
+# for GoL the cell type (name) suffices therefore the state is useless and set to None.
 
-def GoL(cell, neighbors: list):
+def GoL(cell, neighbors: list):             # Game of life evolution function for a cell
     TYPE = 0
     type, _ = cell
     alive = CountType(neighbors, 'Alive')   # count the number of alive cells
@@ -30,7 +31,7 @@ def GoL(cell, neighbors: list):
 
 
 # Main program ============================================================
-cellcolors = {('Dead', None): 'white', ('Alive', None): 'black'}  # color assigned to states
+cellcolors = {('Dead', None): 'white', ('Alive', None): 'black'}  # color assigned to cells
 GuiCA(GoL, cellcolors, gridsize=100, duration=200)
 
 # MANUAL RUN
