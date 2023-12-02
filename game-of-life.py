@@ -36,6 +36,6 @@ GuiCA(GoL, cellcolors, gridsize=100, duration=200)
 # MANUAL RUN
 # from cellularautomata import GenerateCA, SimulateCA, ShowSimulation
 # weights =  {'Alive':0.35, 'Dead': 0.65}
-# CA0 = GenerateCA(50, cellcolors, weights )
+# CA0 = GenerateCA(50, cellcolors, weights)
 # simulation = SimulateCA(CA0, GoL)
 # animation = ShowSimulation(simulation, cellcolors)
