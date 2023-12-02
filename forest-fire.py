@@ -12,8 +12,8 @@ from random import random
 # The probability that a tree will be on fire is proportional to the number of neighboring burning trees.
 # After a certain time, a burning tree turns to ash.
 
-TFIRE = 7
-ONFIRE = 0.2
+TFIRE:float = 7
+ONFIRE:float = 0.2
 
 
 def FoF(cell, neighbors: list):
