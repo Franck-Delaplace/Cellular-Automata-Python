@@ -34,6 +34,6 @@ def FoF(cell, neighbors: list):
 
 
 # Main program ============================================================
-cellcolors = {('Tree', None): 'forestgreen', ('Fire', TFIRE): 'crimson', ('Ash', None): 'darkgray', ('Grass', None): 'white'}  # color assigned to states
+cellcolors = {('Tree', None): 'forestgreen', ('Fire', TFIRE): 'crimson', ('Ash', None): 'darkgray', ('Soil', None): 'white'}  # color assigned to states
 
 GuiCA(FoF, cellcolors)
