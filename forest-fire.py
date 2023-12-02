@@ -12,12 +12,11 @@ from random import random
 # The likelihood of being burned for a tree is proportional to the number of neighboring trees in fire.
 # After a certain time, a tree turns to ash.
 
-TIME = 1
 TFIRE = 7
 FIRING = 0.2
 
 def FoF(cell, neighbors: list):
-    category, _ = cell
+    category, time = cell
     match category:
         case 'Tree':
             if  random() < CountType(neighbors, 'Fire') * FIRING:
@@ -25,10 +24,10 @@ def FoF(cell, neighbors: list):
             else:
                 return(cell)
         case 'Fire':
-            if cell[TIME] == 0:
+            if time == 0:
                 return ('Ash', None)
             else:
-                return ('Fire', cell[TIME] - 1)
+                return ('Fire', time - 1)
         case _ :
             return cell
 
