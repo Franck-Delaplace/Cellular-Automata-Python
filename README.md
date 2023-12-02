@@ -2,4 +2,4 @@ Library of cellular automaton written in Python with examples including the game
 These programs are used in my Master course at Paris-Saclay University, Evry.
 Please feel free to use it for educational purpoise or other.
 
-celllularautomata is the name of the library. The other programs are ex.amples for using the library.
+celllularautomata is the name of the library. The other programs are examples for using the library.
