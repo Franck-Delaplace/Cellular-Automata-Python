@@ -178,7 +178,6 @@ def ShowSimulation(
     autorun = Switch()
 
     # Figure
-
     plt.rcParams["font.family"] = "fantasy"  # 'monospace'  'sans'
     plt.rcParams["font.size"] = 11
     plt.rcParams["text.color"] = "black"
@@ -191,7 +190,6 @@ def ShowSimulation(
     # Define  integer correspondence with types
     types = [cell[TYPE] for cell in cellcolors]                 # Get all types of cells
     types.sort()                                                # Sort types
-    encode = {category: i for i, category in enumerate(types)}  # IMPORTANT: name coded as integer where the code is its order.
 
     # Retrieve the colors.
     # The order of the pairs follow the order of the type. Then the type order matches with the colors order.
@@ -204,8 +202,8 @@ def ShowSimulation(
     Y0 = 0.1
     axca = fig.add_axes([X0, Y0, 0.45, 0.9])
 
-    # CA initialization where the cells are represented by the integer code of the types.
-    CAcoded = np.array([[encode[cell[TYPE]] for cell in row] for row in simulation[0]])
+    # CA initialization where the cells are encoded by their index in types.
+    CAcoded = np.array([[types.index(cell[TYPE]) for cell in row] for row in simulation[0]])
     caview = DrawCA(CAcoded, colors, axca).collections[0]
 
     # Axe of curve
@@ -251,7 +249,7 @@ def ShowSimulation(
     xrange = np.arange(0, n, 1, dtype=int)
 
     def updateslider(step):  # Update of slider.
-        CAcode = np.array([[encode[c[TYPE]] for c in row] for row in simulation[step]])
+        CAcode = np.array([[types.index(c[TYPE]) for c in row] for row in simulation[step]])
         caview.set_array(CAcode.ravel())    # Update CA
         for category in types:  # Update type count curves
             curves[category].set_data(xrange[:step], typescount[category][:step])
@@ -264,8 +262,8 @@ def ShowSimulation(
 
     # Button labeling to indicate autorun status.
     def buttonlabeling(state: bool):  # Set the label ON/OFF to the button w.r.t. to a Boolean state.
-        OFF_ICON = "$\u25a0$"  # square
-        ON_ICON = "$\u25B6$"   # right triangle
+        OFF_ICON = "$\u25a0$"  # square - use '||' otherwise
+        ON_ICON = "$\u25B6$"   # right triangle - use '>>' otherwise
         _autorun_button.label.set_text({False: ON_ICON, True: OFF_ICON}[state])
 
     buttonlabeling(autorun.get())  # Initialize button label from the initial autorun state.
@@ -282,7 +280,7 @@ def ShowSimulation(
             slider.set_val(step)    # updating slider value also triggers the updateslider function
 
     animation = FuncAnimation(fig, updateanimation, interval=delay, save_count=n)  # Run animation.
-    plt.show()  # Show the simulation
+    plt.show()
     return animation
 
 
