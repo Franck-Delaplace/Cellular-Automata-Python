@@ -4,6 +4,7 @@
 # ** MASTER TUTORIAL
 # ** Paris Saclay University
 
+import matplotlib as  mp
 from matplotlib.animation import FuncAnimation
 from random import choices
 import numpy as np
@@ -226,6 +227,7 @@ def ShowSimulation(
             typescount[category][0],
             color=colors[i] if colors[i] != "white" else "gainsboro",  # the white color is transformed into a very light gray
             linewidth=2.5,
+            marker=" ",
             visible=isvisible[i],
         )[0]
         for i, category in enumerate(types)}
@@ -251,7 +253,7 @@ def ShowSimulation(
     def updateslider(step):  # Update of slider.
         CAcode = np.array([[encode[c[TYPE]] for c in row] for row in simulation[step]])
         caview.set_array(CAcode.ravel())    # Update CA
-        for category in types:              # Update type count curves
+        for category in types:  # Update type count curves
             curves[category].set_data(xrange[:step], typescount[category][:step])
         return curves
     slider.on_changed(updateslider)  # Event on slider.

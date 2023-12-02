@@ -1,11 +1,17 @@
 {
     "cSpell.words": [
+        "axcurvebox",
         "axduration",
+        "axslider",
         "buttonlabeling",
         "canew",
         "CATCHFIRE",
         "caview",
         "cellautomaton",
+        "CHEIGHT",
+        "chxboxheight",
+        "chxboxupdate",
+        "chxboxwidth",
         "clickbutton",
         "darkgray",
         "forestgreen",
@@ -27,6 +33,8 @@
         "SLIDSIZE",
         "SLIDSTART",
         "TFIRE",
-        "updateanimation"
+        "typescount",
+        "updateanimation",
+        "updateslider"
     ]
 }
