@@ -33,12 +33,12 @@ def CountByPos(cells: list, pos: int, value) -> int:
     return counter
 
 
-def CountType(cells: list, category: str | int) -> int:
+def CountType(cells: list, category: str) -> int:
     """Return the number of cells whose type matches with the category in a list of cells.
 
     Args:
         cells (list): list of cells
-        category (str|int): expected type
+        category (str): expected type
 
     Returns:
         int: number of types matching with the category
