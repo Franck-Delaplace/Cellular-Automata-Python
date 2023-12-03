@@ -272,6 +272,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
 
     # Button save Animation
     ax_save_button = plt.axes([X0, Y0 - 0.05, 0.015, 0.03])  # ON/OFF button is on the left side of slider.
+
     SAVED_ICON = "$\u25BD$"  # triangle pointing down, empty shape
     SAVE_ICON = "$\u25BC$"   # triangle pointing down, filled shape
     _save_button = Button(ax_save_button, SAVE_ICON)
