@@ -175,7 +175,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
     n = len(simulation)
     autorun = Switch()
 
-    # Figure
+    # Figure definition
     plt.rcParams["font.family"] = "fantasy"  # 'monospace'  'sans'
     plt.rcParams["font.size"] = 11
     plt.rcParams["text.color"] = "black"
@@ -185,24 +185,20 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
     wm = plt.get_current_fig_manager()
     wm.window.wm_geometry("+650+150")
 
-    # Define  integer correspondence with types
-    types = [cell[TYPE] for cell in cellcolors]                 # Get all types of cells
-    types.sort()                                                # Sort types
-
-    # Retrieve the colors.
-    # The order of the pairs follow the order of the type. Then the type order matches with the colors order.
-    keys = list(cellcolors.keys())
-    keys.sort()
-    colors = list(map(cellcolors.get, keys))
+    # order the colors to suit the DrawCA function w.r.t. to the types.
+    cells = list(cellcolors.keys()) # extract cells from cellcolors
+    cells.sort()                    # The order of the cells follow the order of the types since the type is at first.
+    colors =[cellcolors[cell] for cell in cells]    # extract the color following the order of the types
+    types = [cell[TYPE] for cell in cells]          # extract types ordered.
 
     # Axe of CA + initialization of the CA display.
     X0 = 0.02  # left bottom position of the CA
     Y0 = 0.1
     axca = fig.add_axes([X0, Y0, 0.45, 0.9])
 
-    # CA initialization where the cells are encoded by their index of type in types.
-    CAcoded = np.array([[types.index(cell[TYPE]) for cell in row] for row in simulation[0]])
-    caview = DrawCA(CAcoded, colors, axca).collections[0]
+    # CA initialization where the cells are encoded by their index of type in types to properly suit with colors.
+    ca_coded = np.array([[types.index(cell[TYPE]) for cell in row] for row in simulation[0]])
+    caview = DrawCA(ca_coded, colors, axca).collections[0]
 
     # Axe of curve
     CHEIGHT = 0.87  # height of the curve axe.
