@@ -147,6 +147,7 @@ class Switch:
     def get(self):  # get the state
         return self.state
 
+
 _animation = None   # Variable storing the visualization, must be global.
 _autorun_button = None  # Button autorun ON/OFF, must be global to properly work.
 _save_button = None     # Button to save Simulation, must be global to properly work.
@@ -188,9 +189,9 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
     wm.window.wm_geometry("+650+150")
 
     # order the colors to suit the DrawCA function w.r.t. to the types.
-    cells = list(cellcolors.keys()) # extract cells from cellcolors
-    cells.sort()                    # The order of the cells follow the order of the types since the type is at first.
-    colors =[cellcolors[cell] for cell in cells]    # extract the color following the order of the types
+    cells = list(cellcolors.keys())     # extract cells from cellcolors
+    cells.sort()                        # The order of the cells follow the order of the types since the type is at first.
+    colors = [cellcolors[cell] for cell in cells]    # extract the color following the order of the types
     types = [cell[TYPE] for cell in cells]          # extract types ordered.
 
     # Axe of CA + initialization of the CA display.
@@ -324,7 +325,6 @@ class Weights:
 # Global variables used for passing parameters to sliders and buttons
 _gridsize = 1       # CA grid size
 _duration = 1       # Duration of the simulation
-
 
 
 def GuiCA(
