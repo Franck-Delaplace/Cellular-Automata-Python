@@ -276,6 +276,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
     SAVED_ICON = "$\u25BD$"  # triangle pointing down, empty shape
     SAVE_ICON = "$\u25BC$"   # triangle pointing down, filled shape
     _save_button = Button(ax_save_button, SAVE_ICON)
+
     def click_save_button(_):
         global _save_button
         _save_button.label.set_text(SAVED_ICON)
