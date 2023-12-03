@@ -240,7 +240,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
     _curve_button.on_clicked(chxboxupdate)
 
     # Slider
-    axslider = plt.axes([X0 + 0.04, Y0 - 0.07, 0.415, 0.07])    # The slider is located below the cellular automaton display
+    axslider = plt.axes([X0 + 0.04, Y0 - 0.07, 0.412, 0.07])    # The slider is located below the cellular automaton display
     slider = Slider(axslider, "", 0, n - 1, valstep=1, valinit=0, facecolor="gray", valfmt="%3d")
 
     xrange = np.arange(0, n, 1, dtype=int)
