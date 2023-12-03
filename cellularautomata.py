@@ -5,7 +5,7 @@
 # ** Paris Saclay University
 
 import matplotlib as  mp
-from matplotlib.animation import FuncAnimation
+from matplotlib.animation import FuncAnimation, PillowWriter
 from random import choices
 import numpy as np
 import matplotlib.colors as color
@@ -148,8 +148,9 @@ class Switch:
     def get(self):  # get the state
         return self.state
 
-
-_autorun_button = None  # Button of ShowSimulation, must be global to properly work.
+_animation = None   # Variable storing the visualization, must be global.
+_autorun_button = None  # Button autorun ON/OFF, must be global to properly work.
+_save_button = None     # Button to save Simulation, must be global to properly work.
 _curve_button = None    # CheckBox Button for curves, must be global to properly work.
 
 
@@ -166,7 +167,9 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
         _type_: animation
     """
     global _autorun_button
+    global _save_button
     global _curve_button
+    global _animation
 
     assert delay >= 0
     assert figsize >= 0
@@ -237,7 +240,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
     _curve_button.on_clicked(chxboxupdate)
 
     # Slider
-    axslider = plt.axes([X0 + 0.02, Y0 - 0.07, 0.432, 0.07])    # The slider is located below the cellular automaton display
+    axslider = plt.axes([X0 + 0.04, Y0 - 0.07, 0.415, 0.07])    # The slider is located below the cellular automaton display
     slider = Slider(axslider, "", 0, n - 1, valstep=1, valinit=0, facecolor="gray", valfmt="%3d")
 
     xrange = np.arange(0, n, 1, dtype=int)
@@ -251,7 +254,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
     slider.on_changed(updateslider)  # Event on slider.
 
     # ON/OFF autorun Button
-    ax_autorun_button = plt.axes([X0, Y0 - 0.05, 0.015, 0.03])  # ON/OFF button is on the left side of slider.
+    ax_autorun_button = plt.axes([X0+0.02, Y0 - 0.05, 0.015, 0.03])  # ON/OFF button is on the left side of slider.
     _autorun_button = Button(ax_autorun_button, " ")
 
     # Button labeling to indicate autorun status.
@@ -262,10 +265,25 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
 
     buttonlabeling(autorun.get())  # Initialize button label from the initial autorun state.
 
-    def clickbutton(_):
+    def click_autorun_button(_):
+        global _autorun_button
         autorun.switch()                        # Switch the autorun.
         buttonlabeling(autorun.get())           # Change the button label.
-    _autorun_button.on_clicked(clickbutton)     # Event on autorun button.
+    _autorun_button.on_clicked(click_autorun_button)     # Event on autorun button.
+
+    # Button save Animation
+    ax_save_button = plt.axes([X0, Y0 - 0.05, 0.015, 0.03])  # ON/OFF button is on the left side of slider.
+    SAVED_ICON = "$\u25BD$"  # triangle pointing down, empty shape
+    SAVE_ICON = "$\u25BC$"   # triangle pointing down, filled shape
+    _save_button = Button(ax_save_button, SAVE_ICON)
+    def click_save_button(_):
+        global _save_button
+        _save_button.label.set_text(SAVED_ICON)
+        writer = PillowWriter(fps=30)
+        _animation.save("CA-SIMULATION.gif", writer=writer)
+ 
+
+    _save_button.on_clicked(click_save_button)     # Event on autorun button.
 
     # Display simulation
     def updateanimation(_):         # update from animation
@@ -273,9 +291,9 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
             step = (slider.val + 1) % slider.valmax
             slider.set_val(step)    # updating slider value also triggers the updateslider function
 
-    animation = FuncAnimation(fig, updateanimation, interval=delay, save_count=n)  # Run animation.
+    _animation = FuncAnimation(fig, updateanimation, interval=delay, save_count=n)  # Run animation.
     plt.show()
-    return animation
+    return _animation
 
 
 # Cellular Automaton graphical user  interface.
@@ -305,7 +323,7 @@ class Weights:
 # Global variables used for passing parameters to sliders and buttons
 _gridsize = 1       # CA grid size
 _duration = 1       # Duration of the simulation
-_animation = None   # Variable storing the visualization, must be global.
+
 
 
 def GuiCA(
