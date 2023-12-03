@@ -279,9 +279,11 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
     def click_save_button(_):
         global _save_button
         _save_button.label.set_text(SAVED_ICON)
+        print("** Save simulation into CA-SIMULATION.gif")
         writer = PillowWriter(fps=30)
         _animation.save("CA-SIMULATION.gif", writer=writer)
- 
+        print("** Saving done !")
+
 
     _save_button.on_clicked(click_save_button)     # Event on autorun button.
 
