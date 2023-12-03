@@ -283,7 +283,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
         writer = PillowWriter(fps=30)
         _animation.save("CA-SIMULATION.gif", writer=writer)
         print("** Backup Completed !")
-    _save_button.on_clicked(click_save_button)     # Event on save button.
+    _save_button.on_clicked(click_save_button)  # Event on save button.
 
     # Display simulation
     def updateanimation(_):         # update from animation
