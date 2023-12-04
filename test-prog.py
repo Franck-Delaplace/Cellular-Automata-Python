@@ -1,45 +1,53 @@
-    
-from matplotlib.animation import FuncAnimation
-from random import choices
-import numpy as np
-import matplotlib.colors as color
-import seaborn as sns
 import matplotlib.pyplot as plt
-from matplotlib.widgets import Slider, Button
-from matplotlib.patches import Rectangle
+import numpy as np; np.random.seed(1)
 
-X0 = 0.5  # left bottom position of the CA
-Y0 = 0.2
-figsize = 5
-fig = plt.figure("CELLULAR AUTOMATON - FD MASTER COURSE", figsize=(figsize, figsize))
-ax = plt.gca()
+x = np.random.rand(15)
+y = np.random.rand(15)
+names = np.array(list("ABCDEFGHIJKLMNO"))
+c = np.random.randint(1,5,size=15)
 
-x = np.linspace(0, 20, 1000)
-ax.plot(x, np.cos(x))
-ax.axis('equal')
+norm = plt.Normalize(1,4)
+cmap = plt.cm.RdYlGn
 
-ax.annotate('local maximum', xy=(6.28, 1), xytext=(10, 4),
-            arrowprops=dict(facecolor='black', shrink=0.05))
-  
-ax_save_button = plt.axes([X0, Y0 - 0.05, 0.2, 0.05])  # ON/OFF button is on the left side of slider.
+fig,ax = plt.subplots()
+sc = plt.scatter(x,y,c=c, s=100, cmap=cmap, norm=norm)
 
-SAVED_ICON = "$\u25BD$"  # triangle pointing down, empty shape
-SAVE_ICON = "$\u25BC$"   # triangle pointing down, filled shape
-_save_button = Button(ax_save_button, SAVE_ICON)
+annot = ax.annotate("", xy=(0,0), xytext=(20,20),textcoords="offset points",
+                    bbox=dict(boxstyle="round", fc="w"),
+                    arrowprops=dict(arrowstyle="->"))
+annot.set_visible(False)
 
-def click_save_button(_):
-    global _save_button
-    _save_button.label.set_text(SAVED_ICON)
-    print("** Save simulation to 'CA-SIMULATION.gif' file.")
-    print("** Backup Completed !")
-    _save_button.on_clicked(click_save_button)  # Event on save button.
+def update_annot(ind):
+    
+    pos = sc.get_offsets()[ind["ind"][0]]
+    annot.xy = pos
+    text = "{}, {}".format(" ".join(list(map(str,ind["ind"]))), 
+                           " ".join([names[n] for n in ind["ind"]]))
+    annot.set_text(text)
+    annot.get_bbox_patch().set_facecolor(cmap(norm(c[ind["ind"][0]])))
+    annot.get_bbox_patch().set_alpha(0.4)
+    
 
+def hover(event):
+    vis = annot.get_visible()
+    if event.inaxes == ax:
+        cont, ind = sc.contains(event)
+        if cont:
+            update_annot(ind)
+            annot.set_visible(True)
+            fig.canvas.draw_idle()
+        else:
+            if vis:
+                annot.set_visible(False)
+                fig.canvas.draw_idle()
 
-    # Tooltip Annotation 
-def hover_annotate(event):
-    if ax_save_button.contains(event)[0]:
-        print("*" , end=" ")
-
-fig.canvas.mpl_connect('motion_notify_event', hover_annotate) 
+fig.canvas.mpl_connect("motion_notify_event", hover)
 
 plt.show()
+    # Tooltip Annotation 
+# def hover_annotate(event):
+#     if ax_save_button.contains(event)[0]:
+#         print("*" , end=" ")
+
+# fig.canvas.mpl_connect('motion_notify_event', hover_annotate) 
+
