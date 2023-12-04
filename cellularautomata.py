@@ -147,11 +147,11 @@ class Switch:
     def get(self):  # get the state
         return self.state
 
-    def set(self, val:bool):
+    def set(self, val: bool): # set the state
         self.state = val
 
 
-_animation = None   # Variable storing the visualization, must be global.
+_animation = None       # Variable storing the visualization, must be global.
 _autorun_button = None  # Button autorun ON/OFF, must be global to properly work.
 _save_button = None     # Button to save Simulation, must be global to properly work.
 _curve_button = None    # CheckBox Button for curves, must be global to properly work.
@@ -191,10 +191,10 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
     wm = plt.get_current_fig_manager()
     wm.window.wm_geometry("+400+150")
 
-    # order the colors to suit the DrawCA function w.r.t. to the types.
-    cells = list(cellcolors.keys())     # extract cells from cellcolors
-    cells.sort()                        # The order of the cells follow the order of the types since the type is at first.
-    colors = [cellcolors[cell] for cell in cells]    # extract the color following the order of the types
+    # Order the colors to suit the DrawCA function w.r.t. to the types.
+    cells = list(cellcolors.keys())                 # extract cells from cellcolors
+    cells.sort()                                    # The order of the cells follow the order of the types since the type is at first.
+    colors = [cellcolors[cell] for cell in cells]   # extract the color following the order of the types
     types = [cell[TYPE] for cell in cells]          # extract types ordered.
 
     # Axe of CA + initialization of the CA display.
@@ -251,7 +251,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
     def updateslider(step):  # Update of slider.
         CAcode = np.array([[types.index(c[TYPE]) for c in row] for row in simulation[step]])
         caview.set_array(CAcode.ravel())    # Update CA
-        for category in types:  # Update type count curves
+        for category in types:              # Update type count curves
             curves[category].set_data(xrange[:step], typescount[category][:step])
         return curves
     slider.on_changed(updateslider)  # Event on slider.
@@ -280,28 +280,28 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
     SAVE_ICON = "$\u25BC$"   # triangle pointing down, filled shape
     _save_button = Button(ax_save_button, SAVE_ICON)
     saved = Switch(False)
-    
+
     def click_save_button(_):
         global _save_button
         message("** Save simulation to 'CA-SIMULATION.gif' file.")
         _save_button.label.set_text(SAVED_ICON)
         writer = PillowWriter(fps=1500//delay)
         _animation.save("CA-SIMULATION.gif", writer=writer)
-        message("** Backup Completed !")
+        message("** Backup completed!")
         saved.set(True)
     _save_button.on_clicked(click_save_button)  # Event on save button.
 
     # Tooltips ======
-    axmsg = plt.axes([X0, Y0 - 0.09, 0.45, 0.03],facecolor="gainsboro")   # define the message zone
+    axmsg = plt.axes([X0, Y0 - 0.09, 0.45, 0.03], facecolor="gainsboro")   # define the message zone
 
     def msgclear():  # clear message box
         axmsg.cla()
         axmsg.set_xticks([])
         axmsg.set_yticks([])
 
-    def message(msg:str):  # print message in message box.
+    def message(msg: str):  # print message in message box.
         msgclear()
-        axmsg.text(0.01,0.2, msg, fontsize=9, fontfamily='serif',fontstyle='italic')
+        axmsg.text(0.01, 0.2, msg, fontsize=9, fontfamily='serif', fontstyle='italic')
 
     def hover(event):   # handling button event
         if ax_save_button.contains(event)[0]:
