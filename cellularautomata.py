@@ -147,6 +147,9 @@ class Switch:
     def get(self):  # get the state
         return self.state
 
+    def set(self, val:bool):
+        self.state = val
+
 
 _animation = None   # Variable storing the visualization, must be global.
 _autorun_button = None  # Button autorun ON/OFF, must be global to properly work.
@@ -273,11 +276,11 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
 
     # Button save Animation
     ax_save_button = plt.axes([X0, Y0 - 0.05, 0.015, 0.03])  # ON/OFF button is on the left side of slider.
-
     SAVED_ICON = "$\u25BD$"  # triangle pointing down, empty shape
     SAVE_ICON = "$\u25BC$"   # triangle pointing down, filled shape
     _save_button = Button(ax_save_button, SAVE_ICON)
-
+    saved = Switch(False)
+    
     def click_save_button(_):
         global _save_button
         message("** Save simulation to 'CA-SIMULATION.gif' file.")
@@ -285,32 +288,34 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
         writer = PillowWriter(fps=1500//delay)
         _animation.save("CA-SIMULATION.gif", writer=writer)
         message("** Backup Completed !")
+        saved.set(True)
     _save_button.on_clicked(click_save_button)  # Event on save button.
 
-    # Message box & Tooltips ======
+    # Tooltips ======
     axmsg = plt.axes([X0, Y0 - 0.09, 0.45, 0.03],facecolor="gainsboro")   # define the message zone
-    axmsg.xaxis.set_tick_params(labelbottom=False)                        # no labels
-    axmsg.yaxis.set_tick_params(labelleft=False)
-    axmsg.set_xticks([])                                                  # No ticks
-    axmsg.set_yticks([])
 
-    def msgclear():  #clear message box
+    def msgclear():  # clear message box
         axmsg.cla()
         axmsg.set_xticks([])
         axmsg.set_yticks([])
 
-    def message(msg:str):
+    def message(msg:str):  # print message in message box.
         msgclear()
-        axmsg.text(0.01,0.1, msg, fontsize=9, fontfamily='serif',fontstyle='italic')
+        axmsg.text(0.01,0.2, msg, fontsize=9, fontfamily='serif',fontstyle='italic')
 
     def hover(event):   # handling button event
         if ax_save_button.contains(event)[0]:
-            message("Click to save the simulation")
+            if saved.get():
+                message("Click to save the simulation - Simulation already saved !")
+            else:
+                message("Click to save the simulation")
         elif ax_autorun_button.contains(event)[0]:
             message("Click to turn ON/OFF the simulation")
         else:
             msgclear()
     fig.canvas.mpl_connect("motion_notify_event", hover)
+
+    msgclear()
 
     # Display simulation
     def updateanimation(_):         # update from animation
