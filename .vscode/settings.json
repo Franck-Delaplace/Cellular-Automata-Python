@@ -5,6 +5,7 @@
         "axcurve",
         "axcurvebox",
         "axduration",
+        "axsize",
         "axslider",
         "buttonlabeling",
         "canew",
@@ -38,6 +39,7 @@
         "TFIRE",
         "typescount",
         "updateanimation",
-        "updateslider"
+        "updateslider",
+        "winposition"
     ]
 }

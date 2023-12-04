@@ -186,7 +186,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
         "CELLULAR AUTOMATON - FD MASTER COURSE", figsize=(2 * figsize, figsize)
     )
     wm = plt.get_current_fig_manager()
-    wm.window.wm_geometry("+650+150")
+    wm.window.wm_geometry("+400+150")
 
     # order the colors to suit the DrawCA function w.r.t. to the types.
     cells = list(cellcolors.keys())     # extract cells from cellcolors
@@ -333,6 +333,7 @@ def GuiCA(
     figsize: int = 5,
     gridsize: int = 100,
     duration: int = 200,
+    delay: int = 100
 ):
     """Graphical interface for cellular Automata.
         limited to 10 types at most.
@@ -343,6 +344,7 @@ def GuiCA(
         figsize (int, optional): size of the figure of the simulation view. Defaults to 5.
         gridsize (int, optional): maximal size of the CA grid. Defaults to 100.
         duration (int, optional): maximal duration of the simulation. Defaults to 200.
+        delay (int, optional): delay in ms between two simulation steps. Defaults to 100.
     """
     assert all(
         [isinstance(cell, tuple) for cell in cellcolors]
@@ -385,6 +387,8 @@ def GuiCA(
 
     fig = plt.figure(figsize=(GUIWIDTH + max(map(len, types)) * GUISTEP, GUIHEIGHT), num="GUI")
     ax = fig.add_axes([0, 0, 1, 1])
+    wm = plt.get_current_fig_manager()
+    wm.window.wm_geometry("+50+100")
 
     # Grid size slider ======
     axsize_slider = plt.axes([SLIDLEFT, 0.92, SLIDSIZE, SLIDHEIGHT])
@@ -495,7 +499,7 @@ def GuiCA(
         else:
             CA = GenerateCA(_gridsize, cellcolors, weights.weights)
             simulation = SimulateCA(CA, local_fun, numsteps=_duration)
-            _animation = ShowSimulation(simulation, cellcolors, figsize=figsize)
+            _animation = ShowSimulation(simulation, cellcolors, figsize=figsize, delay=delay)
     run_button.on_clicked(runclick)  # Event on button
 
     plt.show()
