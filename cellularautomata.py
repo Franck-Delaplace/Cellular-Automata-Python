@@ -314,7 +314,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
         elif axca.contains(event)[0]:
             message("Cellular Automaton.")
         elif axcurve.contains(event)[0]:
-            message("type count curves.")
+            message("Type count curves.")
         else:
             msgclear()
 
