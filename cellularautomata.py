@@ -283,7 +283,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
 
     def click_save_button(_):
         global _save_button
-        message("** Save the simulation to 'CA-SIMULATION.gif' file.")  #! This message is actually not printed due to save function - see onclick function.
+        message("Save the simulation to 'CA-SIMULATION.gif' file, please be patient.")
         _save_button.label.set_text(SAVED_ICON)
         writer = PillowWriter(fps=1500//delay)
         _animation.save("CA-SIMULATION.gif", writer=writer)
@@ -304,7 +304,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
         axmsg.text(0.01, 0.2, msg, fontsize=9, fontfamily='serif', fontstyle='italic')
 
     # handling events
-    def hover(event):
+    def hover(event):  # event over axes
         if ax_save_button.contains(event)[0]:
             if saved.get():
                 message("Click to save the simulation in GIF - Simulation already saved !")
@@ -318,11 +318,11 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
             message("type count curves.")
         else:
             msgclear()
-    def onclick(event):
+    def onclick(event):  # ev bent on click on axes
         if ax_save_button.contains(event)[0]:
-             message("Save the simulation to 'CA-SIMULATION.gif' file, be patient please.")
+            message("Save the simulation to 'CA-SIMULATION.gif' file, please be patient.")
         elif ax_autorun_button.contains(event)[0]:
-            message("Simulation switched "+("OFF." if autorun.get() else "ON."))
+            message("Simulation switched "+("OFF, scroll the slider." if autorun.get() else "ON."))
         else:
             pass
 
