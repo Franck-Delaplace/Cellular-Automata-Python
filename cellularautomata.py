@@ -283,7 +283,6 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
 
     def click_save_button(_):
         global _save_button
-        message("Save the simulation to 'CA-SIMULATION.gif' file, please be patient.")
         _save_button.label.set_text(SAVED_ICON)
         writer = PillowWriter(fps=1500//delay)
         _animation.save("CA-SIMULATION.gif", writer=writer)
@@ -294,20 +293,20 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
     # Tooltips ======
     axmsg = plt.axes([X0, Y0 - 0.09, 0.45, 0.03], facecolor="gainsboro")   # define the message zone
 
-    def msgclear():  # clear message box
+    def msgclear():  # clear the message box
         axmsg.cla()
         axmsg.set_xticks([])
         axmsg.set_yticks([])
 
-    def message(msg: str):  # print message in message box.
+    def message(msg: str):  # print a message in the message box.
         msgclear()
         axmsg.text(0.01, 0.2, msg, fontsize=9, fontfamily='serif', fontstyle='italic')
 
     # handling events
-    def hover(event):  # event over axes
+    def hover(event):  # event over axes handler
         if ax_save_button.contains(event)[0]:
             if saved.get():
-                message("Click to save the simulation in GIF - Simulation already saved !")
+                message("Click to save the simulation in GIF - Simulation already saved.")
             else:
                 message("Click to save the simulation in GIF")
         elif ax_autorun_button.contains(event)[0]:
@@ -319,7 +318,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
         else:
             msgclear()
 
-    def onclick(event):  # ev bent on click on axes
+    def onclick(event):  # click on axes handler
         if ax_save_button.contains(event)[0]:
             message("Save the simulation to 'CA-SIMULATION.gif' file, please be patient.")
         elif ax_autorun_button.contains(event)[0]:
@@ -344,7 +343,6 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
 
 
 # Cellular Automaton graphical user  interface.
-
 
 # Class to manage weights for random definition of the CA grid
 class Weights:
