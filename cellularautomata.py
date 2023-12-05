@@ -225,7 +225,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
         )[0]
         for i, category in enumerate(types)}
 
-    # Check box button for curves
+    # Check box button characterization for curves
     chxboxheight = len(types) * 0.05                    # depends on the number of categories
     chxboxwidth = 0.05 + max(map(len, types)) * 0.006   # depends on the maximal string length of the categories
     axcurvebox = plt.axes(
@@ -237,7 +237,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
         return curves[category].set_visible(not curves[category].get_visible())  # Toggle the visibility of curve.
     _curve_button.on_clicked(chxboxupdate)
 
-    # Slider
+    # Slider characterization
     axslider = plt.axes([X0 + 0.04, Y0 - 0.07, 0.412, 0.07])    # The slider is located below the cellular automaton display
     slider = Slider(axslider, "", 0, n - 1, valstep=1, valinit=0, facecolor="gray", valfmt="%3d")
 
