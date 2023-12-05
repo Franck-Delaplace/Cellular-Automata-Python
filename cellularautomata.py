@@ -17,7 +17,7 @@ TYPE = 0  # index of the type in a cell.
 
 
 def CountByPos(cells: list, pos: int, value) -> int:
-    """Count the element from a position in a list of tuples or a list of lists.
+    """Count the elements corresponding to a value at a position in tuples of the list or a list of lists.
     Args:
         cells (list): list of tuples representing cells
         pos (int): expected position
