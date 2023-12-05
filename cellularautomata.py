@@ -218,7 +218,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
         category: [sum([CountType(row, category) for row in ca]) for ca in simulation]
         for category in types}
 
-    isvisible = [color != "white" for color in colors]  # All curves are visible but the white ones.
+    visible_curves = [color != "white" for color in colors]  # All curves are visible but the white ones.
     curves = {                                          # The curves are collected to a dictionary {type: counting curve}.
         category: axcurve.plot(
             [0],
@@ -226,7 +226,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
             color=colors[i] if colors[i] != "white" else "gainsboro",  # the white color is transformed into a very light gray
             linewidth=2.5,
             marker=" ",
-            visible=isvisible[i],
+            visible=visible_curves[i],
         )[0]
         for i, category in enumerate(types)}
 
@@ -236,7 +236,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
     axcurvebox = plt.axes(
         [X0 + 0.52, Y0 + CHEIGHT - chxboxheight, chxboxwidth, chxboxheight])    # The check box are located in the upper left of the curve graphics
 
-    _curve_button = CheckButtons(axcurvebox, types, isvisible)
+    _curve_button = CheckButtons(axcurvebox, types, visible_curves)
 
     def chxboxupdate(category: str) -> bool:  # update the check boxes
         return curves[category].set_visible(not curves[category].get_visible())  # Toggle the visibility of curve.
@@ -261,9 +261,9 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
     _autorun_button = Button(ax_autorun_button, " ")
 
     # Button labeling to indicate autorun status.
-    def buttonlabeling(state: bool):  # Set the label ON/OFF to the button w.r.t. to a Boolean state.
-        OFF_ICON = "$\u25a0$"  # square
-        ON_ICON = "$\u25B6$"   # right triangle
+    OFF_ICON = "$\u25a0$"  # square
+    ON_ICON = "$\u25B6$"   # right triangle
+    def buttonlabeling(state: bool):  # Set the label ON/OFF to the button w.r.t. to a Boolean state.  
         _autorun_button.label.set_text({False: ON_ICON, True: OFF_ICON}[state])
 
     buttonlabeling(autorun.get())  # Initialize button label from the initial autorun state.
@@ -310,7 +310,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
             else:
                 message("Click to save the simulation")
         elif ax_autorun_button.contains(event)[0]:
-            message("Click to turn ON/OFF the simulation")
+            message("Click to turn ON/OFF the simulation: "+OFF_ICON+" = OFF, "+ON_ICON+" = ON")
         else:
             msgclear()
     fig.canvas.mpl_connect("motion_notify_event", hover)
