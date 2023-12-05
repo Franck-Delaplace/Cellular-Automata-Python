@@ -24,14 +24,9 @@ def CountByPos(cells: list, pos: int, value) -> int:
         value (_type_): value to be counted
 
     Returns:
-        int : count
+        int : count the number of value occurrences.
     """
-    counter = 0
-    for cell in cells:
-        if cell[pos] == value:
-            counter = counter + 1
-    return counter
-
+    return [cell[pos] for cell in cells ].count(value)
 
 def CountType(cells: list, category: str) -> int:
     """Return the number of cells whose type matches with the category in a list of cells.
