@@ -263,7 +263,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
     # Button labeling to indicate autorun status.
     OFF_ICON = "$\u25a0$"  # square
     ON_ICON = "$\u25B6$"   # right triangle
-    def buttonlabeling(state: bool):  # Set the label ON/OFF to the button w.r.t. to a Boolean state.  
+    def buttonlabeling(state: bool):  # Set the label ON/OFF to the button w.r.t. to a Boolean state.
         _autorun_button.label.set_text({False: ON_ICON, True: OFF_ICON}[state])
 
     buttonlabeling(autorun.get())  # Initialize button label from the initial autorun state.
@@ -283,11 +283,11 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
 
     def click_save_button(_):
         global _save_button
-        message("** Save simulation to 'CA-SIMULATION.gif' file.")
+        message("** Save the simulation to 'CA-SIMULATION.gif' file.")  #! This message is actually not printed due to save function - see onclick function.
         _save_button.label.set_text(SAVED_ICON)
         writer = PillowWriter(fps=1500//delay)
         _animation.save("CA-SIMULATION.gif", writer=writer)
-        message("** Backup completed!")
+        message("Save completed!")
         saved.set(True)
     _save_button.on_clicked(click_save_button)  # Event on save button.
 
@@ -303,17 +303,31 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
         msgclear()
         axmsg.text(0.01, 0.2, msg, fontsize=9, fontfamily='serif', fontstyle='italic')
 
-    def hover(event):   # handling button event
+    # handling events
+    def hover(event):
         if ax_save_button.contains(event)[0]:
             if saved.get():
-                message("Click to save the simulation - Simulation already saved !")
+                message("Click to save the simulation in GIF - Simulation already saved !")
             else:
-                message("Click to save the simulation")
+                message("Click to save the simulation in GIF")
         elif ax_autorun_button.contains(event)[0]:
-            message("Click to turn ON/OFF the simulation: "+OFF_ICON+" = OFF, "+ON_ICON+" = ON")
+            message("Click to turn ON/OFF the simulation: "+OFF_ICON+" = OFF, "+ON_ICON+" = ON.")
+        elif axca.contains(event)[0]:
+            message("Cellular Automaton.")
+        elif axcurve.contains(event)[0]:
+            message("type count curves.")
         else:
             msgclear()
+    def onclick(event):
+        if ax_save_button.contains(event)[0]:
+             message("Save the simulation to 'CA-SIMULATION.gif' file, be patient please.")
+        elif ax_autorun_button.contains(event)[0]:
+            message("Simulation switched "+("OFF." if autorun.get() else "ON."))
+        else:
+            pass
+
     fig.canvas.mpl_connect("motion_notify_event", hover)
+    fig.canvas.mpl_connect("button_press_event", onclick)
 
     msgclear()
 
