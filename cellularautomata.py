@@ -300,7 +300,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
 
     def message(msg: str):  # print a message in the message box.
         msgclear()
-        axmsg.text(0.01, 0.2, msg, fontsize=9, fontfamily='serif', fontstyle='italic')
+        axmsg.text(0.01, 0.2, msg, fontsize=8, fontfamily='serif', fontstyle='italic')
 
     # handling events
     def hover(event):  # event over axes handler
@@ -308,7 +308,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
             if saved.get():
                 message("Click to save the simulation in GIF - Simulation already saved.")
             else:
-                message("Click to save the simulation in GIF")
+                message("Click to save the simulation in GIF.")
         elif ax_autorun_button.contains(event)[0]:
             message("Click to turn ON/OFF the simulation: "+OFF_ICON+" = OFF, "+ON_ICON+" = ON.")
         elif axca.contains(event)[0]:
