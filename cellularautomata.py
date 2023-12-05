@@ -318,6 +318,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
             message("type count curves.")
         else:
             msgclear()
+
     def onclick(event):  # ev bent on click on axes
         if ax_save_button.contains(event)[0]:
             message("Save the simulation to 'CA-SIMULATION.gif' file, please be patient.")
