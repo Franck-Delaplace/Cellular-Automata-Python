@@ -31,6 +31,7 @@
         "lockhover",
         "maxlabel",
         "msgclear",
+        "msgput",
         "numsteps",
         "ONFIRE",
         "onsave",

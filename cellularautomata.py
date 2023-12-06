@@ -164,13 +164,13 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
     Returns:
         _type_: animation
     """
+    assert delay >= 0
+    assert figsize >= 0
+
     global _autorun_button
     global _save_button
     global _curve_button
     global _animation
-
-    assert delay >= 0
-    assert figsize >= 0
 
     # Preamble
     n = len(simulation)
@@ -183,6 +183,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
     fig = plt.figure(
         "CELLULAR AUTOMATON - FD MASTER COURSE", figsize=(2 * figsize, figsize)
     )
+    fig.clf()  #  Necessary to clean the figure in case of a new simulation launch
     wm = plt.get_current_fig_manager()
     wm.window.wm_geometry("+400+150")
 
@@ -281,19 +282,19 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
         _save_button.label.set_text(SAVED_ICON)
         writer = PillowWriter(fps=1500//delay)
         _animation.save("CA-SIMULATION.gif", writer=writer)
-        message("Save completed!")
+        msgput("Save completed!")
         saved.set(True)
     _save_button.on_clicked(click_save_button)  # Event on save button.
 
-    # Tooltips ======
-    axmsg = plt.axes([X0, Y0 - 0.09, 0.45, 0.03], facecolor="gainsboro")   # define the message zone
+    # Tooltips handler
+    axmsg = plt.axes([X0, Y0 - 0.09, 0.45, 0.03], facecolor="gainsboro")   # The message zone is below the slider
 
     def msgclear():  # clear the message box
         axmsg.cla()
         axmsg.set_xticks([])
         axmsg.set_yticks([])
 
-    def message(msg: str):  # print a message in the message box.
+    def msgput(msg: str):  # print a message in the message box.
         msgclear()
         axmsg.text(0.01, 0.2, msg, fontsize=8, fontfamily='serif', fontstyle='italic')
 
@@ -301,23 +302,23 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
     def hover(event):  # event over axes handler
         if ax_save_button.contains(event)[0]:
             if saved.get():
-                message("Click to save the simulation in GIF - Simulation already saved.")
+                msgput("Click to save the simulation in GIF - Simulation already saved.")
             else:
-                message("Click to save the simulation in GIF.")
+                msgput("Click to save the simulation in GIF.")
         elif ax_autorun_button.contains(event)[0]:
-            message("Click to turn ON/OFF the simulation: "+OFF_ICON+" = OFF, "+ON_ICON+" = ON.")
+            msgput("Click to turn ON/OFF the simulation: "+OFF_ICON+" = OFF, "+ON_ICON+" = ON.")
         elif axca.contains(event)[0]:
-            message("Cellular Automaton.")
+            msgput("Cellular Automaton.")
         elif axcurve.contains(event)[0]:
-            message("Type count curves.")
+            msgput("Type count curves.")
         else:
             msgclear()
 
     def onclick(event):  # click on axes handler
         if ax_save_button.contains(event)[0]:
-            message("Save the simulation to 'CA-SIMULATION.gif' file, please be patient.")
+            msgput("Save the simulation, please be patient.")
         elif ax_autorun_button.contains(event)[0]:
-            message("Simulation switched "+("OFF, scroll the slider." if autorun.get() else "ON."))
+            msgput("Simulation switched "+("OFF, scroll the slider." if autorun.get() else "ON."))
         else:
             pass
 
@@ -377,19 +378,15 @@ def GuiCA(
         limited to 10 types at most.
 
     Args:
-        local_fun (function): local update function
+        local_fun (function): local update function of the CA.
         cellcolors (dict): {cell:color} colors associated to cells. Recall that a cell is a tuple (type, states ..)
         figsize (int, optional): size of the figure of the simulation view. Defaults to 5.
         gridsize (int, optional): maximal size of the CA grid. Defaults to 100.
         duration (int, optional): maximal duration of the simulation. Defaults to 200.
         delay (int, optional): delay in ms between two simulation steps. Defaults to 100.
     """
-    assert all(
-        [isinstance(cell, tuple) for cell in cellcolors]
-    )  # Check that keys are tuples!
-    assert all(
-        [isinstance(cell[0], str) for cell in cellcolors]
-    )  # check that the types are strings!
+    assert all( [isinstance(cell, tuple) for cell in cellcolors])  # Check that keys are tuples!
+    assert all([isinstance(cell[0], str) for cell in cellcolors])  # check that the types are strings!
     assert len(cellcolors) <= 10  # limited to 10 parameters - see program to understand this limitation.
     assert figsize > 0
     assert gridsize > 0
@@ -399,7 +396,7 @@ def GuiCA(
     global _duration
     # Windows parameters
     GUIWIDTH = 1.5      # Width of the GUI
-    GUISTEP = 0.15      # Extra distance step for all characters of type labels.
+    GUISTEP = 0.15      # Extra width step associated to characters of type labels.
     GUIHEIGHT = 4       # Height of the GUI
 
     # Button & Slider parameters
