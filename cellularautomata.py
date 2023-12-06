@@ -86,7 +86,6 @@ def DrawCA(cellautomaton: np.ndarray, colors: list, ax):
         ax=ax,
     )
 
-
 def SimulateCA(cellautomaton0: np.ndarray, f, numsteps: int = 100) -> list:
     """Compute a simulation of a cellular automaton.
     Args:
@@ -100,6 +99,7 @@ def SimulateCA(cellautomaton0: np.ndarray, f, numsteps: int = 100) -> list:
     assert numsteps >= 0
 
     def ca_step(cellautomaton: np.ndarray, f) -> np.ndarray:  # Compute 1 CA step.
+        global _local_value
         MOORE = [
             (0, -1),
             (0, 1),
@@ -114,16 +114,20 @@ def SimulateCA(cellautomaton0: np.ndarray, f, numsteps: int = 100) -> list:
         mooreshift = np.array([np.roll(cellautomaton, dis, axis=(0, 1)) for dis in MOORE])  # Copies of CA cyclically shifted according to Moore's neighborhood
         neighborsgrid = list(np.transpose(mooreshift, axes=(1, 2, 0, 3)))                   # appropriate transposition to obtain a 2D array of neighbor lists
         canew = np.array(
-            [
-                [f(cellautomaton[i][j], neighborsgrid[i][j]) for j in range(n)]
-                for i in range(n)
-            ]
-        )  # apply the local evolution function
+                [ [f(cellautomaton[i][j], neighborsgrid[i][j]) for j in range(n)] for i in range(n)]
+                )  # apply the local evolution function
+
         return canew
 
     simulation = [cellautomaton0]
-    for i in range(numsteps):
-        simulation.append(ca_step(simulation[i], f))
+    try:
+        for i in range(numsteps):
+            simulation.append(ca_step(simulation[i], f))
+    except ValueError:
+        print("** CA ERROR: Invalid cell output encountered. A condition on cell is probably missing in the local function.")
+        exit() # End program
+
+
     return simulation
 
 
