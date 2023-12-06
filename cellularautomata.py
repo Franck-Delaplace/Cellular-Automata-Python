@@ -135,14 +135,14 @@ class Switch:
     def __init__(self, val: bool = True):
         self.state = val
 
-    def switch(self):  # toggle the state
+    def switch(self):  # Toggle the state.
         self.state = not self.state
         return self.state
 
-    def get(self):  # get the state
+    def get(self):  # Get the state.
         return self.state
 
-    def set(self, val: bool): # set the state
+    def set(self, val: bool):  # Set the state.
         self.state = val
 
 
@@ -164,8 +164,8 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
     Returns:
         _type_: animation
     """
-    assert delay >= 0
-    assert figsize >= 0
+    assert delay > 0
+    assert figsize > 0
 
     global _autorun_button
     global _save_button
@@ -227,10 +227,10 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
         for i, category in enumerate(types)}
 
     # Check box button characterization for curves
-    chxboxheight = len(types) * 0.05                    # depends on the number of categories
-    chxboxwidth = 0.05 + max(map(len, types)) * 0.006   # depends on the maximal string length of the categories
+    chxboxheight = len(types) * 0.05                    # depends on the number of categories.
+    chxboxwidth = 0.05 + max(map(len, types)) * 0.006   # depends on the maximal string length of the categories.
     axcurvebox = plt.axes(
-        [X0 + 0.52, Y0 + CHEIGHT - chxboxheight, chxboxwidth, chxboxheight])    # The check box are located in the upper left of the curve graphics
+        [X0 + 0.52, Y0 + CHEIGHT - chxboxheight, chxboxwidth, chxboxheight])    # The check box are located in the upper left of the curve graphics.
 
     _curve_button = CheckButtons(axcurvebox, types, visible_curves)
 
@@ -239,7 +239,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
     _curve_button.on_clicked(chxboxupdate)
 
     # Slider characterization
-    axslider = plt.axes([X0 + 0.04, Y0 - 0.07, 0.412, 0.07])    # The slider is located below the cellular automaton display
+    axslider = plt.axes([X0 + 0.04, Y0 - 0.07, 0.412, 0.07])    # The slider is located below the cellular automaton display.
     slider = Slider(axslider, "", 0, n - 1, valstep=1, valinit=0, facecolor="gray", valfmt="%3d")
 
     xrange = np.arange(0, n, 1, dtype=int)
@@ -252,7 +252,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
         return curves
     slider.on_changed(updateslider)  # Event on slider.
 
-    # ON/OFF autorun Button
+    # ON/OFF autorun Button.
     ax_autorun_button = plt.axes([X0+0.02, Y0 - 0.05, 0.015, 0.03])  # ON/OFF button is on the left side of slider.
     _autorun_button = Button(ax_autorun_button, " ")
 
@@ -266,9 +266,9 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
 
     def click_autorun_button(_):
         global _autorun_button
-        autorun.switch()                        # Switch the autorun.
-        buttonlabeling(autorun.get())           # Change the button label.
-    _autorun_button.on_clicked(click_autorun_button)     # Event on autorun button.
+        autorun.switch()                                # Switch the autorun.
+        buttonlabeling(autorun.get())                   # Change the button label.
+    _autorun_button.on_clicked(click_autorun_button)    # Event on autorun button.
 
     # Button save Animation
     ax_save_button = plt.axes([X0, Y0 - 0.05, 0.015, 0.03])  # ON/OFF button is on the left side of slider.
