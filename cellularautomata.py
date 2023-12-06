@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider, Button, CheckButtons
 from matplotlib.patches import Rectangle
 
-TYPE = 0  # index of the type in a cell.
+TYPE = 0  # Index of the type in a cell.
 
 
 def CountByPos(cells: list, pos: int, value) -> int:
@@ -51,7 +51,7 @@ def GenerateCA(n: int, cellcolors: dict, weights: dict | None = None) -> np.ndar
     Returns: (n,n) 2D cellular automaton.
     """
     assert n > 0
-    cells = list(cellcolors.keys())  # get cell definitions
+    cells = list(cellcolors.keys())  # Get cell definitions
 
     if weights is None:
         weights_ = None
@@ -59,7 +59,7 @@ def GenerateCA(n: int, cellcolors: dict, weights: dict | None = None) -> np.ndar
         weights_ = [weights[cell[TYPE]] for cell in cells]  # collect the weights in list from the weight dictionary.
 
     rp = choices(cells, weights=weights_, k=n * n)  # Generate the cells randomly
-    return np.array([[rp[i + n * j] for i in range(n)] for j in range(n)])  # reshape to get a 2D array
+    return np.array([[rp[i + n * j] for i in range(n)] for j in range(n)])  # Reshape to get a 2D array
 
 
 def DrawCA(cellautomaton: np.ndarray, colors: list, ax):
@@ -194,7 +194,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
     types = [cell[TYPE] for cell in cells]          # extract types ordered.
 
     # Axe of CA + initialization of the CA display.
-    X0 = 0.02  # left bottom position of the CA
+    X0 = 0.02  # Left bottom position of the CA
     Y0 = 0.1
     axca = fig.add_axes([X0, Y0, 0.45, 0.9])
 
@@ -289,17 +289,17 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
     # Tooltips handler
     axmsg = plt.axes([X0, Y0 - 0.09, 0.45, 0.03], facecolor="gainsboro")   # The message zone is below the slider
 
-    def msgclear():  # clear the message box
+    def msgclear():  # Clear the message box.
         axmsg.cla()
         axmsg.set_xticks([])
         axmsg.set_yticks([])
 
-    def msgput(msg: str):  # print a message in the message box.
+    def msgput(msg: str):  # Print a message in the message box.
         msgclear()
         axmsg.text(0.01, 0.2, msg, fontsize=8, fontfamily='serif', fontstyle='italic')
 
     # handling events
-    def hover(event):  # event over axes handler
+    def hover(event):  # Event over axes handler
         if ax_save_button.contains(event)[0]:
             if saved.get():
                 msgput("Click to save the simulation in GIF - Simulation already saved.")
@@ -314,7 +314,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
         else:
             msgclear()
 
-    def onclick(event):  # click on axes handler
+    def onclick(event):  # Click on axes handler.
         if ax_save_button.contains(event)[0]:
             msgput("Save the simulation, please be patient.")
         elif ax_autorun_button.contains(event)[0]:
@@ -328,10 +328,10 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
     msgclear()
 
     # Display simulation
-    def updateanimation(_):         # update from animation
-        if autorun.get():           # the update is conditional on the state of autorun.
+    def updateanimation(_):         # Update from animation.
+        if autorun.get():           # The update is conditional on the state of autorun.
             step = (slider.val + 1) % slider.valmax
-            slider.set_val(step)    # updating slider value also triggers the updateslider function
+            slider.set_val(step)    # Updating slider value also triggers the updateslider function
 
     _animation = FuncAnimation(fig, updateanimation, interval=delay, save_count=n)  # Run animation.
     plt.show()
@@ -514,7 +514,7 @@ def GuiCA(
         lambda val: weights.set(types[9], val),
     ]
 
-    for i in range(n):  # link events to weight sliders
+    for i in range(n):  # Link events to weight sliders
         weight_sliders[i].on_changed(weight_update_fun[i])
 
     # Run Button ======
@@ -526,7 +526,7 @@ def GuiCA(
         global _duration
         global _animation
 
-        all0 = True  # check whether at least a weight != 0.
+        all0 = True  # Check whether at least a weight != 0.
         for v in weights.weights.values():
             all0 = all0 and (v == 0.0)
         if all0:
