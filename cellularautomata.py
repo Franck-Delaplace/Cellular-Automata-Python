@@ -44,10 +44,10 @@ def GenerateCA(n: int, cellcolors: dict, weights: dict | None = None) -> np.ndar
     if weights is None:
         weights_ = None
     else:
-        weights_ = [weights[type] for type, *_ in cells]  # collect the weights in list from the weight dictionary.
+        weights_ = [weights[type] for type, *_ in cells]    # collect the weights in list from the weight dictionary.
 
-    rp = choices(cells, weights=weights_, k=n * n)  # Generate the cells randomly
-    return np.array([[rp[i + n * j] for i in range(n)] for j in range(n)])  # Reshape to get a 2D array
+    randca = choices(cells, weights=weights_, k=n * n)      # Generate the cells randomly
+    return np.array([[randca[i + n * j] for i in range(n)] for j in range(n)])  # Reshape to get a 2D array
 
 
 def DrawCA(cellautomaton: np.ndarray, colors: list, ax):
@@ -89,13 +89,13 @@ def SimulateCA(cellautomaton0: np.ndarray, f, numsteps: int = 100) -> list:
     def ca_step(cellautomaton: np.ndarray, f) -> np.ndarray:  # Compute 1 CA step.
         global _local_value
         MOORE = [
-            (0, -1),
-            (0, 1),
-            (-1, 0),
-            (1, 0),
-            (1, 1),
-            (1, -1),
-            (-1, 1),
+            ( 0, -1),
+            ( 0,  1),
+            (-1,  0),
+            ( 1,  0),
+            ( 1,  1),
+            ( 1, -1),
+            (-1,  1),
             (-1, -1),
         ]  # Displacement of the Moore neighborhood
         n = len(cellautomaton)
@@ -112,7 +112,7 @@ def SimulateCA(cellautomaton0: np.ndarray, f, numsteps: int = 100) -> list:
         for i in range(numsteps):
             simulation.append(ca_step(simulation[i], f))
     except ValueError:
-        print("** CA ERROR: Invalid cell output encountered. A condition on cell is probably missing in the local function.")
+        print("** CA ERROR: Invalid cell format encountered. A condition on cell is probably missing in the local function.")
         exit() # End program
 
     return simulation
@@ -126,11 +126,11 @@ class Switch:
     def __init__(self, val: bool = True):
         self.state = val
 
-    def switch(self):  # Toggle the state.
+    def switch(self):          # Toggle the state.
         self.state = not self.state
         return self.state
 
-    def get(self):  # Get the state.
+    def get(self):             # Get the state.
         return self.state
 
     def set(self, val: bool):  # Set the state.
