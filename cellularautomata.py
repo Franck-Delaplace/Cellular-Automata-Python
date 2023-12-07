@@ -13,6 +13,7 @@ import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider, Button, CheckButtons
 from matplotlib.patches import Rectangle
 
+
 def CountType(cells: list, category: str) -> int:
     """Return the number of cells whose type matches with the category in a list of cells.
 
@@ -41,9 +42,9 @@ def GenerateCA(n: int, cellcolors: dict, weights: dict | None = None) -> np.ndar
     if weights is None:
         weights_ = None
     else:
-        weights_ = [weights[category]] for category, *_ in cells]    # Collect the weights in list from the weight dictionary.
+        weights_ = [weights[category] for category, *_ in cells]    # Collect the weights in list from the weight dictionary.
 
-    randca = choices(cells, weights=weights_, k=n * n)      # Generate the cells randomly
+    randca = choices(cells, weights=weights_, k=n * n)                          # Generate the cells randomly
     return np.array([[randca[i + n * j] for i in range(n)] for j in range(n)])  # Reshape to get a 2D array
 
 
@@ -375,7 +376,7 @@ def GuiCA(
         delay (int, optional): delay in ms between two simulation steps. Defaults to 100.
     """
     assert all([isinstance(cell, tuple) for cell in cellcolors])   # Check that keys are tuples!
-    assert all([isinstance(category, str) for category,*_ in cellcolors])  # check that the types are strings!
+    assert all([isinstance(category, str) for category, *_ in cellcolors])  # check that the types are strings!
     assert len(cellcolors) <= 10  # limited to 10 parameters - see program to understand this limitation.
     assert figsize > 0
     assert gridsize > 0
