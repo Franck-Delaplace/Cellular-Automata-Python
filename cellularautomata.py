@@ -1,6 +1,6 @@
 
 # ** CELLULAR AUTOMATA LIBRARY
-# ** Author: Franck  - 2023
+# ** Author: Franck - 2023
 # ** MASTER TUTORIAL
 # ** Paris Saclay University
 
@@ -12,9 +12,6 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider, Button, CheckButtons
 from matplotlib.patches import Rectangle
-
-TYPE = 0  # Index of the type in a cell.
-
 
 def CountType(cells: list, category: str) -> int:
     """Return the number of cells whose type matches with the category in a list of cells.
@@ -191,7 +188,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
     axca = fig.add_axes([X0, Y0, 0.45, 0.9])
 
     # CA initialization where the cells are encoded by their index of type in types to properly suit with colors.
-    ca_coded = np.array([[types.index(cell[TYPE]) for cell in row] for row in simulation[0]])
+    ca_coded = np.array([[types.index(type) for type, *_ in row] for row in simulation[0]])
     caview = DrawCA(ca_coded, colors, axca).collections[0]
 
     # Axe of curve
@@ -237,7 +234,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
     xrange = np.arange(0, n, 1, dtype=int)
 
     def updateslider(step):  # Update of slider.
-        CAcode = np.array([[types.index(c[TYPE]) for c in row] for row in simulation[step]])
+        CAcode = np.array([[types.index(type) for type, *_ in row] for row in simulation[step]])
         caview.set_array(CAcode.ravel())    # Update CA
         for category in types:              # Update type count curves
             curves[category].set_data(xrange[:step], typescount[category][:step])
