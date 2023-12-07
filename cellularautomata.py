@@ -208,7 +208,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
         category: axcurve.plot(
             [0],
             typescount[category][0],
-            color=colors[i] if colors[i] != "white" else "gainsboro",  # The white color is transformed into a very light gray
+            color=colors[i] if colors[i] != "white" else "lightgray",  # The white color is transformed into a very light gray
             linewidth=2.5,
             marker=" ",
             visible=visible_curves[i],
