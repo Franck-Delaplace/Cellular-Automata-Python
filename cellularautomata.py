@@ -119,7 +119,7 @@ def SimulateCA(cellautomaton0: np.ndarray, f, numsteps: int = 100) -> list:
     return simulation
 
 
-# For managing the autorun in ShowSimulation.
+# Switch for managing the autorun in ShowSimulation.
 class Switch:
     "Boolean value toggling for switch control."
     state: bool
@@ -183,7 +183,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
     cells = list(cellcolors.keys())                 # extract cells from cellcolors
     cells.sort()                                    # The order of the cells follow the order of the types since the type is at first.
     colors = [cellcolors[cell] for cell in cells]   # extract the color following the order of the types
-    types = [type for type, *_ in cells]          # extract types ordered.
+    types = [type for type, *_ in cells]            # extract types ordered.
 
     # Axe of CA + initialization of the CA display.
     X0 = 0.02  # Left bottom position of the CA
@@ -207,7 +207,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
         for category in types}
 
     visible_curves = [color != "white" for color in colors]  # All curves are visible but the white ones.
-    curves = {                                          # The curves are collected to a dictionary {type: counting curve}.
+    curves = {                                               # The curves are collected to a dictionary {type: counting curve}.
         category: axcurve.plot(
             [0],
             typescount[category][0],
@@ -219,8 +219,8 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
         for i, category in enumerate(types)}
 
     # Check box button characterization for curves
-    chxboxheight = len(types) * 0.05                    # depends on the number of categories.
-    chxboxwidth = 0.05 + max(map(len, types)) * 0.006   # depends on the maximal string length of the categories.
+    chxboxheight = len(types) * 0.05                    # Depends on the number of categories.
+    chxboxwidth = 0.05 + max(map(len, types)) * 0.006   # Depends on the maximal string length of the categories.
     axcurvebox = plt.axes(
         [X0 + 0.52, Y0 + CHEIGHT - chxboxheight, chxboxwidth, chxboxheight])    # The check box are located in the upper left of the curve graphics.
 
