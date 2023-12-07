@@ -41,7 +41,7 @@ def GenerateCA(n: int, cellcolors: dict, weights: dict | None = None) -> np.ndar
     if weights is None:
         weights_ = None
     else:
-        weights_ = [weights[type] for type, *_ in cells]    # collect the weights in list from the weight dictionary.
+        weights_ = [weights[type] for type, *_ in cells]    # Collect the weights in list from the weight dictionary.
 
     randca = choices(cells, weights=weights_, k=n * n)      # Generate the cells randomly
     return np.array([[randca[i + n * j] for i in range(n)] for j in range(n)])  # Reshape to get a 2D array
@@ -98,7 +98,7 @@ def SimulateCA(cellautomaton0: np.ndarray, f, numsteps: int = 100) -> list:
         ]  # Displacement of the Moore neighborhood
         n = len(cellautomaton)
         mooreshift = np.array([np.roll(cellautomaton, dis, axis=(0, 1)) for dis in MOORE])  # Copies of CA cyclically shifted according to Moore's neighborhood
-        neighborsgrid = list(np.transpose(mooreshift, axes=(1, 2, 0, 3)))                   # appropriate transposition to obtain a 2D array of neighbor lists
+        neighborsgrid = list(np.transpose(mooreshift, axes=(1, 2, 0, 3)))                   # Appropriate transposition to obtain a 2D array of neighbor lists
         canew = np.array(
                 [[f(cellautomaton[i][j], neighborsgrid[i][j]) for j in range(n)] for i in range(n)]
                 )  # apply the local evolution function
@@ -177,10 +177,10 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
     wm.window.wm_geometry("+400+150")
 
     # Order the colors to suit the DrawCA function w.r.t. to the types.
-    cells = list(cellcolors.keys())                 # extract cells from cellcolors
+    cells = list(cellcolors.keys())                 # Extract cells from cellcolors
     cells.sort()                                    # The order of the cells follow the order of the types since the type is at first.
-    colors = [cellcolors[cell] for cell in cells]   # extract the color following the order of the types
-    types = [type for type, *_ in cells]            # extract types ordered.
+    colors = [cellcolors[cell] for cell in cells]   # Extract the color following the order of the types
+    types = [type for type, *_ in cells]            # Extract types ordered.
 
     # Axe of CA + initialization of the CA display.
     X0 = 0.02  # Left bottom position of the CA
@@ -192,7 +192,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
     caview = DrawCA(ca_coded, colors, axca).collections[0]
 
     # Axe of curve
-    CHEIGHT = 0.87  # height of the curve axe.
+    CHEIGHT = 0.87  # Height of the curve axe.
     axcurve = fig.add_axes([X0 + 0.52, Y0, 0.44, CHEIGHT])
     axcurve.set_xlim(0, n)
     axcurve.set_ylim(0, len(simulation[0]) ** 2)
@@ -208,7 +208,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
         category: axcurve.plot(
             [0],
             typescount[category][0],
-            color=colors[i] if colors[i] != "white" else "gainsboro",  # the white color is transformed into a very light gray
+            color=colors[i] if colors[i] != "white" else "gainsboro",  # The white color is transformed into a very light gray
             linewidth=2.5,
             marker=" ",
             visible=visible_curves[i],
