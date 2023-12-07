@@ -28,6 +28,7 @@
         "GUISTEP",
         "GUIWIDTH",
         "isweight",
+        "linewidth",
         "lockhover",
         "maxlabel",
         "msgclear",

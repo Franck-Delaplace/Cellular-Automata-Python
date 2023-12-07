@@ -16,18 +16,6 @@ from matplotlib.patches import Rectangle
 TYPE = 0  # Index of the type in a cell.
 
 
-def CountByPos(cells: list, pos: int, value) -> int:
-    """Count the elements corresponding to a value at a position in tuples of the list or a list of lists.
-    Args:
-        cells (list): list of tuples representing cells
-        pos (int): expected position
-        value (_type_): value to be counted
-
-    Returns:
-        int : count the number of value occurrences.
-    """
-    return [cell[pos] for cell in cells].count(value)
-
 def CountType(cells: list, category: str) -> int:
     """Return the number of cells whose type matches with the category in a list of cells.
 
@@ -38,7 +26,7 @@ def CountType(cells: list, category: str) -> int:
     Returns:
         int: number of types matching with the category
     """
-    return CountByPos(cells, TYPE, category)
+    return [type for type, *_ in cells].count(category)
 
 
 def GenerateCA(n: int, cellcolors: dict, weights: dict | None = None) -> np.ndarray:
@@ -56,7 +44,7 @@ def GenerateCA(n: int, cellcolors: dict, weights: dict | None = None) -> np.ndar
     if weights is None:
         weights_ = None
     else:
-        weights_ = [weights[cell[TYPE]] for cell in cells]  # collect the weights in list from the weight dictionary.
+        weights_ = [weights[type] for type, *_ in cells]  # collect the weights in list from the weight dictionary.
 
     rp = choices(cells, weights=weights_, k=n * n)  # Generate the cells randomly
     return np.array([[rp[i + n * j] for i in range(n)] for j in range(n)])  # Reshape to get a 2D array
@@ -127,7 +115,6 @@ def SimulateCA(cellautomaton0: np.ndarray, f, numsteps: int = 100) -> list:
         print("** CA ERROR: Invalid cell output encountered. A condition on cell is probably missing in the local function.")
         exit() # End program
 
-
     return simulation
 
 
@@ -195,7 +182,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
     cells = list(cellcolors.keys())                 # extract cells from cellcolors
     cells.sort()                                    # The order of the cells follow the order of the types since the type is at first.
     colors = [cellcolors[cell] for cell in cells]   # extract the color following the order of the types
-    types = [cell[TYPE] for cell in cells]          # extract types ordered.
+    types = [type for type, *_ in cells]          # extract types ordered.
 
     # Axe of CA + initialization of the CA display.
     X0 = 0.02  # Left bottom position of the CA
