@@ -23,7 +23,7 @@ def CountType(cells: list, category: str) -> int:
     Returns:
         int: number of types matching with the category
     """
-    return [type for type, *_ in cells].count(category)
+    return [category for category, *_ in cells].count(category)
 
 
 def GenerateCA(n: int, cellcolors: dict, weights: dict | None = None) -> np.ndarray:
@@ -41,7 +41,7 @@ def GenerateCA(n: int, cellcolors: dict, weights: dict | None = None) -> np.ndar
     if weights is None:
         weights_ = None
     else:
-        weights_ = [weights[type] for type, *_ in cells]    # Collect the weights in list from the weight dictionary.
+        weights_ = [weights[category]] for category, *_ in cells]    # Collect the weights in list from the weight dictionary.
 
     randca = choices(cells, weights=weights_, k=n * n)      # Generate the cells randomly
     return np.array([[randca[i + n * j] for i in range(n)] for j in range(n)])  # Reshape to get a 2D array
@@ -180,7 +180,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
     cells = list(cellcolors.keys())                 # Extract cells from cellcolors
     cells.sort()                                    # The order of the cells follow the order of the types since the type is at first.
     colors = [cellcolors[cell] for cell in cells]   # Extract the color following the order of the types
-    types = [type for type, *_ in cells]            # Extract types ordered.
+    types = [category for category, *_ in cells]            # Extract types ordered.
 
     # Axe of CA + initialization of the CA display.
     X0 = 0.02  # Left bottom position of the CA
@@ -188,7 +188,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
     axca = fig.add_axes([X0, Y0, 0.45, 0.9])
 
     # CA initialization where the cells are encoded by their index of type in types to properly suit with colors.
-    ca_coded = np.array([[types.index(type) for type, *_ in row] for row in simulation[0]])
+    ca_coded = np.array([[types.index(category) for category, *_ in row] for row in simulation[0]])
     caview = DrawCA(ca_coded, colors, axca).collections[0]
 
     # Axe of curve
@@ -234,7 +234,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
     xrange = np.arange(0, n, 1, dtype=int)
 
     def updateslider(step):  # Update of slider.
-        CAcode = np.array([[types.index(type) for type, *_ in row] for row in simulation[step]])
+        CAcode = np.array([[types.index(category) for category, *_ in row] for row in simulation[step]])
         caview.set_array(CAcode.ravel())    # Update CA
         for category in types:              # Update type count curves
             curves[category].set_data(xrange[:step], typescount[category][:step])
@@ -375,7 +375,7 @@ def GuiCA(
         delay (int, optional): delay in ms between two simulation steps. Defaults to 100.
     """
     assert all([isinstance(cell, tuple) for cell in cellcolors])   # Check that keys are tuples!
-    assert all([isinstance(type, str) for type,*_ in cellcolors])  # check that the types are strings!
+    assert all([isinstance(category, str) for category,*_ in cellcolors])  # check that the types are strings!
     assert len(cellcolors) <= 10  # limited to 10 parameters - see program to understand this limitation.
     assert figsize > 0
     assert gridsize > 0
