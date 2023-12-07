@@ -331,7 +331,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
 
 # Class to manage weights for random definition of the CA grid
 class Weights:
-    "Weights = dictionary associating state to their weights which are floats between 0 and 1"
+    "Weights = dictionary associating cells to their weights which are floats between 0 and 1"
     weights: dict = {}
 
     def __init__(self, types: list, value: float = 0.0):
@@ -374,8 +374,8 @@ def GuiCA(
         duration (int, optional): maximal duration of the simulation. Defaults to 200.
         delay (int, optional): delay in ms between two simulation steps. Defaults to 100.
     """
-    assert all( [isinstance(cell, tuple) for cell in cellcolors])  # Check that keys are tuples!
-    assert all([isinstance(cell[0], str) for cell in cellcolors])  # check that the types are strings!
+    assert all([isinstance(cell, tuple) for cell in cellcolors])   # Check that keys are tuples!
+    assert all([isinstance(type, str) for type,*_ in cellcolors])  # check that the types are strings!
     assert len(cellcolors) <= 10  # limited to 10 parameters - see program to understand this limitation.
     assert figsize > 0
     assert gridsize > 0
