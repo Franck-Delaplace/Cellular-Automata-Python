@@ -74,6 +74,7 @@ def DrawCA(cellautomaton: np.ndarray, colors: list, ax):
         ax=ax,
     )
 
+
 def SimulateCA(cellautomaton0: np.ndarray, f, numsteps: int = 100) -> list:
     """Compute a simulation of a cellular automaton.
     Args:
@@ -89,20 +90,20 @@ def SimulateCA(cellautomaton0: np.ndarray, f, numsteps: int = 100) -> list:
     def ca_step(cellautomaton: np.ndarray, f) -> np.ndarray:  # Compute 1 CA step.
         global _local_value
         MOORE = [
-            ( 0, -1),
-            ( 0,  1),
-            (-1,  0),
-            ( 1,  0),
-            ( 1,  1),
-            ( 1, -1),
-            (-1,  1),
+            (0, -1),
+            (0, 1),
+            (-1, 0),
+            (1, 0),
+            (1, 1),
+            (1, -1),
+            (-1, 1),
             (-1, -1),
         ]  # Displacement of the Moore neighborhood
         n = len(cellautomaton)
         mooreshift = np.array([np.roll(cellautomaton, dis, axis=(0, 1)) for dis in MOORE])  # Copies of CA cyclically shifted according to Moore's neighborhood
         neighborsgrid = list(np.transpose(mooreshift, axes=(1, 2, 0, 3)))                   # appropriate transposition to obtain a 2D array of neighbor lists
         canew = np.array(
-                [ [f(cellautomaton[i][j], neighborsgrid[i][j]) for j in range(n)] for i in range(n)]
+                [[f(cellautomaton[i][j], neighborsgrid[i][j]) for j in range(n)] for i in range(n)]
                 )  # apply the local evolution function
 
         return canew
@@ -113,7 +114,7 @@ def SimulateCA(cellautomaton0: np.ndarray, f, numsteps: int = 100) -> list:
             simulation.append(ca_step(simulation[i], f))
     except ValueError:
         print("** CA ERROR: Invalid cell format encountered. A condition on cell is probably missing in the local function.")
-        exit() # End program
+        exit()  # End program
 
     return simulation
 
@@ -401,7 +402,7 @@ def GuiCA(
     # Initialization of the main variables
     _gridsize = gridsize // 2
     _duration = duration // 2
-    types = list(map(lambda c: c[TYPE], cellcolors.keys()))  # get all types of cells
+    types = [type for type, *_ in cellcolors.keys()]  # get all types of cells
     types.sort()  # sort types
     n = len(types)
     weights = Weights(types, 0.5)  # Create weights from types.
