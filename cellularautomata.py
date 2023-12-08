@@ -99,7 +99,7 @@ def SimulateCA(cellautomaton0: np.ndarray, f, numsteps: int = 100) -> list:
         ]  # Displacement of the Moore neighborhood
         n = len(cellautomaton)
         mooreshift = np.array([np.roll(cellautomaton, dis, axis=(0, 1)) for dis in MOORE])  # Copies of CA cyclically shifted according to Moore's neighborhood
-        neighborsgrid = list(np.transpose(mooreshift, axes=(1, 2, 0, 3)))                   # Appropriate transposition to obtain a 2D array of neighbor lists
+        neighborsgrid = list(np.transpose(mooreshift, axes=(1, 2, 0, 3)))                   # Transposition to obtain a 2D array of neighbor lists
         canew = np.array(
                 [[f(cellautomaton[i][j], neighborsgrid[i][j]) for j in range(n)] for i in range(n)]
                 )  # apply the local evolution function
@@ -181,7 +181,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
     cells = list(cellcolors.keys())                 # Extract cells from cellcolors
     cells.sort()                                    # The order of the cells follow the order of the types since the type is at first.
     colors = [cellcolors[cell] for cell in cells]   # Extract the color following the order of the types
-    types = [category for category, *_ in cells]            # Extract types ordered.
+    types = [category for category, *_ in cells]    # Extract types ordered.
 
     # Axe of CA + initialization of the CA display.
     X0 = 0.02  # Left bottom position of the CA
@@ -192,14 +192,14 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
     ca_coded = np.array([[types.index(category) for category, *_ in row] for row in simulation[0]])
     caview = DrawCA(ca_coded, colors, axca).collections[0]
 
-    # Axe of curve
+    # Axe of curves
     CHEIGHT = 0.87  # Height of the curve axe.
     axcurve = fig.add_axes([X0 + 0.52, Y0, 0.44, CHEIGHT])
     axcurve.set_xlim(0, n)
     axcurve.set_ylim(0, len(simulation[0]) ** 2)
     axcurve.grid(linestyle="--")
 
-    # Initialize the count curves
+    # Initialize the count curves.
     typescount = {
         category: [sum([CountType(row, category) for row in ca]) for ca in simulation]
         for category in types}
@@ -209,7 +209,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
         category: axcurve.plot(
             [0],
             typescount[category][0],
-            color=colors[i] if colors[i] != "white" else "lightgray",  # The white color is transformed into a very light gray
+            color=colors[i] if colors[i] != "white" else "lightgray",  # The white color is transformed into a light gray
             linewidth=2.5,
             marker=" ",
             visible=visible_curves[i],
@@ -220,7 +220,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
     chxboxheight = len(types) * 0.05                    # Depends on the number of categories.
     chxboxwidth = 0.05 + max(map(len, types)) * 0.006   # Depends on the maximal string length of the categories.
     axcurvebox = plt.axes(
-        [X0 + 0.52, Y0 + CHEIGHT - chxboxheight, chxboxwidth, chxboxheight])    # The check box are located in the upper left of the curve graphics.
+        [X0 + 0.52, Y0 + CHEIGHT - chxboxheight, chxboxwidth, chxboxheight])    # The check boxes are located in the upper left of the curve graphics.
 
     _curve_button = CheckButtons(axcurvebox, types, visible_curves)
 
@@ -236,7 +236,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
 
     def updateslider(step):  # Update of slider.
         CAcode = np.array([[types.index(category) for category, *_ in row] for row in simulation[step]])
-        caview.set_array(CAcode.ravel())    # Update CA
+        caview.set_array(CAcode)    # Update CA
         for category in types:              # Update type count curves
             curves[category].set_data(xrange[:step], typescount[category][:step])
         return curves
@@ -269,11 +269,11 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
 
     def click_save_button(_):
         global _save_button
-        _save_button.label.set_text(SAVED_ICON)
         writer = PillowWriter(fps=1500//delay)
         _animation.save("CA-SIMULATION.gif", writer=writer)
         msgput("Save completed!")
         saved.set(True)
+        _save_button.label.set_text(SAVED_ICON)
     _save_button.on_clicked(click_save_button)  # Event on save button.
 
     # Tooltips handler
@@ -306,7 +306,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
 
     def onclick(event):  # Click on axes handler.
         if ax_save_button.contains(event)[0]:
-            msgput("Save the simulation, please be patient.")
+            msgput("Save in progress")
         elif ax_autorun_button.contains(event)[0]:
             msgput("Simulation switched "+("OFF, scroll the slider." if autorun.get() else "ON."))
         else:
@@ -516,15 +516,14 @@ def GuiCA(
         global _duration
         global _animation
 
-        all0 = True  # Check whether at least a weight != 0.
-        for v in weights.weights.values():
-            all0 = all0 and (v == 0.0)
-        if all0:
-            print("** WARNING: at least one weight must be different to 0.")
+        # check if at least a weight is different to 0
+        if sum(weights.weights.values()) == 0:
+            print("** CA WARNING: at least one weight must be different to 0.")
         else:
             CA = GenerateCA(_gridsize, cellcolors, weights.weights)
             simulation = SimulateCA(CA, local_fun, numsteps=_duration)
             _animation = ShowSimulation(simulation, cellcolors, figsize=figsize, delay=delay)
+
     run_button.on_clicked(runclick)  # Event on button
 
     plt.show()
