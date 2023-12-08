@@ -28,7 +28,7 @@ def CountType(cells: list, category: str) -> int:
 
 def GenerateCA(n: int, cellcolors: dict, weights: dict | None = None) -> np.ndarray:
     """Generate a n*n 2D cellular automaton randomly.
-    
+
     Args:
     n (int): height and width of the grid
     cellcolors (dict): cell types with their associated cellcolors
