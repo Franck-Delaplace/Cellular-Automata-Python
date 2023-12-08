@@ -58,7 +58,7 @@ def DrawCA(cellautomaton: np.ndarray, colors: list, ax):
 
     Returns: a graphical view
     """
-    return sns.heatmap(
+    caview=sns.heatmap(
         cellautomaton,
         cmap=color.ListedColormap(colors),
         linewidths=0.5,
@@ -71,6 +71,7 @@ def DrawCA(cellautomaton: np.ndarray, colors: list, ax):
         yticklabels=False,
         ax=ax,
     )
+    return caview
 
 
 def SimulateCA(cellautomaton0: np.ndarray, f, numsteps: int = 100) -> list:
@@ -191,6 +192,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
 
     # CA initialization where the cells are encoded by their index of type in types to properly suit with colors.
     ca_coded = np.array([[types.index(category) for category, *_ in row] for row in simulation[0]])
+
     caview = DrawCA(ca_coded, colors, axca).collections[0]
 
     # Axe of curves
