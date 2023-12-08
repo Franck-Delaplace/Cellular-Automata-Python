@@ -169,7 +169,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
     n = len(simulation)
     autorun = Switch()
 
-    # Figure definition
+    # Figure definition 
     plt.rcParams["font.family"] = "fantasy"  # 'monospace'  'sans'
     plt.rcParams["font.size"] = 11
     plt.rcParams["text.color"] = "black"
