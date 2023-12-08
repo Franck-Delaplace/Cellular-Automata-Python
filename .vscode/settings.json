@@ -50,6 +50,7 @@
         "typescount",
         "updateanimation",
         "updateslider",
-        "winposition"
+        "winposition",
+        "wmgeometry"
     ]
 }
