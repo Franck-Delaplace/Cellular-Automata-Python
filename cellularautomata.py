@@ -171,6 +171,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
     plt.rcParams["text.color"] = "black"
 
     figtitle = "CELLULAR AUTOMATON - FD MASTER COURSE"
+
     if plt.fignum_exists(figtitle):  # If a new simulation is launched without closing the window then close it.
         plt.close(figtitle)
 
