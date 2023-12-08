@@ -13,6 +13,7 @@ import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider, Button, CheckButtons
 from matplotlib.patches import Rectangle
 
+
 def CountType(cells: list, category: str) -> int:
     """Return the number of cells whose type matches with the category in a list of cells.
 
@@ -28,7 +29,6 @@ def CountType(cells: list, category: str) -> int:
 
 def GenerateCA(n: int, cellcolors: dict, weights: dict | None = None) -> np.ndarray:
     """Generate a n*n 2D cellular automaton randomly.
-
     Args:
     n (int): height and width of the grid
     cellcolors (dict): cell types with their associated cellcolors
@@ -49,7 +49,7 @@ def GenerateCA(n: int, cellcolors: dict, weights: dict | None = None) -> np.ndar
 
 
 def DrawCA(cellautomaton: np.ndarray, colors: list, ax):
-    """Draw a 2D cellular automaton.
+    """Draw a 2D cellular automaton
 
     Args:
         CA (np.array): Cellular Automata
@@ -58,8 +58,7 @@ def DrawCA(cellautomaton: np.ndarray, colors: list, ax):
 
     Returns: a graphical view
     """
-
-    caview=sns.heatmap(
+    return sns.heatmap(
         cellautomaton,
         cmap=color.ListedColormap(colors),
         linewidths=0.5,
@@ -70,15 +69,12 @@ def DrawCA(cellautomaton: np.ndarray, colors: list, ax):
         vmax=len(colors) - 0.5,
         xticklabels=False,
         yticklabels=False,
-        square=True,
         ax=ax,
     )
-    return caview
 
 
 def SimulateCA(cellautomaton0: np.ndarray, f, numsteps: int = 100) -> list:
     """Compute a simulation of a cellular automaton.
-
     Args:
         cellautomaton0 (np.ndarray): initial cellular automata
         f (fun): local update function
@@ -90,6 +86,7 @@ def SimulateCA(cellautomaton0: np.ndarray, f, numsteps: int = 100) -> list:
     assert numsteps >= 0
 
     def ca_step(cellautomaton: np.ndarray, f) -> np.ndarray:  # Compute 1 CA step.
+        global _local_value
         MOORE = [
             (0, -1),
             (0, 1),
@@ -143,7 +140,7 @@ _animation = None       # Variable storing the visualization, must be global.
 _autorun_button = None  # Button autorun ON/OFF, must be global to properly work.
 _save_button = None     # Button to save Simulation, must be global to properly work.
 _curve_button = None    # CheckBox Button for curves, must be global to properly work.
-
+_fig = None             # Figure of the simulation.
 
 def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int = 5, delay: int = 100):
     """Display the simulation trace of a cellular automaton.
@@ -164,21 +161,27 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
     global _save_button
     global _curve_button
     global _animation
+    global _fig
 
     # Preamble
     n = len(simulation)
     autorun = Switch()
 
-    # Figure definition 
+    # Figure definition
+    if _fig is not None:  # If a new simulation is launched without closing windows the close it.
+        plt.close(_fig)
+
     plt.rcParams["font.family"] = "fantasy"  # 'monospace'  'sans'
     plt.rcParams["font.size"] = 11
     plt.rcParams["text.color"] = "black"
-    fig = plt.figure(
-        "CELLULAR AUTOMATON - FD MASTER COURSE", figsize=(2 * figsize, figsize)
-    )
-    fig.clf()  #  Necessary to clean the figure in case of a new simulation launch
+
+    _fig = plt.figure(
+            "CELLULAR AUTOMATON - FD MASTER COURSE", figsize=(2 * figsize, figsize), dpi = 100,
+        )
+
     wm = plt.get_current_fig_manager()
     wm.window.wm_geometry("+400+150")
+
 
     # Order the colors to suit the DrawCA function w.r.t. to the types.
     cells = list(cellcolors.keys())                 # Extract cells from cellcolors
@@ -189,16 +192,15 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
     # Axe of CA + initialization of the CA display.
     X0 = 0.02  # Left bottom position of the CA
     Y0 = 0.1
-    axca = fig.add_axes([X0, Y0, 0.45, 0.9])
+    axca = _fig.add_axes([X0, Y0, 0.45, 0.9])
 
     # CA initialization where the cells are encoded by their index of type in types to properly suit with colors.
     ca_coded = np.array([[types.index(category) for category, *_ in row] for row in simulation[0]])
-
     caview = DrawCA(ca_coded, colors, axca).collections[0]
 
     # Axe of curves
     CHEIGHT = 0.87  # Height of the curve axe.
-    axcurve = fig.add_axes([X0 + 0.52, Y0, 0.44, CHEIGHT])
+    axcurve = _fig.add_axes([X0 + 0.52, Y0, 0.44, CHEIGHT])
     axcurve.set_xlim(0, n)
     axcurve.set_ylim(0, len(simulation[0]) ** 2)
     axcurve.grid(linestyle="--")
@@ -223,7 +225,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
     # Check box button characterization for curves
     chxboxheight = len(types) * 0.05                    # Depends on the number of categories.
     chxboxwidth = 0.05 + max(map(len, types)) * 0.006   # Depends on the maximal string length of the categories.
-    axcurvebox = plt.axes(
+    axcurvebox = _fig.add_axes(
         [X0 + 0.52, Y0 + CHEIGHT - chxboxheight, chxboxwidth, chxboxheight])    # The check boxes are located in the upper left of the curve graphics.
 
     _curve_button = CheckButtons(axcurvebox, types, visible_curves)
@@ -233,7 +235,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
     _curve_button.on_clicked(chxboxupdate)
 
     # Slider characterization
-    axslider = plt.axes([X0 + 0.04, Y0 - 0.07, 0.412, 0.07])    # The slider is located below the cellular automaton display.
+    axslider = _fig.add_axes([X0 + 0.04, Y0 - 0.07, 0.412, 0.07])    # The slider is located below the cellular automaton display.
     slider = Slider(axslider, "", 0, n - 1, valstep=1, valinit=0, facecolor="gray", valfmt="%3d")
 
     xrange = np.arange(0, n, 1, dtype=int)
@@ -247,7 +249,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
     slider.on_changed(updateslider)  # Event on slider.
 
     # ON/OFF autorun Button.
-    ax_autorun_button = plt.axes([X0+0.02, Y0 - 0.05, 0.015, 0.03])  # ON/OFF button is on the left side of slider.
+    ax_autorun_button = _fig.add_axes([X0+0.02, Y0 - 0.05, 0.015, 0.03])  # ON/OFF button is on the left side of slider.
     _autorun_button = Button(ax_autorun_button, " ")
 
     # Button labeling to indicate autorun status.
@@ -265,7 +267,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
     _autorun_button.on_clicked(click_autorun_button)    # Event on autorun button.
 
     # Button save Animation
-    ax_save_button = plt.axes([X0, Y0 - 0.05, 0.015, 0.03])  # ON/OFF button is on the left side of slider.
+    ax_save_button = _fig.add_axes([X0, Y0 - 0.05, 0.015, 0.03])  # ON/OFF button is on the left side of slider.
     SAVED_ICON = "$\u25BD$"  # triangle pointing down, empty shape
     SAVE_ICON = "$\u25BC$"   # triangle pointing down, filled shape
     _save_button = Button(ax_save_button, SAVE_ICON)
@@ -281,7 +283,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
     _save_button.on_clicked(click_save_button)  # Event on save button.
 
     # Tooltips handler
-    axmsg = plt.axes([X0, Y0 - 0.09, 0.45, 0.03], facecolor="gainsboro")   # The message zone is below the slider
+    axmsg = _fig.add_axes([X0, Y0 - 0.09, 0.45, 0.03], facecolor="gainsboro")   # The message zone is below the slider
 
     def msgclear():  # Clear the message box.
         axmsg.cla()
@@ -316,8 +318,8 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
         else:
             pass
 
-    fig.canvas.mpl_connect("motion_notify_event", hover)
-    fig.canvas.mpl_connect("button_press_event", onclick)
+    _fig.canvas.mpl_connect("motion_notify_event", hover)
+    _fig.canvas.mpl_connect("button_press_event", onclick)
 
     msgclear()
 
@@ -327,7 +329,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
             step = (slider.val + 1) % slider.valmax
             slider.set_val(step)    # Updating slider value also triggers the updateslider function
 
-    _animation = FuncAnimation(fig, updateanimation, interval=delay, save_count=n)  # Run animation.
+    _animation = FuncAnimation(_fig, updateanimation, interval=delay, save_count=n)  # Run animation.
     plt.show()
     return _animation
 
