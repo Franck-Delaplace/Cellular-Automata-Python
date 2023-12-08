@@ -13,7 +13,6 @@ import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider, Button, CheckButtons
 from matplotlib.patches import Rectangle
 
-
 def CountType(cells: list, category: str) -> int:
     """Return the number of cells whose type matches with the category in a list of cells.
 
@@ -29,6 +28,7 @@ def CountType(cells: list, category: str) -> int:
 
 def GenerateCA(n: int, cellcolors: dict, weights: dict | None = None) -> np.ndarray:
     """Generate a n*n 2D cellular automaton randomly.
+    
     Args:
     n (int): height and width of the grid
     cellcolors (dict): cell types with their associated cellcolors
@@ -49,7 +49,7 @@ def GenerateCA(n: int, cellcolors: dict, weights: dict | None = None) -> np.ndar
 
 
 def DrawCA(cellautomaton: np.ndarray, colors: list, ax):
-    """Draw a 2D cellular automaton
+    """Draw a 2D cellular automaton.
 
     Args:
         CA (np.array): Cellular Automata
@@ -75,6 +75,7 @@ def DrawCA(cellautomaton: np.ndarray, colors: list, ax):
 
 def SimulateCA(cellautomaton0: np.ndarray, f, numsteps: int = 100) -> list:
     """Compute a simulation of a cellular automaton.
+
     Args:
         cellautomaton0 (np.ndarray): initial cellular automata
         f (fun): local update function
