@@ -179,7 +179,6 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
     wmgeometry = "+400+150"
     wm = plt.get_current_fig_manager()
     wm.window.wm_geometry(wmgeometry)
-
     # Order the colors to suit the DrawCA function w.r.t. to the types.
     cells = list(cellcolors.keys())                 # Extract cells from cellcolors
     cells.sort()                                    # The order of the cells follow the order of the types since the type is at first.
