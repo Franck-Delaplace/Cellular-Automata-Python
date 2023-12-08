@@ -90,7 +90,6 @@ def SimulateCA(cellautomaton0: np.ndarray, f, numsteps: int = 100) -> list:
     assert numsteps >= 0
 
     def ca_step(cellautomaton: np.ndarray, f) -> np.ndarray:  # Compute 1 CA step.
-        global _local_value
         MOORE = [
             (0, -1),
             (0, 1),
