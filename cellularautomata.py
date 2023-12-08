@@ -58,6 +58,7 @@ def DrawCA(cellautomaton: np.ndarray, colors: list, ax):
 
     Returns: a graphical view
     """
+
     caview=sns.heatmap(
         cellautomaton,
         cmap=color.ListedColormap(colors),
@@ -69,6 +70,7 @@ def DrawCA(cellautomaton: np.ndarray, colors: list, ax):
         vmax=len(colors) - 0.5,
         xticklabels=False,
         yticklabels=False,
+        square=True,
         ax=ax,
     )
     return caview
