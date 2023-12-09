@@ -173,12 +173,17 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
     figtitle = "CELLULAR AUTOMATON - FD MASTER COURSE"
 
     if plt.fignum_exists(figtitle):  # If a new simulation is launched without closing the window then close it.
+        plt.figure(figtitle)
+        wm = plt.get_current_fig_manager()
+        wgeometry = wm.window.geometry()
+        wgeometry=wgeometry[wgeometry.index("+"):] # keep the position only
         plt.close(figtitle)
+    else:
+        wgeometry = "+400+150"
 
-    fig = plt.figure(figtitle, figsize=(2 * figsize, figsize), dpi = 100)
-    wmgeometry = "+400+150"
+    fig = plt.figure(figtitle, figsize=(2 * figsize, figsize))
     wm = plt.get_current_fig_manager()
-    wm.window.wm_geometry(wmgeometry)
+    wm.window.wm_geometry(wgeometry)
     # Order the colors to suit the DrawCA function w.r.t. to the types.
     cells = list(cellcolors.keys())                 # Extract cells from cellcolors
     cells.sort()                                    # The order of the cells follow the order of the types since the type is at first.
