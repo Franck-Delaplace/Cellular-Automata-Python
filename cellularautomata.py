@@ -176,7 +176,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
     if plt.fignum_exists(figtitle):  # MANDATORY. If a new simulation is launched without closing the window then close it.
         plt.figure(figtitle)  # activate the figure of the simulation.
         fig = plt.gcf()
-        wm = plt.get_current_fig_manager()
+        wm = plt.get_current_fig_manager()              # Get the window position
         wgeometry = wm.window.geometry()
         wgeometry = wgeometry[wgeometry.index("+"):]    # Keep the position only and remove the size. NECESSARY for appropriate figure scaling
         figsize = fig.get_size_inches()                 # Get the current figure size
