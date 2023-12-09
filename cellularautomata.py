@@ -141,20 +141,20 @@ _autorun_button = None  # Button autorun ON/OFF, must be global to properly work
 _save_button = None     # Button to save Simulation, must be global to properly work.
 _curve_button = None    # CheckBox Button for curves, must be global to properly work.
 
-def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int = 5, delay: int = 100):
+def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: int = 5, delay: int = 100):
     """Display the simulation trace of a cellular automaton.
 
     Args:
         simulation (list):  simulation trace
         cellcolors (dict): colors assigned to cells
-        figsize (int, optional): size of the graphical window. Defaults to 5.
+        figheight (int, optional): height of the figure with figure size = (2*figheight,figheight). Defaults to 5.
         delay (int, optional): delay in ms between two steps. Defaults to 100.
 
     Returns:
         _type_: animation
     """
     assert delay > 0
-    assert figsize > 0
+    assert figheight > 0
 
     global _autorun_button
     global _save_button
@@ -170,20 +170,24 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figsize: int 
     plt.rcParams["font.size"] = 11
     plt.rcParams["text.color"] = "black"
 
-    figtitle = "CELLULAR AUTOMATON - FD MASTER COURSE"
+    figtitle = "CELLULAR AUTOMATON - FD MASTER COURSE"  # Feel free to change the title.
 
-    if plt.fignum_exists(figtitle):  # If a new simulation is launched without closing the window then close it.
-        plt.figure(figtitle)
+    if plt.fignum_exists(figtitle):  # MANDATORY. If a new simulation is launched without closing the window then close it.
+        plt.figure(figtitle)  # activate the figure of the simulation.
+        fig=plt.gcf()
         wm = plt.get_current_fig_manager()
         wgeometry = wm.window.geometry()
-        wgeometry=wgeometry[wgeometry.index("+"):] # keep the position only
-        plt.close(figtitle)
-    else:
+        wgeometry=wgeometry[wgeometry.index("+"):]  # Keep the position only and remove the size. NECESSARY
+        figsize = fig.get_size_inches()             # Get the current figure size
+        plt.close(fig)                              # Close simulation figure.
+    else:                                           # Otherwise set the figure parameter: position and size.
         wgeometry = "+400+150"
+        figsize = (2 * figheight, figheight)
 
-    fig = plt.figure(figtitle, figsize=(2 * figsize, figsize))
+    fig = plt.figure(figtitle, figsize=figsize )    # Create a simulation figure.
     wm = plt.get_current_fig_manager()
     wm.window.wm_geometry(wgeometry)
+
     # Order the colors to suit the DrawCA function w.r.t. to the types.
     cells = list(cellcolors.keys())                 # Extract cells from cellcolors
     cells.sort()                                    # The order of the cells follow the order of the types since the type is at first.
@@ -366,7 +370,7 @@ _duration = 1       # Duration of the simulation
 def GuiCA(
     local_fun,
     cellcolors: dict,
-    figsize: int = 5,
+    figheight: int = 5,
     gridsize: int = 100,
     duration: int = 200,
     delay: int = 100
@@ -377,7 +381,7 @@ def GuiCA(
     Args:
         local_fun (function): local update function of the CA.
         cellcolors (dict): {cell:color} colors associated to cells. Recall that a cell is a tuple (type, states ..)
-        figsize (int, optional): size of the figure of the simulation view. Defaults to 5.
+        figheight (int, optional): height of the figure of the simulation view. Defaults to 5.
         gridsize (int, optional): maximal size of the CA grid. Defaults to 100.
         duration (int, optional): maximal duration of the simulation. Defaults to 200.
         delay (int, optional): delay in ms between two simulation steps. Defaults to 100.
@@ -385,7 +389,7 @@ def GuiCA(
     assert all([isinstance(cell, tuple) for cell in cellcolors])   # Check that keys are tuples!
     assert all([isinstance(category, str) for category, *_ in cellcolors])  # check that the types are strings!
     assert len(cellcolors) <= 10  # limited to 10 parameters - see program to understand this limitation.
-    assert figsize > 0
+    assert figheight > 0
     assert gridsize > 0
     assert duration > 0
 
@@ -529,7 +533,7 @@ def GuiCA(
         else:
             CA = GenerateCA(_gridsize, cellcolors, weights.weights)
             simulation = SimulateCA(CA, local_fun, numsteps=_duration)
-            _animation = ShowSimulation(simulation, cellcolors, figsize=figsize, delay=delay)
+            _animation = ShowSimulation(simulation, cellcolors, figheight=figheight, delay=delay)
 
     run_button.on_clicked(runclick)  # Event on button
 
