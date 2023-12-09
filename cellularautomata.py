@@ -141,6 +141,7 @@ _autorun_button = None  # Button autorun ON/OFF, must be global to properly work
 _save_button = None     # Button to save Simulation, must be global to properly work.
 _curve_button = None    # CheckBox Button for curves, must be global to properly work.
 
+
 def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: int = 5, delay: int = 100):
     """Display the simulation trace of a cellular automaton.
 
@@ -166,25 +167,25 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
     autorun = Switch()
 
     # Figure definition
+    figtitle = "CELLULAR AUTOMATON - FD MASTER COURSE"  # Feel free to change the title.
+
     plt.rcParams["font.family"] = "fantasy"  # 'monospace'  'sans'
     plt.rcParams["font.size"] = 11
     plt.rcParams["text.color"] = "black"
 
-    figtitle = "CELLULAR AUTOMATON - FD MASTER COURSE"  # Feel free to change the title.
-
     if plt.fignum_exists(figtitle):  # MANDATORY. If a new simulation is launched without closing the window then close it.
         plt.figure(figtitle)  # activate the figure of the simulation.
-        fig=plt.gcf()
+        fig = plt.gcf()
         wm = plt.get_current_fig_manager()
         wgeometry = wm.window.geometry()
-        wgeometry=wgeometry[wgeometry.index("+"):]  # Keep the position only and remove the size. NECESSARY
-        figsize = fig.get_size_inches()             # Get the current figure size
-        plt.close(fig)                              # Close simulation figure.
-    else:                                           # Otherwise set the figure parameter: position and size.
+        wgeometry = wgeometry[wgeometry.index("+"):]    # Keep the position only and remove the size. NECESSARY for appropriate figure scaling
+        figsize = fig.get_size_inches()                 # Get the current figure size
+        plt.close(fig)                                  # Close simulation figure.
+    else:                                               # Otherwise set the default figure parameters: position and size.
         wgeometry = "+400+150"
         figsize = (2 * figheight, figheight)
 
-    fig = plt.figure(figtitle, figsize=figsize )    # Create a simulation figure.
+    fig = plt.figure(figtitle, figsize=figsize)         # Create a simulation figure.
     wm = plt.get_current_fig_manager()
     wm.window.wm_geometry(wgeometry)
 
@@ -260,6 +261,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
     # Button labeling to indicate autorun status.
     OFF_ICON = "$\u25a0$"  # square
     ON_ICON = "$\u25B6$"   # right triangle
+
     def buttonlabeling(state: bool):  # Set the label ON/OFF to the button w.r.t. to a Boolean state.
         _autorun_button.label.set_text({False: ON_ICON, True: OFF_ICON}[state])
 
