@@ -134,6 +134,7 @@ class Switch:
 
     def set(self, val: bool):  # Set the state.
         self.state = val
+        return val
 
 
 _animation = None       # Variable storing the visualization, must be global.
