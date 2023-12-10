@@ -1,6 +1,6 @@
 
 # ** CELLULAR AUTOMATA - FOREST FIRE
-# ** Author: Franck Delaplace - 2023
+# ** Author: Franck Delaplace
 # ** MASTER TUTORIAL
 # ** Paris Saclay University
 
@@ -12,8 +12,8 @@ from random import random
 # The probability that a tree will be on fire is proportional to the number of neighboring burning trees.
 # After a certain time, a burning tree turns to ash.
 
-TFIRE:float = 7
-ONFIRE:float = 0.2
+TFIRE: int = 7          # Fire period before turning to ash.
+ONFIRE:float = 0.2      # Probability to be on fire.
 
 
 def FoF(cell, neighbors: list):

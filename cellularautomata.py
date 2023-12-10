@@ -319,7 +319,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
 
     def onclick(event):  # Click on axes handler.
         if ax_save_button.contains(event)[0]:
-            msgput("Save in progress")
+            msgput("Save in progress.")
         elif ax_autorun_button.contains(event)[0]:
             msgput("Simulation switched "+("OFF, scroll the slider." if autorun.get() else "ON."))
         else:
