@@ -191,9 +191,9 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
     wm.window.wm_geometry(wgeometry)
 
     # Order the colors to suit the DrawCA function w.r.t. to the types.
-    cells = list(cellcolors.keys())                 # Extract cells from cellcolors
+    cells = list(cellcolors.keys())                 # Extract cells from cellcolors.
     cells.sort()                                    # The order of the cells follow the order of the types since the type is at first.
-    colors = [cellcolors[cell] for cell in cells]   # Extract the color following the order of the types
+    colors = [cellcolors[cell] for cell in cells]   # Extract the color following the order of the types.
     types = [category for category, *_ in cells]    # Extract types ordered.
 
     # Axe of CA + initialization of the CA display.
