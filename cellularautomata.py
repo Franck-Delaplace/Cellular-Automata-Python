@@ -504,7 +504,7 @@ def GuiCA(
 
     # All possible updates for weight slide from 0 to 9
     # ! I don't find a better solution avoiding to limit the number of parameters to assign the update functions to each weight slider.
-    # ! [lambda val:weights.set(types[i],val) for i in range(n)]  DOES NOT WORK (i = max for all buttons !?)
+    # ! [lambda val:weights.set(types[i],val) for i in range(n)] and [lambda val:weights.set(category,val) for category in types]  DOES NOT WORK (i = max for all buttons !?)
     weight_update_fun = [
         lambda val: weights.set(types[0], val),
         lambda val: weights.set(types[1], val),
