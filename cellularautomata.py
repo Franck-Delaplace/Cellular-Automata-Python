@@ -174,8 +174,8 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
     plt.rcParams["font.size"] = 11
     plt.rcParams["text.color"] = "black"
 
-    if plt.fignum_exists(figtitle):  # MANDATORY. If a new simulation is launched without closing the window then close it.
-        plt.figure(figtitle)  # activate the figure of the simulation.
+    if plt.fignum_exists(figtitle):  # MANDATORY. If a new simulation is launched the previous window must be closed to avoid error.
+        plt.figure(figtitle)                            # activate the figure of the simulation.
         fig = plt.gcf()
         wm = plt.get_current_fig_manager()              # Get the window position.
         wgeometry = wm.window.geometry()
@@ -190,11 +190,10 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
     wm = plt.get_current_fig_manager()
     wm.window.wm_geometry(wgeometry)
 
-    # Order the colors to suit the DrawCA function w.r.t. to the types.
-    cells = list(cellcolors.keys())                 # Extract cells from cellcolors.
-    cells.sort()                                    # The order of the cells follow the order of the types since the type is at first.
-    colors = [cellcolors[cell] for cell in cells]   # Extract the color following the order of the types.
-    types = [category for category, *_ in cells]    # Extract types ordered.
+    # Get colors and types.
+    cells = list(cellcolors.keys())
+    types = {category:i for i,(category,*_) in enumerate(cells)}  # types is a dictionary {category:position in cells}.
+    colors = [cellcolors[cell] for cell in cells]
 
     # Axe of CA + initialization of the CA display.
     X0 = 0.02  # Left bottom position of the CA
@@ -202,7 +201,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
     axca = fig.add_axes([X0, Y0, 0.45, 0.9])
 
     # CA initialization where the cells are encoded by their index of type in types to properly suit with colors.
-    ca_coded = np.array([[types.index(category) for category, *_ in row] for row in simulation[0]])
+    ca_coded = np.array([[types[category] for category, *_ in row] for row in simulation[0]])
     caview = DrawCA(ca_coded, colors, axca).collections[0]
 
     # Axe of curves
@@ -248,7 +247,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
     xrange = np.arange(0, n, 1, dtype=int)
 
     def updateslider(step):  # Update of slider.
-        CAcode = np.array([[types.index(category) for category, *_ in row] for row in simulation[step]])
+        CAcode = np.array([[types[category] for category, *_ in row] for row in simulation[step]])
         caview.set_array(CAcode)    # Update CA
         for category in types:              # Update type count curves
             curves[category].set_data(xrange[:step], typescount[category][:step])
@@ -271,7 +270,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
     def click_autorun_button(_):
         global _autorun_button
         autorun.switch()                                # Switch the autorun.
-        buttonlabeling(autorun.get())                   # Change the button label.
+        buttonlabeling(autorun.get())                   # Update the button label.
     _autorun_button.on_clicked(click_autorun_button)    # Event on autorun button.
 
     # Button save Animation
@@ -283,7 +282,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
 
     def click_save_button(_):
         global _save_button
-        writer = PillowWriter(fps=1500//delay)
+        writer = PillowWriter(fps=1500//delay)  # estimation of the fps from the delay between frames to have the same time.
         _animation.save("CA-SIMULATION.gif", writer=writer)
         msgput("Save completed!")
         saved.set(True)
@@ -415,7 +414,6 @@ def GuiCA(
     _gridsize = gridsize // 2
     _duration = duration // 2
     types = [type for type, *_ in cellcolors.keys()]  # get all types of cells
-    types.sort()  # sort types
     n = len(types)
     weights = Weights(types, 0.5)  # Create weights from types.
 
