@@ -281,9 +281,9 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
     saved = Switch(False)
 
     def click_save_button(_):
-        global _save_button 
+        global _save_button
         fps = 1500//delay  # estimation of the fps from the delay between frames to have the same time.
-        writer = PillowWriter(fps=fps)  
+        writer = PillowWriter(fps=fps)
         _animation.save("CA-SIMULATION.gif", writer=writer)
         msgput("Save completed!")
         saved.set(True)
