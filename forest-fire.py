@@ -13,7 +13,7 @@ from random import random
 # After a certain time, a burning tree turns to ash.
 
 TFIRE: int = 7          # Fire period before turning to ash.
-ONFIRE:float = 0.2      # Probability to be on fire.
+ONFIRE: float = 0.2      # Probability to be on fire.
 
 
 def FoF(cell, neighbors: list):
