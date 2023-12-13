@@ -247,8 +247,8 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
     xrange = np.arange(0, n, 1, dtype=int)
 
     def updateslider(step):  # Update of slider.
-        CAcode = np.array([[types[category] for category, *_ in row] for row in simulation[step]])
-        caview.set_array(CAcode)    # Update CA
+        ca_coded = np.array([[types[category] for category, *_ in row] for row in simulation[step]])
+        caview.set_array(ca_coded)    # Update CA
         for category in types:              # Update type count curves
             curves[category].set_data(xrange[:step], typescount[category][:step])
         return curves
