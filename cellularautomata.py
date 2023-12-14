@@ -103,7 +103,6 @@ def SimulateCA(cellautomaton0: np.ndarray, f, numsteps: int = 100) -> list:
         canew = np.array(
                 [[f(cellautomaton[i][j], neighborsgrid[i][j]) for j in range(n)] for i in range(n)]
                 )  # apply the local evolution function
-
         return canew
 
     simulation = [cellautomaton0]
@@ -558,7 +557,7 @@ def GuiCA(
                 wm.window.wm_geometry("+400+150")
 
             # Radio button of categories
-            _cell = list(cellcolors.keys())[0]  # Initialize the cell to  key 0 for matching to default activated radio buttons.
+            _cell = list(cellcolors.keys())[0]  # Initialize the cell to key 0 for matching to default activated radio buttons.
             axradiobutton =  plt.axes([0.025, 0.025, typewidth, typeheight])
             axradiobutton.set_facecolor('whitesmoke')
             _radiotypes = RadioButtons(axradiobutton, tuple(types), activecolor='orangered', radio_props={'s':50}, active=0)
@@ -566,7 +565,7 @@ def GuiCA(
                 r.set_fontfamily("fantasy")
                 r.set_fontsize(8)
 
-            typecells = {cell[TYPE]:cell for cell in cellcolors}   # association of the categories to cells.
+            typecells = {category:(category,) + tuple(states) for category, *states in cellcolors}   # association of the categories to cells.
             def radioclick(label):
                 global _cell
                 _cell = typecells[label]
