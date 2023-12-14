@@ -56,7 +56,7 @@ def DrawCA(cellautomaton: np.ndarray, colors: list, ax):
         ax : axes
         colors (list): list of colors
 
-    Returns: a graphical view
+    Returns: a heatmap representing the CA.
     """
     return sns.heatmap(
         cellautomaton,
