@@ -551,17 +551,11 @@ def GuiCA(
             if plt.fignum_exists(figca0_title):                 # if the figure already exists close it.
                 plt.figure(figca0_title)                        # activate the figure of CA 0
                 figca0 = plt.gcf()
-                wm = plt.get_current_fig_manager()              # Get the window position.
-                wgeometry = wm.window.geometry()
-                wgeometry = wgeometry[wgeometry.index("+"):]    # Keep the position only and remove the size. NECESSARY for appropriate figure scaling.
-                figsize = figca0.get_size_inches()              # Get the current figure size.
             else:
-                wgeometry = "+400+150"
                 figsize = (fullwidth, figheight)
-
-            figca0 = plt.figure(figca0_title, figsize = figsize)   # create a new figure for the vizualisation of the initial CA = CA0.
-            wm = plt.get_current_fig_manager()
-            wm.window.wm_geometry(wgeometry)
+                figca0 = plt.figure(figca0_title, figsize = figsize)   # create a new figure for the visualization of the initial CA = CA0.
+                wm = plt.get_current_fig_manager()
+                wm.window.wm_geometry("+400+150")
 
             # Radio button of categories
             _cell = list(cellcolors.keys())[0]  # Initialize the cell to  key 0 for matching to default activated radio buttons.
@@ -588,7 +582,7 @@ def GuiCA(
             def onselect(eclick,erelease):
                 global _cell
                 xmin,xmax,ymin,ymax = (round(val) for val in _selector.extents)
-                _ca0[ymin:ymax,xmin:xmax] = _cell               # Initialize the array area with the current default celle
+                _ca0[ymin:ymax,xmin:xmax] = _cell               # Initialize the array area with the current default cell
                 category, *_ = _cell
                 ca0cat[ymin:ymax,xmin:xmax] = types.index(category)   # Initialize the array view area with the  index of the current category.
                 ca0view.set_array(ca0cat)
