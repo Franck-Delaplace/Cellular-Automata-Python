@@ -515,7 +515,7 @@ def GuiCA(
         weight_sliders.append(slider)
 
     # All possible updates for weight slide from 0 to 9
-    # ! I don't find a better solution than explicitly setting i the value for types[i]. This limits the number of used parameters to 10.
+    # ! I don't find a better solution than setting i for types[i] by an explicit number. This limits the number of used parameters to 10.
     # ! [lambda val:weights.set(types[i],val) for i in range(n)] and [lambda val:weights.set(category,val) for category in types]  DOES NOT WORK (i = max for all buttons !?)
     weight_update_fun = [
         lambda val: weights.set(types[0], val),
@@ -536,7 +536,7 @@ def GuiCA(
     # New CA button ===
     axnew_button =  plt.axes([FRMLEFT, 0.11, FRMSIZE, SLIDHEIGHT])
     new_button = Button(axnew_button, "NEW", color="silver", hovercolor="lightsalmon")
-    def newclick(_):
+    def newclick(_): # Callback of new button.
             global _selector
             global _cell
             global _radiotypes
@@ -554,7 +554,7 @@ def GuiCA(
                 wm = plt.get_current_fig_manager()              # Get the window position.
                 wgeometry = wm.window.geometry()
                 wgeometry = wgeometry[wgeometry.index("+"):]    # Keep the position only and remove the size. NECESSARY for appropriate figure scaling.
-                figsize = figca0.get_size_inches()             # Get the current figure size.
+                figsize = figca0.get_size_inches()              # Get the current figure size.
             else:
                 wgeometry = "+400+150"
                 figsize = (fullwidth, figheight)
@@ -568,7 +568,9 @@ def GuiCA(
             axradiobutton =  plt.axes([0.025, 0.025, typewidth, typeheight])
             axradiobutton.set_facecolor('whitesmoke')
             _radiotypes = RadioButtons(axradiobutton, tuple(types), activecolor='orangered', radio_props={'s':50}, active=0)
-            for r in _radiotypes.labels: r.set_fontfamily("fantasy")
+            for r in _radiotypes.labels:
+                r.set_fontfamily("fantasy")
+                r.set_fontsize(8)
 
             typecells = {cell[TYPE]:cell for cell in cellcolors}   # association of the categories to cells
             def radioclick(label):
@@ -624,5 +626,4 @@ def GuiCA(
             _animation = ShowSimulation(simulation, cellcolors, figheight=figheight, delay=delay)
 
     run_button.on_clicked(runclick)  # Event on button
-
     plt.show()
