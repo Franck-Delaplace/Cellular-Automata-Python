@@ -412,7 +412,7 @@ def GuiCA(
 
     STRSTRIDE = 0.005    # Width  of characters for measure between 0 and 1, font size = 8.
     STRHEIGHT = 0.05     # Height of characters for measure between 0 and 1.
-    RBOFFSET = 0.1       # offset for the radio button
+    RBOFFSET = 0.1       # Offset for the radio button
 
     # Button & Slider parameters
     SLIDLEFT = 0.35     # Left position of sliders
@@ -453,7 +453,7 @@ def GuiCA(
         valinit=_gridsize,
         facecolor=SLIDCOLOR,
         valfmt="%3d",
-    )
+        )
 
     def update_slider_size(val: int):
         global _gridsize
