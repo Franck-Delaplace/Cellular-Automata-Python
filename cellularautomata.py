@@ -372,7 +372,6 @@ _selector = None        # Rectangular selector.
 _cell = None            # Current cell for CA0 painting.
 _radiobutton = None     # Radio button to select the current cell.
 _radiotypes = None      # Radio button on types.
-_figca0 = None          # figure of CA0.
 _ca0 = None             # CA0 = initial automaton
 
 def GuiCA(
@@ -426,7 +425,6 @@ def GuiCA(
     # Initialization of the main variables
     _gridsize = gridsize // 2
     _duration = duration // 2
-    needca0 = Switch()
 
     types = [type for type, *_ in cellcolors.keys()]  # get all types of cells
     colors =cellcolors.values()
@@ -542,7 +540,6 @@ def GuiCA(
             global _selector
             global _cell
             global _radiotypes
-            global _figca0
             global _ca0
 
             # Figure of initial CA generation
@@ -553,17 +550,16 @@ def GuiCA(
 
             if plt.fignum_exists(figca0_title):                 # if the figure already exists close it.
                 plt.figure(figca0_title)                        # activate the figure of CA 0
-                _figca0 = plt.gcf()
+                figca0 = plt.gcf()
                 wm = plt.get_current_fig_manager()              # Get the window position.
                 wgeometry = wm.window.geometry()
                 wgeometry = wgeometry[wgeometry.index("+"):]    # Keep the position only and remove the size. NECESSARY for appropriate figure scaling.
-                figsize = _figca0.get_size_inches()             # Get the current figure size.
-                #  plt.close(_figca0)
+                figsize = figca0.get_size_inches()             # Get the current figure size.
             else:
                 wgeometry = "+400+150"
                 figsize = (fullwidth, figheight)
 
-            _figca0 = plt.figure(figca0_title, figsize = figsize)   # create a new figure for the vizualisation of the initial CA = CA0.
+            figca0 = plt.figure(figca0_title, figsize = figsize)   # create a new figure for the vizualisation of the initial CA = CA0.
             wm = plt.get_current_fig_manager()
             wm.window.wm_geometry(wgeometry)
 
@@ -581,9 +577,8 @@ def GuiCA(
             _radiotypes.on_clicked(radioclick)
 
             # Cellular automata initialization
-            axca0 = _figca0.add_axes([0.04+typewidth, 0.025, 0.97*figheight/fullwidth, 0.97])
+            axca0 = figca0.add_axes([0.04+typewidth, 0.025, 0.97*figheight/fullwidth, 0.97])
             _ca0 =  GenerateCA(_gridsize, cellcolors, weights.weights)
-            needca0.set(False)
             ca0cat = np.array([[types.index(category) for category, *_ in row] for row in _ca0])
             ca0view = DrawCA(ca0cat,colors,axca0).collections[0]
 
@@ -617,17 +612,13 @@ def GuiCA(
         global _duration
         global _animation
         global _ca0
-        global _figca0
 
         # check if at least a weight is different to 0
         if sum(weights.weights.values()) == 0:
             print("** CA WARNING: at least one weight must be different to 0.")
         else:
-            if needca0.get():
+            if _ca0 is None:
                 _ca0 =  GenerateCA(_gridsize, cellcolors, weights.weights)
-            else:
-                plt.close(_figca0)
-                needca0.set(True)
 
             simulation = SimulateCA(_ca0, local_fun, numsteps=_duration)
             _animation = ShowSimulation(simulation, cellcolors, figheight=figheight, delay=delay)
