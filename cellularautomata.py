@@ -198,6 +198,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
     X0 = 0.02  # Left bottom position of the CA
     Y0 = 0.1
     axca = fig.add_axes([X0, Y0, 0.45, 0.9])
+    axca.set_aspect('equal',adjustable='box', anchor='SW')
 
     # CA initialization where the cells are encoded by their index of type in types to properly suit with colors.
     ca_coded = np.array([[types[category] for category, *_ in row] for row in simulation[0]])
@@ -573,6 +574,7 @@ def GuiCA(
 
             # Cellular automata initialization
             axca0 = figca0.add_axes([0.04+typewidth, 0.025, 0.97*figheight/fullwidth, 0.97])
+            axca0.set_aspect('equal',adjustable='box', anchor='SE')
             _ca0 =  GenerateCA(_gridsize, cellcolors, weights.weights)
             ca0cat = np.array([[types.index(category) for category, *_ in row] for row in _ca0])
             ca0view = DrawCA(ca0cat,colors,axca0).collections[0]
