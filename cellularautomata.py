@@ -404,7 +404,8 @@ def GuiCA(
 
     global _gridsize
     global _duration
-
+    # Cell parameter
+    TYPE = 0
     # Windows parameters
     GUIWIDTH = 1.5      # Width of the GUI
     GUISTEP = 0.15      # Extra width step associated to characters of type labels.
@@ -557,7 +558,7 @@ def GuiCA(
                 wgeometry = wm.window.geometry()
                 wgeometry = wgeometry[wgeometry.index("+"):]    # Keep the position only and remove the size. NECESSARY for appropriate figure scaling.
                 figsize = _figca0.get_size_inches()             # Get the current figure size.
-                plt.close(_figca0)
+                #  plt.close(_figca0)
             else:
                 wgeometry = "+400+150"
                 figsize = (fullwidth, figheight)
@@ -572,7 +573,7 @@ def GuiCA(
             axradiobutton.set_facecolor('whitesmoke')
             _radiotypes = RadioButtons(axradiobutton, tuple(types), activecolor='orangered', radio_props={'s':50}, active=0)
 
-            typecells = {category:(category, states) for (category, *states) in cellcolors}   # association of the categories to cells
+            typecells = {cell[TYPE]:cell for cell in cellcolors}   # association of the categories to cells
             def radioclick(label):
                 global _cell
                 _cell = typecells[label]
