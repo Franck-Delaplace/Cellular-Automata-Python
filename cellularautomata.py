@@ -548,12 +548,12 @@ def GuiCA(
             typeheight = STRHEIGHT * len(types)                             # Height of the type box
             fullwidth = figheight + 0.35 +  0.15 * max(map(len, types))     # Full width radio button + CA
 
-            if plt.fignum_exists(figca0_title):                 # if the figure already exists close it.
+            if plt.fignum_exists(figca0_title):                 # if the figure already exists then use it.
                 plt.figure(figca0_title)                        # activate the figure of CA 0
                 figca0 = plt.gcf()
-            else:
+            else:                                               # create a new figure for the visualization of the initial CA = CA0.
                 figsize = (fullwidth, figheight)
-                figca0 = plt.figure(figca0_title, figsize = figsize)   # create a new figure for the visualization of the initial CA = CA0.
+                figca0 = plt.figure(figca0_title, figsize = figsize)
                 wm = plt.get_current_fig_manager()
                 wm.window.wm_geometry("+400+150")
 
@@ -566,7 +566,7 @@ def GuiCA(
                 r.set_fontfamily("fantasy")
                 r.set_fontsize(8)
 
-            typecells = {cell[TYPE]:cell for cell in cellcolors}   # association of the categories to cells
+            typecells = {cell[TYPE]:cell for cell in cellcolors}   # association of the categories to cells.
             def radioclick(label):
                 global _cell
                 _cell = typecells[label]
