@@ -410,7 +410,7 @@ def GuiCA(
     GUISTEP = 0.15      # Extra width step associated to characters of type labels.
     GUIHEIGHT = 4       # Height of the GUI
 
-    STRSTRIDE = 0.002    # Width  of characters for measure between 0 and 1, font size = 8.
+    STRSTRIDE = 0.0025    # Width  of characters for measure between 0 and 1, font size = 8.
     STRHEIGHT = 0.05     # Height of characters for measure between 0 and 1.
     RBOFFSET = 0.08       # Offset for the radio button
 
