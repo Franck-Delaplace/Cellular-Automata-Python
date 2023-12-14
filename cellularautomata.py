@@ -411,9 +411,9 @@ def GuiCA(
     GUISTEP = 0.15      # Extra width step associated to characters of type labels.
     GUIHEIGHT = 4       # Height of the GUI
 
-    STRSTRIDE = 0.005    # Width  of characters for measure between 0 and 1, font size = 8.
+    STRSTRIDE = 0.002    # Width  of characters for measure between 0 and 1, font size = 8.
     STRHEIGHT = 0.05     # Height of characters for measure between 0 and 1.
-    RBOFFSET = 0.1       # Offset for the radio button
+    RBOFFSET = 0.08       # Offset for the radio button
 
     # Button & Slider parameters
     SLIDLEFT = 0.35     # Left position of sliders
@@ -572,6 +572,7 @@ def GuiCA(
             axradiobutton =  plt.axes([0.025, 0.025, typewidth, typeheight])
             axradiobutton.set_facecolor('whitesmoke')
             _radiotypes = RadioButtons(axradiobutton, tuple(types), activecolor='orangered', radio_props={'s':50}, active=0)
+            for r in _radiotypes.labels: r.set_fontfamily("fantasy")
 
             typecells = {cell[TYPE]:cell for cell in cellcolors}   # association of the categories to cells
             def radioclick(label):
