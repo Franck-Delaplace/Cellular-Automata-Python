@@ -198,7 +198,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
     X0 = 0.02  # Left bottom position of the CA
     Y0 = 0.1
     axca = fig.add_axes([X0, Y0, 0.45, 0.9])
-    axca.set_aspect('equal', adjustable='box', anchor='SW')
+    axca.set_aspect('equal', adjustable='box', anchor=(0,1))
 
     # CA initialization where the cells are encoded by their index of type in types to properly suit with colors.
     ca_coded = np.array([[types[category] for category, *_ in row] for row in simulation[0]])
