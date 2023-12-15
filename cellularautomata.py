@@ -410,7 +410,7 @@ def GuiCA(
     GUISTEP = 0.15      # Extra width step associated to characters of type labels.
     GUIHEIGHT = 4       # Height of the GUI
 
-    STRSTRIDE = 0.0025  # Width  of characters for measure between 0 and 1, font size = 8.
+    STRSTRIDE = 0.004  # Width  of characters for measure between 0 and 1, font size = 8
     STRHEIGHT = 0.05    # Height of characters for measure between 0 and 1.
     RBOFFSET = 0.08     # Offset for the radio button
 
@@ -515,8 +515,8 @@ def GuiCA(
         weight_sliders.append(slider)
 
     # All possible updates for weight slide from 0 to 9
-    # ! I don't find a better solution than setting i for types[i] by an explicit number. This limits the number of used parameters to 10.
-    # ! [lambda val:weights.set(types[i],val) for i in range(n)] and [lambda val:weights.set(category,val) for category in types]  DOES NOT WORK (i = max for all buttons !?)
+    # I don't find a better solution than setting i for types[i] by an explicit number. This limits the number of used parameters to 10.
+    # [lambda val:weights.set(types[i],val) for i in range(n)] and [lambda val:weights.set(category,val) for category in types]  DOES NOT WORK (i = max for all buttons !?)
     weight_update_fun = [
         lambda val: weights.set(types[0], val),
         lambda val: weights.set(types[1], val),
@@ -546,16 +546,26 @@ def GuiCA(
             figca0_title = "CA0"
             typewidth =  RBOFFSET + max(map(len, types)) * STRSTRIDE        # Width of the type box.
             typeheight = STRHEIGHT * len(types)                             # Height of the type box
-            fullwidth = figheight + 0.35 +  0.15 * max(map(len, types))     # Full width radio button + CA
+            fullwidth = round(figheight + 0.3 +  0.1 * max(map(len, types)))     # Full width radio button + CA
 
-            if plt.fignum_exists(figca0_title):                 # if the figure already exists then use it.
-                plt.figure(figca0_title)                        # activate the figure of CA 0
+            if plt.fignum_exists(figca0_title):                 # If the figure already exists then use it.
+                plt.figure(figca0_title)                        # Activate the figure of CA0.
                 figca0 = plt.gcf()
-            else:                                               # create a new figure for the visualization of the initial CA = CA0.
+            else:                                               # Create a new figure for the visualization of the initial CA = CA0.
                 figsize = (fullwidth, figheight)
                 figca0 = plt.figure(figca0_title, figsize = figsize)
                 wm = plt.get_current_fig_manager()
                 wm.window.wm_geometry("+400+150")
+
+            # Cellular automata initialization
+            axca0 = plt.axes([0,0.025,0.97,0.97])
+            plt.subplots_adjust(left=typewidth)
+
+            # axca0 = figca0.add_axes([0.04+typewidth, 0.025, 0.97*figheight/fullwidth, 0.97])
+            axca0.set_aspect('equal', anchor=(1.0,0.5))  # Force the square shape of the CA display.
+            _ca0 =  GenerateCA(_gridsize, cellcolors, weights.weights)
+            ca0code = np.array([[types.index(category) for category, *_ in row] for row in _ca0])
+            ca0view = DrawCA(ca0code,colors,axca0).collections[0]
 
             # Radio button of categories
             _cell = list(cellcolors.keys())[0]  # Initialize the cell to key 0 for matching to default activated radio buttons.
@@ -572,21 +582,14 @@ def GuiCA(
                 _cell = typecells[label]
             _radiotypes.on_clicked(radioclick)
 
-            # Cellular automata initialization
-            axca0 = figca0.add_axes([0.04+typewidth, 0.025, 0.97*figheight/fullwidth, 0.97])
-            axca0.set_aspect('equal',adjustable='box', anchor='C')  # Force the square shape of the CA display.
-            _ca0 =  GenerateCA(_gridsize, cellcolors, weights.weights)
-            ca0cat = np.array([[types.index(category) for category, *_ in row] for row in _ca0])
-            ca0view = DrawCA(ca0cat,colors,axca0).collections[0]
-
             # Selector
             def onselect(eclick,erelease):
                 global _cell
                 xmin,xmax,ymin,ymax = (round(val) for val in _selector.extents)
-                _ca0[ymin:ymax,xmin:xmax] = _cell               # Initialize the array area with the current default cell
+                _ca0[ymin:ymax,xmin:xmax] = _cell   # Fill the array area with the current default cell.
                 category, *_ = _cell
-                ca0cat[ymin:ymax,xmin:xmax] = types.index(category)   # Initialize the array view area with the  index of the current category.
-                ca0view.set_array(ca0cat)
+                ca0code[ymin:ymax,xmin:xmax] = types.index(category)   # Fill the array view area with the index of _cell category.
+                ca0view.set_array(ca0code)
 
             _selector = RectangleSelector(axca0,
                                         onselect,
