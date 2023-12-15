@@ -1,6 +1,6 @@
 
 # ** CELLULAR AUTOMATA LIBRARY
-# ** Author: Franck - 2023
+# ** Author: Franck - Dec. 2023
 # ** MASTER TUTORIAL
 # ** Paris Saclay University
 
@@ -10,7 +10,7 @@ import numpy as np
 import matplotlib.colors as color
 import seaborn as sns
 import matplotlib.pyplot as plt
-from matplotlib.widgets import Slider, Button, CheckButtons, RadioButtons, RectangleSelector
+from matplotlib.widgets import Slider, Button, CheckButtons,  RectangleSelector
 from matplotlib.patches import Rectangle
 
 
@@ -191,14 +191,14 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
 
     # Get colors and types.
     cells = list(cellcolors.keys())
-    types = {category:i for i,(category,*_) in enumerate(cells)}  # types is a dictionary {category:position in cells}.
+    types = {category: i for i, (category, *_) in enumerate(cells)}  # types is a dictionary {category:position in cells}.
     colors = [cellcolors[cell] for cell in cells]
 
     # Axe of CA + initialization of the CA display.
     X0 = 0.02  # Left bottom position of the CA
     Y0 = 0.1
     axca = fig.add_axes([X0, Y0, 0.45, 0.9])
-    axca.set_aspect('equal',adjustable='box', anchor='SW')
+    axca.set_aspect('equal', adjustable='box', anchor='SW')
 
     # CA initialization where the cells are encoded by their index of type in types to properly suit with colors.
     ca_coded = np.array([[types[category] for category, *_ in row] for row in simulation[0]])
@@ -374,6 +374,7 @@ _radiobutton = None     # Radio button to select the current cell.
 _radiotypes = None      # Radio button on types.
 _ca0 = None             # CA0 = initial automaton
 
+
 def GuiCA(
     local_fun,
     cellcolors: dict,
@@ -404,10 +405,10 @@ def GuiCA(
     global _gridsize
     global _duration
     # Cell parameter
-    TYPE = 0
+
     # Windows parameters
     GUIWIDTH: float = 1.5       # Width of the GUI
-    GUISTEP : float = 0.15      # Extra width step associated to characters of type labels.
+    GUISTEP: float = 0.15      # Extra width step associated to characters of type labels.
     GUIHEIGHT: int = 4          # Height of the GUI
 
     # Button & Slider parameters
@@ -418,16 +419,16 @@ def GuiCA(
     SLIDDIST: float = 0.05              # Distance between two weight sliders
     SLIDCOLOR: str = "gray"             # Slider color bar
     RADIOSTRSTRIDE: float = 0.015        # Stride for characters in radio button
-    RADIOSTRIDE:float = 0.01            # Stride  between two radio buttons
+    RADIOSTRIDE: float = 0.01            # Stride  between two radio buttons
     BUTTONCOLOR: str = "silver"        # Standard color of buttons
     HOVERCOLOR: str = "lightsalmon"    # Hover color of buttons.
 
     # Initialization of the main variables
     _gridsize = gridsize // 2
     _duration = duration // 2
-    cells= list(cellcolors.keys())
+    cells = list(cellcolors.keys())
     types = [type for type, *_ in cells]  # get all types of cells
-    colors =cellcolors.values()
+    colors = cellcolors.values()
     n = len(types)
     weights = Weights(types, 0.5)  # Create weights from types.
 
@@ -534,9 +535,10 @@ def GuiCA(
         weight_sliders[i].on_changed(weight_update_fun[i])
 
     # New CA button ===
-    axnew_button =  plt.axes([FRMLEFT, 0.11, FRMSIZE, WIDGHEIGHT])
+    axnew_button = plt.axes([FRMLEFT, 0.11, FRMSIZE, WIDGHEIGHT])
     new_button = Button(axnew_button, "NEW", color=BUTTONCOLOR, hovercolor=HOVERCOLOR)
-    def newclick(_): # Callback of new button.
+
+    def newclick(_):  # Callback of new button.
         global _selector
         global _cell
         global _radiotypes
@@ -549,30 +551,30 @@ def GuiCA(
             plt.figure(figca0_title)                        # Activate the figure of CA0.
             figca0 = plt.gcf()
         else:                                               # Create a new figure for the visualization of the initial CA = CA0.
-            figsize = (figheight,figheight + 0.5)
-            figca0 = plt.figure(figca0_title, figsize = figsize)
+            figsize = (figheight, figheight + 0.5)
+            figca0 = plt.figure(figca0_title, figsize=figsize)
             wm = plt.get_current_fig_manager()
             wm.window.wm_geometry("+450+150")
 
         # Cellular automata initialization
-        axca0 = figca0.add_axes([0.0125,0.025,0.97,0.97])
-        axca0.set_aspect('equal', anchor=(0.5,1.0))
+        axca0 = figca0.add_axes([0.0125, 0.025, 0.97, 0.97])
+        axca0.set_aspect('equal', anchor=(0.5, 1.0))
 
-        _ca0 =  GenerateCA(_gridsize, cellcolors, weights.weights)
+        _ca0 = GenerateCA(_gridsize, cellcolors, weights.weights)
         ca0code = np.array([[types.index(category) for category, *_ in row] for row in _ca0])
-        ca0view = DrawCA(ca0code,colors,axca0).collections[0]
+        ca0view = DrawCA(ca0code, colors, axca0).collections[0]
 
         # Radio button of categories
-        radiofullwidth = n * max(map(len,types))* RADIOSTRSTRIDE + n*RADIOSTRIDE  # Full width of the button bar
+        radiofullwidth = n * max(map(len, types)) * RADIOSTRSTRIDE + n*RADIOSTRIDE  # Full width of the button bar
         radiospacing = radiofullwidth/n                                           # Distance between 2 radio buttons.
 
-        axradio=[figca0.add_axes([(0.5 - radiofullwidth/2) + i * radiospacing + RADIOSTRIDE, 0.0125, radiospacing - RADIOSTRIDE, WIDGHEIGHT/1.5])
-                    for i in range(n)]
+        axradio = [figca0.add_axes([(0.5 - radiofullwidth/2) + i * radiospacing + RADIOSTRIDE, 0.0125, radiospacing - RADIOSTRIDE, WIDGHEIGHT/1.5])
+                   for i in range(n)]
 
         UNSELECTCOLOR: str = "whitesmoke"   # Color of the radio button when it is unselected.
         SELECTCOLOR: str = "tomato"         # Color of the radio button when it is selected.
 
-        _radiotypes = [Button(axradio[i], category, color=UNSELECTCOLOR, hovercolor=HOVERCOLOR) for  i,category in enumerate(types)]
+        _radiotypes = [Button(axradio[i], category, color=UNSELECTCOLOR, hovercolor=HOVERCOLOR) for i, category in enumerate(types)]
         for rb in _radiotypes:              # Style of the radio button labels.
             rb.label.set_fontfamily("fantasy")
             rb.label.set_fontsize(10)
@@ -580,9 +582,10 @@ def GuiCA(
         _radiotypes[0].color = SELECTCOLOR      # initialization of the radio button bar
         _cell = list(cellcolors.keys())[0]
 
-        def  radioclick(index):  # radio click call back with the index of the type as input.
+        def radioclick(index):  # radio click call back with the index of the type as input.
             global _cell
-            for rb in _radiotypes: rb.color = UNSELECTCOLOR
+            for rb in _radiotypes:
+                rb.color = UNSELECTCOLOR
             _radiotypes[index].color = SELECTCOLOR
             _cell = cells[index]
 
@@ -597,26 +600,26 @@ def GuiCA(
             lambda _: radioclick(7),
             lambda _: radioclick(8),
             lambda _: radioclick(9)]
-        for i  in range(n):
+        for i in range(n):
             _radiotypes[i].on_clicked(radioclickfun[i])
 
         # Selector
-        def onselect(eclick,erelease):
+        def onselect(eclick, erelease):
             global _cell
-            xmin,xmax,ymin,ymax = (round(val) for val in _selector.extents)
-            _ca0[ymin:ymax,xmin:xmax] = _cell   # Fill the array area with the current default cell.
+            xmin, xmax, ymin, ymax = (round(val) for val in _selector.extents)
+            _ca0[ymin:ymax, xmin:xmax] = _cell   # Fill the array area with the current default cell.
             category, *_ = _cell
-            ca0code[ymin:ymax,xmin:xmax] = types.index(category)   # Fill the array view area with the index of _cell category.
+            ca0code[ymin:ymax, xmin:xmax] = types.index(category)   # Fill the array view area with the index of _cell category.
             ca0view.set_array(ca0code)
 
         _selector = RectangleSelector(axca0,
-                                    onselect,
-                                    button=[1, 3],
-                                    interactive=False,
-                                    spancoords='data',
-                                    use_data_coordinates=True,
-                                    props=dict(facecolor='gray', edgecolor='black', linewidth=2, alpha=0.3, fill=True),
-                                    )
+                                      onselect,
+                                      button=[1, 3],
+                                      interactive=False,
+                                      spancoords='data',
+                                      use_data_coordinates=True,
+                                      props=dict(facecolor='gray', edgecolor='black', linewidth=2, alpha=0.3, fill=True),
+                                      )
         plt.show()
         return  # end of newclick function
     new_button.on_clicked(newclick)
@@ -636,7 +639,7 @@ def GuiCA(
             print("** CA WARNING: at least one weight must be different to 0.")
         else:
             if _ca0 is None:
-                _ca0 =  GenerateCA(_gridsize, cellcolors, weights.weights)
+                _ca0 = GenerateCA(_gridsize, cellcolors, weights.weights)
 
             simulation = SimulateCA(_ca0, local_fun, duration=_duration)
             _animation = ShowSimulation(simulation, cellcolors, figheight=figheight, delay=delay)
