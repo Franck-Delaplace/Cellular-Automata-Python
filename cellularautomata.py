@@ -1,8 +1,8 @@
 
-# ** CELLULAR AUTOMATA LIBRARY
-# ** Author: Franck - Dec. 2023
-# ** MASTER TUTORIAL
-# ** Paris Saclay University
+# * CELLULAR AUTOMATA LIBRARY
+# * Author: Franck - Dec. 2023
+# *  MASTER TUTORIAL
+# *  Paris Saclay University
 
 from matplotlib.animation import FuncAnimation, PillowWriter
 from random import choices
@@ -404,7 +404,6 @@ def GuiCA(
 
     global _gridsize
     global _duration
-    # Cell parameter
 
     # Windows parameters
     GUIWIDTH: float = 1.5                   # Width of the GUI.
@@ -418,6 +417,7 @@ def GuiCA(
     SLIDSTART: float = 0.7                  # Vertical start position for weight sliders.
     SLIDDIST: float = 0.05                  # Distance between two weight sliders.
     SLIDCOLOR: str = "gray"                 # Slider color bar.
+
     RADIOFFSET: float = 0.015               # Extra incompressible distance in a radio button.
     RADIOSTRSTRIDE: float = 0.013           # Stride for characters in radio button.
     RADIOSTRIDE: float = 0.01               # Stride  between two radio buttons.
@@ -482,7 +482,6 @@ def GuiCA(
     duration_slider.on_changed(update_slider_duration)  # Event on duration slider
 
     #|| Weights  sliders ======
-
     # header and rectangle
     FRMLEFT: float = 0.07  # Frame left position
     FRMSIZE: float = 0.86  # Frame size
