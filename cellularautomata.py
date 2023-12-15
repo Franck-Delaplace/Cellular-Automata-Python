@@ -182,7 +182,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
         figsize = fig.get_size_inches()                 # Get the current figure size.
         plt.close(fig)                                  # Close simulation figure.
     else:                                               # Otherwise set the default figure parameters: position and size.
-        wgeometry = "+400+150"
+        wgeometry = "+450+150"
         figsize = (2 * figheight, figheight)
 
     fig = plt.figure(figtitle, figsize=figsize)         # Create a simulation figure.
@@ -406,27 +406,27 @@ def GuiCA(
     # Cell parameter
     TYPE = 0
     # Windows parameters
-    GUIWIDTH = 1.5      # Width of the GUI
-    GUISTEP = 0.15      # Extra width step associated to characters of type labels.
-    GUIHEIGHT = 4       # Height of the GUI
-
-    STRSTRIDE = 0.004  # Width  of characters for measure between 0 and 1, font size = 8
-    STRHEIGHT = 0.05    # Height of characters for measure between 0 and 1.
-    RBOFFSET = 0.08     # Offset for the radio button
+    GUIWIDTH: float = 1.5       # Width of the GUI
+    GUISTEP : float = 0.15      # Extra width step associated to characters of type labels.
+    GUIHEIGHT: int = 4          # Height of the GUI
 
     # Button & Slider parameters
-    SLIDLEFT = 0.35     # Left position of sliders
-    SLIDSIZE = 0.4      # Size of sliders
-    SLIDHEIGHT = 0.07   # Height of sliders
-    SLIDSTART = 0.7     # Vertical start position for weight sliders
-    SLIDDIST = 0.05     # Distance between two weight sliders
-    SLIDCOLOR = "gray"  # Slider color bar
+    SLIDLEFT: float = 0.35              # Left position of sliders
+    SLIDSIZE: float = 0.4               # Size of sliders
+    WIDGHEIGHT: float = 0.07            # Height of sliders and buttons
+    SLIDSTART: float = 0.7              # Vertical start position for weight sliders
+    SLIDDIST: float = 0.05              # Distance between two weight sliders
+    SLIDCOLOR: str = "gray"             # Slider color bar
+    RADIOSTRSTRIDE: float = 0.015        # Stride for characters in radio button
+    RADIOSTRIDE:float = 0.01            # Stride  between two radio buttons
+    BUTTONCOLOR: str = "silver"        # Standard color of buttons
+    HOVERCOLOR: str = "lightsalmon"    # Hover color of buttons.
 
     # Initialization of the main variables
     _gridsize = gridsize // 2
     _duration = duration // 2
-
-    types = [type for type, *_ in cellcolors.keys()]  # get all types of cells
+    cells= list(cellcolors.keys())
+    types = [type for type, *_ in cells]  # get all types of cells
     colors =cellcolors.values()
     n = len(types)
     weights = Weights(types, 0.5)  # Create weights from types.
@@ -442,7 +442,7 @@ def GuiCA(
     wm.window.wm_geometry("+50+100")
 
     # Grid size slider ======
-    axsize_slider = plt.axes([SLIDLEFT, 0.92, SLIDSIZE, SLIDHEIGHT])
+    axsize_slider = plt.axes([SLIDLEFT, 0.92, SLIDSIZE, WIDGHEIGHT])
     size_slider = Slider(
         axsize_slider,
         "Size  ",
@@ -460,7 +460,7 @@ def GuiCA(
     size_slider.on_changed(update_slider_size)  # Event on size slider
 
     # Duration/Time sliders ======
-    axduration_slider = plt.axes([SLIDLEFT, 0.86, SLIDSIZE, SLIDHEIGHT])
+    axduration_slider = plt.axes([SLIDLEFT, 0.86, SLIDSIZE, WIDGHEIGHT])
     duration_slider = Slider(
         axduration_slider,
         "Time  ",
@@ -480,8 +480,8 @@ def GuiCA(
     # Weights  sliders ======
 
     # header and rectangle
-    FRMLEFT = 0.07  # Frame left position
-    FRMSIZE = 0.86  # Frame size
+    FRMLEFT: float = 0.07  # Frame left position
+    FRMSIZE: float = 0.86  # Frame size
     font = {"weight": "bold", "size": 10}
     ax.text(0.5, 0.79, "WEIGHTS", fontdict=font, ha="center")
     ax.add_patch(
@@ -499,7 +499,7 @@ def GuiCA(
     weight_sliders = []
     for i in range(n):
         axslider = plt.axes(
-            [SLIDLEFT, SLIDSTART - i * SLIDDIST, SLIDSIZE, SLIDHEIGHT],
+            [SLIDLEFT, SLIDSTART - i * SLIDDIST, SLIDSIZE, WIDGHEIGHT],
             facecolor=SLIDCOLOR,
         )
         slider = Slider(
@@ -534,78 +534,96 @@ def GuiCA(
         weight_sliders[i].on_changed(weight_update_fun[i])
 
     # New CA button ===
-    axnew_button =  plt.axes([FRMLEFT, 0.11, FRMSIZE, SLIDHEIGHT])
-    new_button = Button(axnew_button, "NEW", color="silver", hovercolor="lightsalmon")
+    axnew_button =  plt.axes([FRMLEFT, 0.11, FRMSIZE, WIDGHEIGHT])
+    new_button = Button(axnew_button, "NEW", color=BUTTONCOLOR, hovercolor=HOVERCOLOR)
     def newclick(_): # Callback of new button.
-            global _selector
+        global _selector
+        global _cell
+        global _radiotypes
+        global _ca0
+
+        # Figure of initial CA generation
+        figca0_title = "CA0"
+
+        if plt.fignum_exists(figca0_title):                 # If the figure already exists then use it.
+            plt.figure(figca0_title)                        # Activate the figure of CA0.
+            figca0 = plt.gcf()
+        else:                                               # Create a new figure for the visualization of the initial CA = CA0.
+            figsize = (figheight,figheight + 0.5)
+            figca0 = plt.figure(figca0_title, figsize = figsize)
+            wm = plt.get_current_fig_manager()
+            wm.window.wm_geometry("+450+150")
+
+        # Cellular automata initialization
+        axca0 = figca0.add_axes([0.0125,0.025,0.97,0.97])
+        axca0.set_aspect('equal', anchor=(0.5,1.0))
+
+        _ca0 =  GenerateCA(_gridsize, cellcolors, weights.weights)
+        ca0code = np.array([[types.index(category) for category, *_ in row] for row in _ca0])
+        ca0view = DrawCA(ca0code,colors,axca0).collections[0]
+
+        # Radio button of categories
+        radiofullwidth = n * max(map(len,types))* RADIOSTRSTRIDE + n*RADIOSTRIDE  # Full width of the button bar
+        radiospacing = radiofullwidth/n                                           # Distance between 2 radio buttons.
+
+        axradio=[figca0.add_axes([(0.5 - radiofullwidth/2) + i * radiospacing + RADIOSTRIDE, 0.0125, radiospacing - RADIOSTRIDE, WIDGHEIGHT/1.5])
+                    for i in range(n)]
+
+        UNSELECTCOLOR: str = "whitesmoke"   # Color of the radio button when it is unselected.
+        SELECTCOLOR: str = "tomato"         # Color of the radio button when it is selected.
+
+        _radiotypes = [Button(axradio[i], category, color=UNSELECTCOLOR, hovercolor=HOVERCOLOR) for  i,category in enumerate(types)]
+        for rb in _radiotypes:              # Style of the radio button labels.
+            rb.label.set_fontfamily("fantasy")
+            rb.label.set_fontsize(10)
+
+        _radiotypes[0].color = SELECTCOLOR      # initialization of the radio button bar
+        _cell = list(cellcolors.keys())[0]
+
+        def  radioclick(index):  # radio click call back with the index of the type as input.
             global _cell
-            global _radiotypes
-            global _ca0
+            for rb in _radiotypes: rb.color = UNSELECTCOLOR
+            _radiotypes[index].color = SELECTCOLOR
+            _cell = cells[index]
 
-            # Figure of initial CA generation
-            figca0_title = "CA0"
-            typewidth =  RBOFFSET + max(map(len, types)) * STRSTRIDE        # Width of the type box.
-            typeheight = STRHEIGHT * len(types)                             # Height of the type box
-            fullwidth = round(figheight + 0.3 +  0.1 * max(map(len, types)))     # Full width radio button + CA
+        radioclickfun = [                    # Manually pre defined 10 on-click functions.
+            lambda _: radioclick(0),
+            lambda _: radioclick(1),
+            lambda _: radioclick(2),
+            lambda _: radioclick(3),
+            lambda _: radioclick(4),
+            lambda _: radioclick(5),
+            lambda _: radioclick(6),
+            lambda _: radioclick(7),
+            lambda _: radioclick(8),
+            lambda _: radioclick(9)]
+        for i  in range(n):
+            _radiotypes[i].on_clicked(radioclickfun[i])
 
-            if plt.fignum_exists(figca0_title):                 # If the figure already exists then use it.
-                plt.figure(figca0_title)                        # Activate the figure of CA0.
-                figca0 = plt.gcf()
-            else:                                               # Create a new figure for the visualization of the initial CA = CA0.
-                figsize = (fullwidth, figheight)
-                figca0 = plt.figure(figca0_title, figsize = figsize)
-                wm = plt.get_current_fig_manager()
-                wm.window.wm_geometry("+400+150")
+        # Selector
+        def onselect(eclick,erelease):
+            global _cell
+            xmin,xmax,ymin,ymax = (round(val) for val in _selector.extents)
+            _ca0[ymin:ymax,xmin:xmax] = _cell   # Fill the array area with the current default cell.
+            category, *_ = _cell
+            ca0code[ymin:ymax,xmin:xmax] = types.index(category)   # Fill the array view area with the index of _cell category.
+            ca0view.set_array(ca0code)
 
-            # Cellular automata initialization
-            axca0 = plt.axes([0,0.025,0.97,0.97])
-            plt.subplots_adjust(left=typewidth)
-
-            # axca0 = figca0.add_axes([0.04+typewidth, 0.025, 0.97*figheight/fullwidth, 0.97])
-            axca0.set_aspect('equal', anchor=(1.0,0.5))  # Force the square shape of the CA display.
-            _ca0 =  GenerateCA(_gridsize, cellcolors, weights.weights)
-            ca0code = np.array([[types.index(category) for category, *_ in row] for row in _ca0])
-            ca0view = DrawCA(ca0code,colors,axca0).collections[0]
-
-            # Radio button of categories
-            _cell = list(cellcolors.keys())[0]  # Initialize the cell to key 0 for matching to default activated radio buttons.
-            axradiobutton =  plt.axes([0.025, 0.025, typewidth, typeheight])
-            axradiobutton.set_facecolor('whitesmoke')
-            _radiotypes = RadioButtons(axradiobutton, tuple(types), activecolor='orangered', radio_props={'s':50}, active=0)
-            for r in _radiotypes.labels:
-                r.set_fontfamily("fantasy")
-                r.set_fontsize(8)
-
-            typecells = {category:(category,) + tuple(states) for category, *states in cellcolors}   # association of the categories to cells.
-            def radioclick(label):
-                global _cell
-                _cell = typecells[label]
-            _radiotypes.on_clicked(radioclick)
-
-            # Selector
-            def onselect(eclick,erelease):
-                global _cell
-                xmin,xmax,ymin,ymax = (round(val) for val in _selector.extents)
-                _ca0[ymin:ymax,xmin:xmax] = _cell   # Fill the array area with the current default cell.
-                category, *_ = _cell
-                ca0code[ymin:ymax,xmin:xmax] = types.index(category)   # Fill the array view area with the index of _cell category.
-                ca0view.set_array(ca0code)
-
-            _selector = RectangleSelector(axca0,
-                                        onselect,
-                                        button=[1, 3],
-                                        interactive=False,
-                                        spancoords='data',
-                                        use_data_coordinates=True,
-                                        props=dict(facecolor='gray', edgecolor='black', linewidth=2, alpha=0.3, fill=True),
-                                        )
-            plt.show()
-            return  # end of newclick function
+        _selector = RectangleSelector(axca0,
+                                    onselect,
+                                    button=[1, 3],
+                                    interactive=False,
+                                    spancoords='data',
+                                    use_data_coordinates=True,
+                                    props=dict(facecolor='gray', edgecolor='black', linewidth=2, alpha=0.3, fill=True),
+                                    )
+        plt.show()
+        return  # end of newclick function
     new_button.on_clicked(newclick)
 
     # Run Button ======
-    axrun_button = plt.axes([FRMLEFT, 0.025, FRMSIZE, SLIDHEIGHT])
-    run_button = Button(axrun_button, "RUN", color="silver", hovercolor="lightsalmon")
+    axrun_button = plt.axes([FRMLEFT, 0.025, FRMSIZE, WIDGHEIGHT])
+    run_button = Button(axrun_button, "RUN", color=BUTTONCOLOR, hovercolor=HOVERCOLOR)
 
     def runclick(_):  # Run Button clicked
         global _gridsize
