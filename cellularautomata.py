@@ -228,7 +228,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
         )[0]
         for i, category in enumerate(types)}
 
-    # Check box button characterization for curves
+    # || Check box button characterization for curves
     chxboxheight = len(types) * 0.05                    # Depends on the number of categories.
     chxboxwidth = 0.05 + max(map(len, types)) * 0.006   # Depends on the maximal string length of the categories.
     axcurvebox = fig.add_axes(
@@ -240,7 +240,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
         return curves[category].set_visible(not curves[category].get_visible())  # Toggle the visibility of curve.
     _curve_button.on_clicked(chxboxupdate)
 
-    # Slider characterization
+    # || Slider characterization
     axslider = fig.add_axes([X0 + 0.04, Y0 - 0.07, 0.412, 0.07])    # The slider is located below the cellular automaton display.
     slider = Slider(axslider, "", 0, n - 1, valstep=1, valinit=0, facecolor="gray", valfmt="%3d")
 
@@ -254,7 +254,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
         return curves
     slider.on_changed(updateslider)  # Event on slider.
 
-    # ON/OFF autorun Button.
+    #|| ON/OFF autorun Button.
     ax_autorun_button = fig.add_axes([X0+0.02, Y0 - 0.05, 0.015, 0.03])  # ON/OFF button is on the left side of slider.
     _autorun_button = Button(ax_autorun_button, " ")
 
@@ -273,7 +273,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
         buttonlabeling(autorun.get())                   # Update the button label.
     _autorun_button.on_clicked(click_autorun_button)    # Event on autorun button.
 
-    # Button save Animation
+    #|| Button save Animation
     ax_save_button = fig.add_axes([X0, Y0 - 0.05, 0.015, 0.03])  # ON/OFF button is on the left side of slider.
     SAVED_ICON = "$\u25BD$"  # triangle pointing down, empty shape
     SAVE_ICON = "$\u25BC$"   # triangle pointing down, filled shape
@@ -290,7 +290,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
         _save_button.label.set_text(SAVED_ICON)
     _save_button.on_clicked(click_save_button)  # Event on save button.
 
-    # Tooltips handler
+    #|| Tooltips handler
     axmsg = fig.add_axes([X0, Y0 - 0.09, 0.45, 0.03], facecolor="gainsboro")   # The message zone is below the slider
 
     def msgclear():  # Clear the message box.
@@ -331,14 +331,14 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
 
     msgclear()
 
-    # Display simulation
+    #|| Display simulation
     def updateanimation(_):         # Update from animation.
         if autorun.get():           # The update is conditional on the state of autorun.
             step = (slider.val + 1) % slider.valmax
             slider.set_val(step)    # Updating slider value also triggers the updateslider function
 
     _animation = FuncAnimation(fig, updateanimation, interval=delay, save_count=n)  # Run animation.
-    plt.show()
+    fig.show()
     return _animation
 
 
@@ -407,22 +407,24 @@ def GuiCA(
     # Cell parameter
 
     # Windows parameters
-    GUIWIDTH: float = 1.5               # Width of the GUI.
-    GUISTEP: float = 0.15               # Extra width step associated to characters of type labels.
-    GUIHEIGHT: int = 4                  # Height of the GUI.
+    GUIWIDTH: float = 1.5                   # Width of the GUI.
+    GUISTEP: float = 0.15                   # Extra width step associated to characters of type labels.
+    GUIHEIGHT: int = 4                      # Height of the GUI.
 
     # Button & Slider parameters
-    SLIDLEFT: float = 0.35              # Left position of sliders.
-    SLIDSIZE: float = 0.4               # Size of sliders.
-    WIDGHEIGHT: float = 0.07            # Height of sliders and buttons.
-    SLIDSTART: float = 0.7              # Vertical start position for weight sliders.
-    SLIDDIST: float = 0.05              # Distance between two weight sliders.
-    SLIDCOLOR: str = "gray"             # Slider color bar.
-    RADIOFFSET: float = 0.015           # Extra incompressible distance in a radio button.
-    RADIOSTRSTRIDE: float = 0.013       # Stride for characters in radio button.
-    RADIOSTRIDE: float = 0.01           # Stride  between two radio buttons.
-    BUTTONCOLOR: str = "silver"         # Standard color of buttons.
-    HOVERCOLOR: str = "lightsalmon"     # Hover color of buttons.
+    SLIDLEFT: float = 0.35                  # Left position of sliders.
+    SLIDSIZE: float = 0.4                   # Size of sliders.
+    WIDGHEIGHT: float = 0.07                # Height of sliders and buttons.
+    SLIDSTART: float = 0.7                  # Vertical start position for weight sliders.
+    SLIDDIST: float = 0.05                  # Distance between two weight sliders.
+    SLIDCOLOR: str = "gray"                 # Slider color bar.
+    RADIOFFSET: float = 0.015               # Extra incompressible distance in a radio button.
+    RADIOSTRSTRIDE: float = 0.013           # Stride for characters in radio button.
+    RADIOSTRIDE: float = 0.01               # Stride  between two radio buttons.
+    BUTTONCOLOR: str = "silver"             # Standard color of buttons.
+    HOVERCOLOR: str = "lightsalmon"         # Hover color of buttons.
+    UNSELECTCOLOR: str = 'lemonchiffon'     # Color of the radio button when it is unselected.
+    SELECTCOLOR: str = 'gold'               # Color of the radio button when it is selected.
 
     # Initialization of the main variables
     _gridsize = gridsize // 2
@@ -438,12 +440,12 @@ def GuiCA(
     plt.rcParams["font.family"] = "sans"
     plt.rcParams["font.size"] = 8
 
-    fig = plt.figure(figsize=(GUIWIDTH + max(map(len, types)) * GUISTEP, GUIHEIGHT), num="GUI")
-    ax = fig.add_axes([0, 0, 1, 1])
+    figui = plt.figure(figsize=(GUIWIDTH + max(map(len, types)) * GUISTEP, GUIHEIGHT), num="GUI")
+    ax = figui.add_axes([0, 0, 1, 1])
     wm = plt.get_current_fig_manager()
     wm.window.wm_geometry("+50+100")
 
-    #* Grid size slider ======
+    #|| Grid size slider ======
     axsize_slider = plt.axes([SLIDLEFT, 0.92, SLIDSIZE, WIDGHEIGHT])
     size_slider = Slider(
         axsize_slider,
@@ -461,7 +463,7 @@ def GuiCA(
         _gridsize = val
     size_slider.on_changed(update_slider_size)  # Event on size slider
 
-    #* Duration/Time sliders ======
+    #|| Duration/Time sliders ======
     axduration_slider = plt.axes([SLIDLEFT, 0.86, SLIDSIZE, WIDGHEIGHT])
     duration_slider = Slider(
         axduration_slider,
@@ -479,7 +481,7 @@ def GuiCA(
         _duration = val
     duration_slider.on_changed(update_slider_duration)  # Event on duration slider
 
-    #* Weights  sliders ======
+    #|| Weights  sliders ======
 
     # header and rectangle
     FRMLEFT: float = 0.07  # Frame left position
@@ -535,7 +537,7 @@ def GuiCA(
     for i in range(n):  # Link events to weight sliders
         weight_sliders[i].on_changed(weight_update_fun[i])
 
-    #* New CA button ===
+    #|| New CA button ===
     axnew_button = plt.axes([FRMLEFT, 0.11, FRMSIZE, WIDGHEIGHT])
     new_button = Button(axnew_button, "NEW", color=BUTTONCOLOR, hovercolor=HOVERCOLOR)
 
@@ -574,9 +576,6 @@ def GuiCA(
         axradio = [figca0.add_axes([(0.5 - radiofullwidth/2) + i * radiospacing + RADIOSTRIDE, 0.02, radiospacing - RADIOSTRIDE, WIDGHEIGHT/1.5])
                    for i in range(n)]
 
-        UNSELECTCOLOR: str = "lemonchiffon"   # Color of the radio button when it is unselected.
-        SELECTCOLOR: str = "gold"         # Color of the radio button when it is selected.
-
         _radiotypes = [Button(axradio[i], category, color=UNSELECTCOLOR, hovercolor=HOVERCOLOR) for i, category in enumerate(types)]
 
         for rb in _radiotypes:              # Style of the radio button labels.
@@ -607,7 +606,7 @@ def GuiCA(
         for i in range(n):
             _radiotypes[i].on_clicked(radioclickfun[i])
 
-        #* Selector
+        #|| Selector
         def onselect(eclick, erelease):
             global _cell
             xmin, xmax, ymin, ymax = (round(val) for val in _selector.extents)
@@ -624,11 +623,11 @@ def GuiCA(
                                       use_data_coordinates=True,
                                       props=dict(facecolor='gray', edgecolor='black', linewidth=2, alpha=0.3, fill=True),
                                       )
-        plt.show()
+        figca0.show()
         return  # end of newclick function
     new_button.on_clicked(newclick)
 
-    #* Run Button ======
+    #|| Run Button ======
     axrun_button = plt.axes([FRMLEFT, 0.025, FRMSIZE, WIDGHEIGHT])
     run_button = Button(axrun_button, "RUN", color=BUTTONCOLOR, hovercolor=HOVERCOLOR)
 
