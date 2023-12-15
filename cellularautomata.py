@@ -1,8 +1,8 @@
 
 # * CELLULAR AUTOMATA LIBRARY
 # * Author: Franck - Dec. 2023
-# *  MASTER TUTORIAL
-# *  Paris Saclay University
+# * MASTER TUTORIAL
+# * Paris Saclay University
 
 from matplotlib.animation import FuncAnimation, PillowWriter
 from random import choices
