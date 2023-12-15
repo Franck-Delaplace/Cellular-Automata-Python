@@ -636,15 +636,11 @@ def GuiCA(
         global _animation
         global _ca0
 
-        # check if at least a weight is different to 0
-        if sum(weights.weights.values()) == 0:
-            print("** CA WARNING: at least one weight must be different to 0.")
-        else:
-            if _ca0 is None:
-                _ca0 = GenerateCA(_gridsize, cellcolors, weights.weights)
+        if _ca0 is None:
+            _ca0 = GenerateCA(_gridsize, cellcolors, weights.weights)
 
-            simulation = SimulateCA(_ca0, local_fun, duration=_duration)
-            _animation = ShowSimulation(simulation, cellcolors, figheight=figheight, delay=delay)
-
+        simulation = SimulateCA(_ca0, local_fun, duration=_duration)
+        _animation = ShowSimulation(simulation, cellcolors, figheight=figheight, delay=delay)
     run_button.on_clicked(runclick)  # Event on button
+
     plt.show()
