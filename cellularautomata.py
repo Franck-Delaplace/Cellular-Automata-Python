@@ -443,7 +443,7 @@ def GuiCA(
     wm = plt.get_current_fig_manager()
     wm.window.wm_geometry("+50+100")
 
-    # Grid size slider ======
+    #* Grid size slider ======
     axsize_slider = plt.axes([SLIDLEFT, 0.92, SLIDSIZE, WIDGHEIGHT])
     size_slider = Slider(
         axsize_slider,
@@ -461,7 +461,7 @@ def GuiCA(
         _gridsize = val
     size_slider.on_changed(update_slider_size)  # Event on size slider
 
-    # Duration/Time sliders ======
+    #* Duration/Time sliders ======
     axduration_slider = plt.axes([SLIDLEFT, 0.86, SLIDSIZE, WIDGHEIGHT])
     duration_slider = Slider(
         axduration_slider,
@@ -479,7 +479,7 @@ def GuiCA(
         _duration = val
     duration_slider.on_changed(update_slider_duration)  # Event on duration slider
 
-    # Weights  sliders ======
+    #* Weights  sliders ======
 
     # header and rectangle
     FRMLEFT: float = 0.07  # Frame left position
@@ -535,7 +535,7 @@ def GuiCA(
     for i in range(n):  # Link events to weight sliders
         weight_sliders[i].on_changed(weight_update_fun[i])
 
-    # New CA button ===
+    #* New CA button ===
     axnew_button = plt.axes([FRMLEFT, 0.11, FRMSIZE, WIDGHEIGHT])
     new_button = Button(axnew_button, "NEW", color=BUTTONCOLOR, hovercolor=HOVERCOLOR)
 
@@ -607,7 +607,7 @@ def GuiCA(
         for i in range(n):
             _radiotypes[i].on_clicked(radioclickfun[i])
 
-        # Selector
+        #* Selector
         def onselect(eclick, erelease):
             global _cell
             xmin, xmax, ymin, ymax = (round(val) for val in _selector.extents)
@@ -628,7 +628,7 @@ def GuiCA(
         return  # end of newclick function
     new_button.on_clicked(newclick)
 
-    # Run Button ======
+    #* Run Button ======
     axrun_button = plt.axes([FRMLEFT, 0.025, FRMSIZE, WIDGHEIGHT])
     run_button = Button(axrun_button, "RUN", color=BUTTONCOLOR, hovercolor=HOVERCOLOR)
 
