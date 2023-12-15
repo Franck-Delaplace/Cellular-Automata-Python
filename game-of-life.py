@@ -1,6 +1,6 @@
 
 # ** CELLULAR AUTOMATA - GAME OF LIFE
-# ** Author: Franck Delaplace - 2023
+# ** Author: Franck Delaplace
 # ** MASTER TUTORIAL
 # ** Paris Saclay University
 
@@ -10,6 +10,8 @@ from cellularautomata import CountType, GuiCA
 # A cell of CA is composed by a tuple (type, states ...) where:
 #  - type indicates the category/type of the cell which must be a string
 #  - states indicate the internal states of the cell which depends on the simulation.
+# A dictionary (cellcolors) stores the initial cell configurations as keys with the related color as value for each type.
+
 # The evolution function has two parameters: the cell and the list of neighboring cells.
 
 # GAME OF LIFE RULE

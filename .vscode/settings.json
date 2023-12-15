@@ -56,6 +56,7 @@
         "onselect",
         "radioclick",
         "radioclickfun",
+        "RADIOFFSET",
         "radiofullwidth",
         "radiopos",
         "radiospacing",

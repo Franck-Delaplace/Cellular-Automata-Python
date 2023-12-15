@@ -198,7 +198,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
     X0 = 0.02  # Left bottom position of the CA
     Y0 = 0.1
     axca = fig.add_axes([X0, Y0, 0.45, 0.9])
-    axca.set_aspect('equal', adjustable='box', anchor=(0,1))
+    axca.set_aspect('equal', adjustable='box', anchor=(0, 1))
 
     # CA initialization where the cells are encoded by their index of type in types to properly suit with colors.
     ca_coded = np.array([[types[category] for category, *_ in row] for row in simulation[0]])
@@ -282,7 +282,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
 
     def click_save_button(_):
         global _save_button
-        fps = 1500//delay  # estimation of the fps from the delay between frames to have the same time.
+        fps = 1000//delay  # estimation of the fps from the delay between frames to have the same time.
         writer = PillowWriter(fps=fps)
         _animation.save("CA-SIMULATION.gif", writer=writer)
         msgput("Save completed!")
@@ -407,21 +407,22 @@ def GuiCA(
     # Cell parameter
 
     # Windows parameters
-    GUIWIDTH: float = 1.5       # Width of the GUI
-    GUISTEP: float = 0.15      # Extra width step associated to characters of type labels.
-    GUIHEIGHT: int = 4          # Height of the GUI
+    GUIWIDTH: float = 1.5               # Width of the GUI.
+    GUISTEP: float = 0.15               # Extra width step associated to characters of type labels.
+    GUIHEIGHT: int = 4                  # Height of the GUI.
 
     # Button & Slider parameters
-    SLIDLEFT: float = 0.35              # Left position of sliders
-    SLIDSIZE: float = 0.4               # Size of sliders
-    WIDGHEIGHT: float = 0.07            # Height of sliders and buttons
-    SLIDSTART: float = 0.7              # Vertical start position for weight sliders
-    SLIDDIST: float = 0.05              # Distance between two weight sliders
-    SLIDCOLOR: str = "gray"             # Slider color bar
-    RADIOSTRSTRIDE: float = 0.015        # Stride for characters in radio button
-    RADIOSTRIDE: float = 0.01            # Stride  between two radio buttons
-    BUTTONCOLOR: str = "silver"        # Standard color of buttons
-    HOVERCOLOR: str = "lightsalmon"    # Hover color of buttons.
+    SLIDLEFT: float = 0.35              # Left position of sliders.
+    SLIDSIZE: float = 0.4               # Size of sliders.
+    WIDGHEIGHT: float = 0.07            # Height of sliders and buttons.
+    SLIDSTART: float = 0.7              # Vertical start position for weight sliders.
+    SLIDDIST: float = 0.05              # Distance between two weight sliders.
+    SLIDCOLOR: str = "gray"             # Slider color bar.
+    RADIOFFSET: float = 0.015           # Extra incompressible distance in a radio button.
+    RADIOSTRSTRIDE: float = 0.013       # Stride for characters in radio button.
+    RADIOSTRIDE: float = 0.01           # Stride  between two radio buttons.
+    BUTTONCOLOR: str = "silver"         # Standard color of buttons.
+    HOVERCOLOR: str = "lightsalmon"     # Hover color of buttons.
 
     # Initialization of the main variables
     _gridsize = gridsize // 2
@@ -516,7 +517,7 @@ def GuiCA(
         weight_sliders.append(slider)
 
     # All possible updates for weight slide from 0 to 9
-    # I don't find a better solution than setting i for types[i] by an explicit number. This limits the number of used parameters to 10.
+    # ! I don't find a better solution than setting i for types[i] by an explicit number. This limits the number of used parameters to 10.
     # [lambda val:weights.set(types[i],val) for i in range(n)] and [lambda val:weights.set(category,val) for category in types]  DOES NOT WORK (i = max for all buttons !?)
     weight_update_fun = [
         lambda val: weights.set(types[0], val),
@@ -557,7 +558,9 @@ def GuiCA(
             wm.window.wm_geometry("+450+150")
 
         # Cellular automata initialization
-        axca0 = figca0.add_axes([0.0125, 0.025, 0.97, 0.97])
+        # axca0 = figca0.add_axes([0.0125, 0.025, 0.97, 0.97])
+        axca0 = plt.axes([0.01, 0.0, 0.98, 0.98])
+        plt.subplots_adjust(bottom=0.1)
         axca0.set_aspect('equal', anchor=(0.5, 1.0))
 
         _ca0 = GenerateCA(_gridsize, cellcolors, weights.weights)
@@ -565,21 +568,22 @@ def GuiCA(
         ca0view = DrawCA(ca0code, colors, axca0).collections[0]
 
         # Radio button of categories
-        radiofullwidth = n * max(map(len, types)) * RADIOSTRSTRIDE + n*RADIOSTRIDE  # Full width of the button bar
+        radiofullwidth = n * max(map(len, types)) * RADIOSTRSTRIDE + n * RADIOSTRIDE + n * RADIOFFSET  # Full width of the button bar
         radiospacing = radiofullwidth/n                                           # Distance between 2 radio buttons.
 
-        axradio = [figca0.add_axes([(0.5 - radiofullwidth/2) + i * radiospacing + RADIOSTRIDE, 0.0125, radiospacing - RADIOSTRIDE, WIDGHEIGHT/1.5])
+        axradio = [figca0.add_axes([(0.5 - radiofullwidth/2) + i * radiospacing + RADIOSTRIDE, 0.02, radiospacing - RADIOSTRIDE, WIDGHEIGHT/1.5])
                    for i in range(n)]
 
-        UNSELECTCOLOR: str = "whitesmoke"   # Color of the radio button when it is unselected.
-        SELECTCOLOR: str = "tomato"         # Color of the radio button when it is selected.
+        UNSELECTCOLOR: str = "lemonchiffon"   # Color of the radio button when it is unselected.
+        SELECTCOLOR: str = "gold"         # Color of the radio button when it is selected.
 
         _radiotypes = [Button(axradio[i], category, color=UNSELECTCOLOR, hovercolor=HOVERCOLOR) for i, category in enumerate(types)]
+
         for rb in _radiotypes:              # Style of the radio button labels.
             rb.label.set_fontfamily("fantasy")
             rb.label.set_fontsize(10)
 
-        _radiotypes[0].color = SELECTCOLOR      # initialization of the radio button bar
+        _radiotypes[0].color = SELECTCOLOR  # initialization of the radio button bar
         _cell = list(cellcolors.keys())[0]
 
         def radioclick(index):  # radio click call back with the index of the type as input.
@@ -589,7 +593,7 @@ def GuiCA(
             _radiotypes[index].color = SELECTCOLOR
             _cell = cells[index]
 
-        radioclickfun = [                    # Manually pre defined 10 on-click functions.
+        radioclickfun = [               # Manually pre-defined 10 on-click radio buttons functions. the problem is the same as weight sliders.
             lambda _: radioclick(0),
             lambda _: radioclick(1),
             lambda _: radioclick(2),
