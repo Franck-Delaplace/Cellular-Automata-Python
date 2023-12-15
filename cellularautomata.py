@@ -73,17 +73,17 @@ def DrawCA(cellautomaton: np.ndarray, colors: list, ax):
     )
 
 
-def SimulateCA(cellautomaton0: np.ndarray, f, numsteps: int = 100) -> list:
+def SimulateCA(cellautomaton0: np.ndarray, f, duration: int = 100) -> list:
     """Compute a simulation of a cellular automaton.
     Args:
         cellautomaton0 (np.ndarray): initial cellular automata
         f (fun): local update function
-        numsteps (int, optional): total number of steps. Default 100.
+        duration (int, optional): total number of steps. Default 100.
 
     Returns:
-        list: Execution trace corresponding to a list of cellular automata.
+        list: Simulation trace corresponding to a list of cellular automata.
     """
-    assert numsteps >= 0
+    assert duration >= 0
 
     def ca_step(cellautomaton: np.ndarray, f) -> np.ndarray:  # Compute 1 CA step.
         global _local_value
@@ -107,7 +107,7 @@ def SimulateCA(cellautomaton0: np.ndarray, f, numsteps: int = 100) -> list:
 
     simulation = [cellautomaton0]
     try:
-        for i in range(numsteps):
+        for i in range(duration):
             simulation.append(ca_step(simulation[i], f))
     except ValueError:
         print("** CA ERROR: Invalid cell format encountered. A condition on cell is probably missing in the local function.")
@@ -574,7 +574,7 @@ def GuiCA(
 
             # Cellular automata initialization
             axca0 = figca0.add_axes([0.04+typewidth, 0.025, 0.97*figheight/fullwidth, 0.97])
-            axca0.set_aspect('equal',adjustable='box', anchor='SE')
+            axca0.set_aspect('equal',adjustable='box', anchor='C')  # Force the square shape of the CA display.
             _ca0 =  GenerateCA(_gridsize, cellcolors, weights.weights)
             ca0cat = np.array([[types.index(category) for category, *_ in row] for row in _ca0])
             ca0view = DrawCA(ca0cat,colors,axca0).collections[0]
@@ -617,7 +617,7 @@ def GuiCA(
             if _ca0 is None:
                 _ca0 =  GenerateCA(_gridsize, cellcolors, weights.weights)
 
-            simulation = SimulateCA(_ca0, local_fun, numsteps=_duration)
+            simulation = SimulateCA(_ca0, local_fun, duration=_duration)
             _animation = ShowSimulation(simulation, cellcolors, figheight=figheight, delay=delay)
 
     run_button.on_clicked(runclick)  # Event on button
