@@ -5,9 +5,9 @@
 # * Paris Saclay University
 
 import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation, PillowWriter                        # type: ignore
 from random import choices
 import numpy as np
+from matplotlib.animation import FuncAnimation, PillowWriter                        # type: ignore
 import matplotlib.colors as color                                                   # type: ignore
 import seaborn as sns                                                               # type: ignore
 from matplotlib.widgets import Slider, Button, CheckButtons,  RectangleSelector     # type: ignore
