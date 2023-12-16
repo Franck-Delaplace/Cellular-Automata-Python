@@ -4,12 +4,12 @@
 # * MASTER TUTORIAL
 # * Paris Saclay University
 
+import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation, PillowWriter                        # type: ignore
 from random import choices
 import numpy as np
 import matplotlib.colors as color                                                   # type: ignore
 import seaborn as sns                                                               # type: ignore
-import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider, Button, CheckButtons,  RectangleSelector     # type: ignore
 from matplotlib.patches import Rectangle                                            # type: ignore
 
@@ -448,7 +448,7 @@ def GuiCA(
     wm.window.wm_geometry("+50+100")
 
     # || Grid size slider ======
-    axsize_slider = plt.axes([SLIDLEFT, 0.92, SLIDSIZE, WIDGHEIGHT])
+    axsize_slider = figui.add_axes([SLIDLEFT, 0.92, SLIDSIZE, WIDGHEIGHT])
     size_slider = Slider(
         axsize_slider,
         "Size  ",
@@ -466,7 +466,7 @@ def GuiCA(
     size_slider.on_changed(update_slider_size)  # Event on size slider
 
     # || Duration/Time sliders ======
-    axduration_slider = plt.axes([SLIDLEFT, 0.86, SLIDSIZE, WIDGHEIGHT])
+    axduration_slider = figui.add_axes([SLIDLEFT, 0.86, SLIDSIZE, WIDGHEIGHT])
     duration_slider = Slider(
         axduration_slider,
         "Time  ",
@@ -503,7 +503,7 @@ def GuiCA(
     # Weight sliders definition
     weight_sliders = []
     for i in range(n):
-        axslider = plt.axes(
+        axslider = figui.add_axes(
             [SLIDLEFT, SLIDSTART - i * SLIDDIST, SLIDSIZE, WIDGHEIGHT],
             facecolor=SLIDCOLOR,
         )
@@ -539,7 +539,7 @@ def GuiCA(
         weight_sliders[i].on_changed(weight_update_fun[i])
 
     # || New CA button ===
-    axnew_button = plt.axes([FRMLEFT, 0.11, FRMSIZE, WIDGHEIGHT])
+    axnew_button = figui.add_axes([FRMLEFT, 0.11, FRMSIZE, WIDGHEIGHT])
     new_button = Button(axnew_button, "NEW", color=BUTTONCOLOR, hovercolor=HOVERCOLOR)
 
     def newclick(_):  # Callback of new button.
@@ -629,7 +629,7 @@ def GuiCA(
     new_button.on_clicked(newclick)
 
     # || Run Button ======
-    axrun_button = plt.axes([FRMLEFT, 0.025, FRMSIZE, WIDGHEIGHT])
+    axrun_button = figui.add_axes([FRMLEFT, 0.025, FRMSIZE, WIDGHEIGHT])
     run_button = Button(axrun_button, "RUN", color=BUTTONCOLOR, hovercolor=HOVERCOLOR)
 
     def runclick(_):  # Run Button clicked
