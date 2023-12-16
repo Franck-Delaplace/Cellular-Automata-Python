@@ -89,5 +89,10 @@
         "WIDGHEIGHT",
         "winposition",
         "wmgeometry"
-    ]
+    ],
+    "python.testing.pytestArgs": [
+        "Old"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true
 }

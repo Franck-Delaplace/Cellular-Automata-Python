@@ -4,14 +4,14 @@
 # * MASTER TUTORIAL
 # * Paris Saclay University
 
-from matplotlib.animation import FuncAnimation, PillowWriter
+from matplotlib.animation import FuncAnimation, PillowWriter                        # type: ignore
 from random import choices
 import numpy as np
-import matplotlib.colors as color
-import seaborn as sns
+import matplotlib.colors as color                                                   # type: ignore
+import seaborn as sns                                                               # type: ignore
 import matplotlib.pyplot as plt
-from matplotlib.widgets import Slider, Button, CheckButtons,  RectangleSelector
-from matplotlib.patches import Rectangle
+from matplotlib.widgets import Slider, Button, CheckButtons,  RectangleSelector     # type: ignore
+from matplotlib.patches import Rectangle                                            # type: ignore
 
 
 def CountType(cells: list, category: str) -> int:
@@ -43,8 +43,12 @@ def GenerateCA(n: int, cellcolors: dict, weights: dict | None = None) -> np.ndar
         weights_ = None
     else:
         weights_ = [weights[category] for category, *_ in cells]    # Collect the weights in list from the weight dictionary.
+    try:    # Generate the cells randomly
+        randca = choices(cells, weights=weights_, k=n * n)
+    except ValueError:
+        print("** CA ERROR: At least one weight must be greater to 0.")
+        exit()
 
-    randca = choices(cells, weights=weights_, k=n * n)                          # Generate the cells randomly
     return np.array([[randca[i + n * j] for i in range(n)] for j in range(n)])  # Reshape to get a 2D array
 
 
@@ -110,8 +114,8 @@ def SimulateCA(cellautomaton0: np.ndarray, f, duration: int = 100) -> list:
         for i in range(duration):
             simulation.append(ca_step(simulation[i], f))
     except ValueError:
-        print("** CA ERROR: Invalid cell format encountered. A condition on cell is probably missing in the local function.")
-        exit()  # End program
+        ("** CA ERROR: Invalid cell format encountered. A condition on cell is probably missing in the local function.")
+        exit()  # End prprintogram
 
     return simulation
 
@@ -254,7 +258,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
         return curves
     slider.on_changed(updateslider)  # Event on slider.
 
-    #|| ON/OFF autorun Button.
+    # || ON/OFF autorun Button.
     ax_autorun_button = fig.add_axes([X0+0.02, Y0 - 0.05, 0.015, 0.03])  # ON/OFF button is on the left side of slider.
     _autorun_button = Button(ax_autorun_button, " ")
 
@@ -273,7 +277,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
         buttonlabeling(autorun.get())                   # Update the button label.
     _autorun_button.on_clicked(click_autorun_button)    # Event on autorun button.
 
-    #|| Button save Animation
+    # || Button save Animation
     ax_save_button = fig.add_axes([X0, Y0 - 0.05, 0.015, 0.03])  # ON/OFF button is on the left side of slider.
     SAVED_ICON = "$\u25BD$"  # triangle pointing down, empty shape
     SAVE_ICON = "$\u25BC$"   # triangle pointing down, filled shape
@@ -290,7 +294,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
         _save_button.label.set_text(SAVED_ICON)
     _save_button.on_clicked(click_save_button)  # Event on save button.
 
-    #|| Tooltips handler
+    # || Tooltips handler
     axmsg = fig.add_axes([X0, Y0 - 0.09, 0.45, 0.03], facecolor="gainsboro")   # The message zone is below the slider
 
     def msgclear():  # Clear the message box.
@@ -331,7 +335,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
 
     msgclear()
 
-    #|| Display simulation
+    # || Display simulation
     def updateanimation(_):         # Update from animation.
         if autorun.get():           # The update is conditional on the state of autorun.
             step = (slider.val + 1) % slider.valmax
@@ -341,8 +345,6 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
     fig.show()
     return _animation
 
-
-# Cellular Automaton graphical user  interface.
 
 # Class to manage weights for random definition of the CA grid
 class Weights:
@@ -365,7 +367,7 @@ class Weights:
         return isweight
 
 
-# Global variables used for passing parameters to sliders and buttons
+# Global variables used for sliders and buttons
 _gridsize = 1           # CA grid size
 _duration = 1           # Duration of the simulation
 _selector = None        # Rectangular selector.
@@ -418,9 +420,9 @@ def GuiCA(
     SLIDDIST: float = 0.05                  # Distance between two weight sliders.
     SLIDCOLOR: str = "gray"                 # Slider color bar.
 
-    RADIOFFSET: float = 0.015               # Extra incompressible distance in a radio button.
+    RADIOFFSET: float = 0.015               # Minimal incompressible distance in a radio button.
     RADIOSTRSTRIDE: float = 0.013           # Stride for characters in radio button.
-    RADIOSTRIDE: float = 0.01               # Stride  between two radio buttons.
+    RADIOSTRIDE: float = 0.01               # Stride between two radio buttons.
     BUTTONCOLOR: str = "silver"             # Standard color of buttons.
     HOVERCOLOR: str = "lightsalmon"         # Hover color of buttons.
     UNSELECTCOLOR: str = 'lemonchiffon'     # Color of the radio button when it is unselected.
@@ -445,7 +447,7 @@ def GuiCA(
     wm = plt.get_current_fig_manager()
     wm.window.wm_geometry("+50+100")
 
-    #|| Grid size slider ======
+    # || Grid size slider ======
     axsize_slider = plt.axes([SLIDLEFT, 0.92, SLIDSIZE, WIDGHEIGHT])
     size_slider = Slider(
         axsize_slider,
@@ -463,7 +465,7 @@ def GuiCA(
         _gridsize = val
     size_slider.on_changed(update_slider_size)  # Event on size slider
 
-    #|| Duration/Time sliders ======
+    # || Duration/Time sliders ======
     axduration_slider = plt.axes([SLIDLEFT, 0.86, SLIDSIZE, WIDGHEIGHT])
     duration_slider = Slider(
         axduration_slider,
@@ -481,7 +483,7 @@ def GuiCA(
         _duration = val
     duration_slider.on_changed(update_slider_duration)  # Event on duration slider
 
-    #|| Weights  sliders ======
+    # || Weights  sliders ======
     # header and rectangle
     FRMLEFT: float = 0.07  # Frame left position
     FRMSIZE: float = 0.86  # Frame size
@@ -517,7 +519,7 @@ def GuiCA(
         )
         weight_sliders.append(slider)
 
-    # All possible updates for weight slide from 0 to 9
+    # All possible updates for weight sliders from 0 to 9
     # ! I don't find a better solution than setting i for types[i] by an explicit number. This limits the number of used parameters to 10.
     # [lambda val:weights.set(types[i],val) for i in range(n)] and [lambda val:weights.set(category,val) for category in types]  DOES NOT WORK (i = max for all buttons !?)
     weight_update_fun = [
@@ -536,7 +538,7 @@ def GuiCA(
     for i in range(n):  # Link events to weight sliders
         weight_sliders[i].on_changed(weight_update_fun[i])
 
-    #|| New CA button ===
+    # || New CA button ===
     axnew_button = plt.axes([FRMLEFT, 0.11, FRMSIZE, WIDGHEIGHT])
     new_button = Button(axnew_button, "NEW", color=BUTTONCOLOR, hovercolor=HOVERCOLOR)
 
@@ -570,7 +572,7 @@ def GuiCA(
 
         # Radio button of categories
         radiofullwidth = n * max(map(len, types)) * RADIOSTRSTRIDE + n * RADIOSTRIDE + n * RADIOFFSET  # Full width of the button bar
-        radiospacing = radiofullwidth/n                                           # Distance between 2 radio buttons.
+        radiospacing = radiofullwidth/n                                                                # Distance between 2 radio buttons.
 
         axradio = [figca0.add_axes([(0.5 - radiofullwidth/2) + i * radiospacing + RADIOSTRIDE, 0.02, radiospacing - RADIOSTRIDE, WIDGHEIGHT/1.5])
                    for i in range(n)]
@@ -584,14 +586,14 @@ def GuiCA(
         _radiotypes[0].color = SELECTCOLOR  # initialization of the radio button bar
         _cell = list(cellcolors.keys())[0]
 
-        def radioclick(index):  # radio click call back with the index of the type as input.
+        def radioclick(index):              # radio click call back with the index of the type as input.
             global _cell
             for rb in _radiotypes:
                 rb.color = UNSELECTCOLOR
             _radiotypes[index].color = SELECTCOLOR
             _cell = cells[index]
 
-        radioclickfun = [               # Manually pre-defined 10 on-click radio buttons functions. the problem is the same as weight sliders.
+        radioclickfun = [                   # Manually pre-defined 10 on-click radio buttons functions. the problem is the same as weight sliders.
             lambda _: radioclick(0),
             lambda _: radioclick(1),
             lambda _: radioclick(2),
@@ -605,7 +607,7 @@ def GuiCA(
         for i in range(n):
             _radiotypes[i].on_clicked(radioclickfun[i])
 
-        #|| Selector
+        # || Region Selector
         def onselect(eclick, erelease):
             global _cell
             xmin, xmax, ymin, ymax = (round(val) for val in _selector.extents)
@@ -620,13 +622,13 @@ def GuiCA(
                                       interactive=False,
                                       spancoords='data',
                                       use_data_coordinates=True,
-                                      props=dict(facecolor='gray', edgecolor='black', linewidth=2, alpha=0.3, fill=True),
+                                      props=dict(facecolor='red', edgecolor='black', linewidth=2, alpha=0.3, fill=True),
                                       )
         figca0.show()
         return  # end of newclick function
     new_button.on_clicked(newclick)
 
-    #|| Run Button ======
+    # || Run Button ======
     axrun_button = plt.axes([FRMLEFT, 0.025, FRMSIZE, WIDGHEIGHT])
     run_button = Button(axrun_button, "RUN", color=BUTTONCOLOR, hovercolor=HOVERCOLOR)
 
