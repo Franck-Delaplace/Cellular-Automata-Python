@@ -118,12 +118,12 @@ def SimulateCA(cellautomaton0: np.ndarray, f, duration: int = 100) -> list:
             simulation.append(ca_step(simulation[i], f))
     except ValueError:
         ("** CA ERROR: Invalid cell format encountered. A condition on cell is probably missing in the local function.")
-        exit()  # End prprintogram
+        exit()
 
     return simulation
 
 
-# Switch for managing the autorun in ShowSimulation.
+# Switch for managing the Boolean flag.
 class Switch:
     "Boolean value toggling for switch control."
     state: bool
@@ -363,6 +363,7 @@ class Weights:
     def get(self, state):            # Get the weight of a state.
         return self.weights[state]
 
+
 # Global variables used for sliders and buttons in GuiCA
 _gridsize = 1           # CA grid .
 _duration = 1           # Duration of the simulation.
@@ -516,7 +517,7 @@ def GuiCA(
         weight_sliders.append(slider)
 
     # All possible updates for weight sliders from 0 to 9
-    # ! I don't find a better solution than setting i for types[i] by an explicit number. This limits the number of used parameters to 10.
+    # ! I don't find a better solution than setting i for types[i] by an explicit number. This constrains the number of used parameters to 10.
     # [lambda val:weights.set(types[i],val) for i in range(n)] and [lambda val:weights.set(category,val) for category in types]  DOES NOT WORK (i = max for all buttons !?)
     weight_update_fun = [
         lambda val: weights.set(types[0], val),
@@ -538,7 +539,7 @@ def GuiCA(
     axnew_button = figui.add_axes([FRMLEFT, 0.11, FRMSIZE, WIDGHEIGHT])
     new_button = Button(axnew_button, "NEW", color=BUTTONCOLOR, hovercolor=HOVERCOLOR)
 
-    def newclick(_):  # Callback of new button.
+    def newclick(_):  # Callback of NEW button.
         global _selector
         global _cell
         global _radiotypes
@@ -550,46 +551,46 @@ def GuiCA(
         if plt.fignum_exists(figca0_title):                 # If the figure already exists then use it.
             plt.figure(figca0_title)                        # Activate the figure of CA0.
             figca0 = plt.gcf()
-        else:                                               # Create a new figure for the visualization of the initial CA = CA0.
+        else:                                               # Otherwise create a new figure for the visualization of the initial CA = CA0.
             figsize = (figheight, figheight + 0.5)
             figca0 = plt.figure(figca0_title, figsize=figsize)
             wm = plt.get_current_fig_manager()
             wm.window.wm_geometry("+450+150")
 
-        # Cellular automata initialization
-        # axca0 = figca0.add_axes([0.0125, 0.025, 0.97, 0.97])
-        axca0 = plt.axes([0.01, 0.0, 0.98, 0.98])
+        # Cellular automata initialization - generation of the initial CA (CA0).
+        axca0 = figca0.add_axes([0.01, 0.0, 0.98, 0.98])
         plt.subplots_adjust(bottom=0.1)
-        axca0.set_aspect('equal', anchor=(0.5, 1.0))
+        axca0.set_aspect('equal', anchor=(0.5, 1.0))  # The CA0 drawing is anchored in the middle top.
 
         _ca0 = GenerateCA(_gridsize, cellcolors, weights.weights)
         ca0code = np.array([[types.index(category) for category, *_ in row] for row in _ca0])
         ca0view = DrawCA(ca0code, colors, axca0).collections[0]
 
         # Radio button of categories
-        radiofullwidth = n * max(map(len, types)) * RADIOSTRSTRIDE + n * RADIOSTRIDE + n * RADIOFFSET  # Full width of the button bar
-        radiospacing = radiofullwidth/n                                                                # Distance between 2 radio buttons.
+        radiofullwidth = n * (max(map(len, types)) * RADIOSTRSTRIDE + RADIOSTRIDE + RADIOFFSET)     # Full width of the button bar.
+        radiospacing = radiofullwidth/n                                                             # Distance between 2 radio buttons.
 
         axradio = [figca0.add_axes([(0.5 - radiofullwidth/2) + i * radiospacing + RADIOSTRIDE, 0.02, radiospacing - RADIOSTRIDE, WIDGHEIGHT/1.5])
                    for i in range(n)]
 
         _radiotypes = [Button(axradio[i], category, color=UNSELECTCOLOR, hovercolor=HOVERCOLOR) for i, category in enumerate(types)]
 
-        for rb in _radiotypes:              # Style of the radio button labels.
+        for rb in _radiotypes:              # Set style of the radio button labels.
             rb.label.set_fontfamily("fantasy")
             rb.label.set_fontsize(10)
 
-        _radiotypes[0].color = SELECTCOLOR  # Initialization of the radio button bar
-        _cell = list(cellcolors.keys())[0]
+        # Initialization of the radio button bar
+        _radiotypes[0].color = SELECTCOLOR  # The first button is the default button. Assign to the color 'selected'
+        _cell = list(cellcolors.keys())[0]  # the default cell is the first one in cellcolors.
 
-        def radioclick(index):                      # Radio click call back with the index of the type as input.
+        def radioclick(index : int):                      # Radio click call back with the index of the type as input.
             global _cell
             for rb in _radiotypes:                  # Unselect all radio buttons.
                 rb.color = UNSELECTCOLOR
             _radiotypes[index].color = SELECTCOLOR  # Select the radio button corresponding to index.
             _cell = cells[index]
 
-        radioclickfun = [                   # Manually pre-defined 10 on-click radio buttons functions. the problem is the same as weight sliders.
+        radioclickfun = [  # Manually pre-defined 10 on-click radio-button functions. the problem is the same as weight sliders.
             lambda _: radioclick(0),
             lambda _: radioclick(1),
             lambda _: radioclick(2),
@@ -607,7 +608,7 @@ def GuiCA(
         def onselect(eclick, erelease):
             global _cell
             xmin, xmax, ymin, ymax = (round(val) for val in _selector.extents)
-            _ca0[ymin:ymax, xmin:xmax] = _cell   # Fill the array area with the current default cell.
+            _ca0[ymin:ymax, xmin:xmax] = _cell   # Fill the selected array area with the default cell.
             category, *_ = _cell
             ca0code[ymin:ymax, xmin:xmax] = types.index(category)   # Fill the array view area with the index of _cell category.
             ca0view.set_array(ca0code)
