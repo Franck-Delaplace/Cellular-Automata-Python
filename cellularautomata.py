@@ -4,6 +4,7 @@
 # * MASTER TUTORIAL
 # * Paris Saclay University
 
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 from random import choices
 import numpy as np
@@ -29,6 +30,7 @@ def CountType(cells: list, category: str) -> int:
 
 def GenerateCA(n: int, cellcolors: dict, weights: dict | None = None) -> np.ndarray:
     """Generate a n*n 2D cellular automaton randomly.
+
     Args:
     n (int): height and width of the grid
     cellcolors (dict): cell types with their associated cellcolors
@@ -79,6 +81,7 @@ def DrawCA(cellautomaton: np.ndarray, colors: list, ax):
 
 def SimulateCA(cellautomaton0: np.ndarray, f, duration: int = 100) -> list:
     """Compute a simulation of a cellular automaton.
+
     Args:
         cellautomaton0 (np.ndarray): initial cellular automata
         f (fun): local update function
@@ -173,9 +176,9 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
     # Figure definition
     figtitle = "CELLULAR AUTOMATON - FD MASTER COURSE"  # Feel free to change the title.
 
-    plt.rcParams["font.family"] = "fantasy"  # 'monospace'  'sans'
-    plt.rcParams["font.size"] = 11
-    plt.rcParams["text.color"] = "black"
+    mpl.rcParams["font.family"] = "fantasy" 
+    mpl.rcParams["font.size"] = 11
+    mpl.rcParams["text.color"] = "black"
 
     if plt.fignum_exists(figtitle):  # MANDATORY. If a new simulation is launched the previous window must be closed to avoid error.
         plt.figure(figtitle)                            # activate the figure of the simulation.
@@ -189,27 +192,27 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
         wgeometry = "+450+150"
         figsize = (2 * figheight, figheight)
 
-    fig = plt.figure(figtitle, figsize=figsize)         # Create a simulation figure.
+    fig = plt.figure(figtitle, figsize=figsize)         # Create the simulation figure.
     wm = plt.get_current_fig_manager()
     wm.window.wm_geometry(wgeometry)
 
     # Get colors and types.
     cells = list(cellcolors.keys())
-    types = {category: i for i, (category, *_) in enumerate(cells)}  # types is a dictionary {category:position in cells}.
+    types = {category: i for i, (category, *_) in enumerate(cells)}  # Types is a dictionary {category:position in cells}.
     colors = [cellcolors[cell] for cell in cells]
 
-    # Axe of CA + initialization of the CA display.
+    # Axis of CA + initialization of the CA display.
     X0 = 0.02  # Left bottom position of the CA
     Y0 = 0.1
     axca = fig.add_axes([X0, Y0, 0.45, 0.9])
     axca.set_aspect('equal', adjustable='box', anchor=(0, 1))
 
-    # CA initialization where the cells are encoded by their index of type in types to properly suit with colors.
+    # CA initialization. The cells are encoded by their index of type in types to properly suit with colors.
     ca_coded = np.array([[types[category] for category, *_ in row] for row in simulation[0]])
     caview = DrawCA(ca_coded, colors, axca).collections[0]
 
     # Axe of curves
-    CHEIGHT = 0.87  # Height of the curve axe.
+    CHEIGHT: float = 0.87  # Height of the curve axe.
     axcurve = fig.add_axes([X0 + 0.52, Y0, 0.44, CHEIGHT])
     axcurve.set_xlim(0, n)
     axcurve.set_ylim(0, len(simulation[0]) ** 2)
@@ -244,7 +247,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
         return curves[category].set_visible(not curves[category].get_visible())  # Toggle the visibility of curve.
     _curve_button.on_clicked(chxboxupdate)
 
-    # || Slider characterization
+    # || Slider definition to control the progression of the simulation
     axslider = fig.add_axes([X0 + 0.04, Y0 - 0.07, 0.412, 0.07])    # The slider is located below the cellular automaton display.
     slider = Slider(axslider, "", 0, n - 1, valstep=1, valinit=0, facecolor="gray", valfmt="%3d")
 
@@ -252,19 +255,19 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
 
     def updateslider(step):  # Update of slider.
         ca_coded = np.array([[types[category] for category, *_ in row] for row in simulation[step]])
-        caview.set_array(ca_coded)    # Update CA
+        caview.set_array(ca_coded)          # Update CA
         for category in types:              # Update type count curves
             curves[category].set_data(xrange[:step], typescount[category][:step])
         return curves
-    slider.on_changed(updateslider)  # Event on slider.
+    slider.on_changed(updateslider)         # Event on slider.
 
     # || ON/OFF autorun Button.
     ax_autorun_button = fig.add_axes([X0+0.02, Y0 - 0.05, 0.015, 0.03])  # ON/OFF button is on the left side of slider.
     _autorun_button = Button(ax_autorun_button, " ")
 
     # Button labeling to indicate autorun status.
-    OFF_ICON = "$\u25a0$"  # square
-    ON_ICON = "$\u25B6$"   # right triangle
+    OFF_ICON: str = "$\u25a0$"  # square
+    ON_ICON: str = "$\u25B6$"   # right triangle
 
     def buttonlabeling(state: bool):  # Set the label ON/OFF to the button w.r.t. to a Boolean state.
         _autorun_button.label.set_text({False: ON_ICON, True: OFF_ICON}[state])
@@ -286,7 +289,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
 
     def click_save_button(_):
         global _save_button
-        fps = 1000//delay  # estimation of the fps from the delay between frames to have the same time.
+        fps = 1000//delay  # Estimation of the fps from the delay between frames to have the same time.
         writer = PillowWriter(fps=fps)
         _animation.save("CA-SIMULATION.gif", writer=writer)
         msgput("Save completed!")
@@ -295,19 +298,19 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
     _save_button.on_clicked(click_save_button)  # Event on save button.
 
     # || Tooltips handler
-    axmsg = fig.add_axes([X0, Y0 - 0.09, 0.45, 0.03], facecolor="gainsboro")   # The message zone is below the slider
+    axmsg = fig.add_axes([X0, Y0 - 0.09, 0.45, 0.03], facecolor="gainsboro")   # The message area is below the slider
 
-    def msgclear():  # Clear the message box.
+    def msgclear():         # Clear the message box.
         axmsg.cla()
         axmsg.set_xticks([])
         axmsg.set_yticks([])
 
-    def msgput(msg: str):  # Print a message in the message box.
+    def msgput(msg: str):   # Print a message in the message box.
         msgclear()
         axmsg.text(0.01, 0.2, msg, fontsize=8, fontfamily='serif', fontstyle='italic')
 
-    # handling events
-    def hover(event):  # Event over axes handler
+    # handling events :  move + click on the axes.
+    def hover(event):
         if ax_save_button.contains(event)[0]:
             if saved.get():
                 msgput("Click to save the simulation in GIF - Simulation already saved.")
@@ -322,7 +325,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
         else:
             msgclear()
 
-    def onclick(event):  # Click on axes handler.
+    def onclick(event):
         if ax_save_button.contains(event)[0]:
             msgput("Save in progress.")
         elif ax_autorun_button.contains(event)[0]:
@@ -346,7 +349,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
     return _animation
 
 
-# Class to manage weights for random definition of the CA grid
+# Class to manage weights for random definition of the CA grid.
 class Weights:
     "Weights = dictionary associating cells to their weights which are floats between 0 and 1"
     weights: dict = {}
@@ -357,24 +360,17 @@ class Weights:
     def set(self, state: int, val):  # Set the weight of a state.
         self.weights[state] = val
 
-    def get(self, state):  # Get the weight of a state.
+    def get(self, state):            # Get the weight of a state.
         return self.weights[state]
 
-    def check(self):  # Check whether the weights are consistent. i.e. 0 <= w <= 1.
-        isweight = True
-        for w in self.weights.values():
-            isweight = isweight and 0.0 <= w <= 1.0
-        return isweight
-
-
-# Global variables used for sliders and buttons
-_gridsize = 1           # CA grid size
-_duration = 1           # Duration of the simulation
+# Global variables used for sliders and buttons in GuiCA
+_gridsize = 1           # CA grid .
+_duration = 1           # Duration of the simulation.
 _selector = None        # Rectangular selector.
-_cell = None            # Current cell for CA0 painting.
+_cell = None            # Current cell used to paint the selected area with this cell.
 _radiobutton = None     # Radio button to select the current cell.
 _radiotypes = None      # Radio button on types.
-_ca0 = None             # CA0 = initial automaton
+_ca0 = None             # CA0 = initial automaton.
 
 
 def GuiCA(
@@ -419,7 +415,7 @@ def GuiCA(
     SLIDSTART: float = 0.7                  # Vertical start position for weight sliders.
     SLIDDIST: float = 0.05                  # Distance between two weight sliders.
     SLIDCOLOR: str = "gray"                 # Slider color bar.
-
+    # Radio button parameters
     RADIOFFSET: float = 0.015               # Minimal incompressible distance in a radio button.
     RADIOSTRSTRIDE: float = 0.013           # Stride for characters in radio button.
     RADIOSTRIDE: float = 0.01               # Stride between two radio buttons.
@@ -435,7 +431,7 @@ def GuiCA(
     types = [type for type, *_ in cells]  # get all types of cells
     colors = cellcolors.values()
     n = len(types)
-    weights = Weights(types, 0.5)  # Create weights from types.
+    weights = Weights(types, 0.5)   # Create weights from types.
 
     # Initialization of the figure
     plt.rcParams["toolbar"] = "None"    # No tool bars on GUI figure.
@@ -583,14 +579,14 @@ def GuiCA(
             rb.label.set_fontfamily("fantasy")
             rb.label.set_fontsize(10)
 
-        _radiotypes[0].color = SELECTCOLOR  # initialization of the radio button bar
+        _radiotypes[0].color = SELECTCOLOR  # Initialization of the radio button bar
         _cell = list(cellcolors.keys())[0]
 
-        def radioclick(index):              # radio click call back with the index of the type as input.
+        def radioclick(index):                      # Radio click call back with the index of the type as input.
             global _cell
-            for rb in _radiotypes:
+            for rb in _radiotypes:                  # Unselect all radio buttons.
                 rb.color = UNSELECTCOLOR
-            _radiotypes[index].color = SELECTCOLOR
+            _radiotypes[index].color = SELECTCOLOR  # Select the radio button corresponding to index.
             _cell = cells[index]
 
         radioclickfun = [                   # Manually pre-defined 10 on-click radio buttons functions. the problem is the same as weight sliders.
@@ -638,7 +634,7 @@ def GuiCA(
         global _animation
         global _ca0
 
-        if _ca0 is None:
+        if _ca0 is None:  # When CA0 is not yet generated.
             _ca0 = GenerateCA(_gridsize, cellcolors, weights.weights)
 
         simulation = SimulateCA(_ca0, local_fun, duration=_duration)
