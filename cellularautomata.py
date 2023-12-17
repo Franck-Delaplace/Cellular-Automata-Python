@@ -435,9 +435,9 @@ def GuiCA(
     weights = Weights(types, 0.5)   # Create weights from types.
 
     # Initialization of the figure
-    plt.rcParams["toolbar"] = "None"    # No tool bars on GUI figure.
-    plt.rcParams["font.family"] = "sans"
-    plt.rcParams["font.size"] = 8
+    mpl.rcParams["toolbar"] = "None"    # No tool bars on GUI figure.
+    mpl.rcParams["font.family"] = "sans"
+    mpl.rcParams["font.size"] = 8
 
     figui = plt.figure(figsize=(GUIWIDTH + max(map(len, types)) * GUISTEP, GUIHEIGHT), num="GUI")
     ax = figui.add_axes([0, 0, 1, 1])
