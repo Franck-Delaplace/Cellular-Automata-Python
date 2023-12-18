@@ -181,7 +181,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
     mpl.rcParams["font.size"] = 11
     mpl.rcParams["text.color"] = "black"
 
-    if plt.fignum_exists(figtitle):  # MANDATORY. If a new simulation is launched the previous window must be closed to avoid error.
+    if plt.fignum_exists(figtitle):                     # If a new simulation is launched the previous window MUST BE closed to avoid error.
         plt.figure(figtitle)                            # activate the figure of the simulation.
         fig = plt.gcf()
         wm = plt.get_current_fig_manager()              # Get the window position.
@@ -273,7 +273,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
     def buttonlabeling(state: bool):  # Set the label ON/OFF to the button w.r.t. to a Boolean state.
         _autorun_button.label.set_text({False: ON_ICON, True: OFF_ICON}[state])
 
-    buttonlabeling(autorun.get())  # Initialize button label from the initial autorun state.
+    buttonlabeling(autorun.get())     # Initialize button label from the initial autorun state.
 
     def click_autorun_button(_):
         global _autorun_button
@@ -310,7 +310,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
         msgclear()
         axmsg.text(0.01, 0.2, msg, fontsize=8, fontfamily='serif', fontstyle='italic')
 
-    # handling events: move + click on the axes.
+    # Handling events: move + click on the axes.
     def hover(event):
         if ax_save_button.contains(event)[0]:
             if saved.get():
@@ -356,17 +356,17 @@ class Weights:
     weights: dict = {}
 
     def __init__(self, types: list, value: float = 0.0):
-        self.weights = {state: value for state in types}
+        self.weights = {category: value for category in types}
 
-    def set(self, state: int, val):  # Set the weight of a state.
-        self.weights[state] = val
+    def set(self, category, val):  # Set the weight of a category.
+        self.weights[category] = val
 
-    def get(self, state):            # Get the weight of a state.
-        return self.weights[state]
+    def get(self, category):            # Get the weight of a state.
+        return self.weights[category]
 
 
 # Global variables used for sliders and buttons in GuiCA
-_gridsize = 1           # CA grid .
+_gridsize = 1           # CA grid.
 _duration = 1           # Duration of the simulation.
 _selector = None        # Rectangular selector.
 _cell = None            # Current cell used to paint the selected area with this cell.
@@ -394,9 +394,9 @@ def GuiCA(
         duration (int, optional): maximal duration of the simulation. Defaults to 200.
         delay (int, optional): delay in ms between two simulation steps. Defaults to 100.
     """
-    assert all([isinstance(cell, tuple) for cell in cellcolors])   # Check that keys are tuples!
-    assert all([isinstance(category, str) for category, *_ in cellcolors])  # check that the types are strings!
-    assert len(cellcolors) <= 10  # limited to 10 parameters - see program to understand this limitation.
+    assert all([isinstance(cell, tuple) for cell in cellcolors])   # Check that keys are tuples.
+    assert all([isinstance(category, str) for category, *_ in cellcolors])  # check that the types are strings.
+    assert len(cellcolors) <= 10  # limit to 10 parameters - see program to understand this limitation.
     assert figheight > 0
     assert gridsize > 0
     assert duration > 0
@@ -406,9 +406,9 @@ def GuiCA(
     global _duration
 
     # Windows parameters
-    GUIWIDTH: float = 1.5                   # Width of the GUI.
+    GUIWIDTH: float = 1.5                   # Minimal width of the GUI figure.
     GUISTRSTRIDE: float = 0.14              # Stride associated to character used for figure width definition.
-    GUIHEIGHT: int = 4                      # Height of the GUI.
+    GUIHEIGHT: int = 4                      # Height of the GUI figure. This value must be adapted to the number of types.
 
     # Button & Slider parameters
     SLIDLEFT: float = 0.35                  # Left position of sliders.
@@ -584,7 +584,7 @@ def GuiCA(
         _radiotypes[0].color = SELECTCOLOR  # The first button is the default button. Assign to the color 'selected'
         _cell = list(cellcolors.keys())[0]  # the default cell is the first one in cellcolors.
 
-        def radioclick(index: int):                      # Radio click call back with the index of the type as input.
+        def radioclick(index: int):  # Radio click call back with the index of the type as input.
             global _cell
             for rb in _radiotypes:                  # Unselect all radio buttons.
                 rb.color = UNSELECTCOLOR
