@@ -176,7 +176,8 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
     # Figure definition
     figtitle = "CELLULAR AUTOMATON - FD MASTER COURSE"  # Feel free to change the title.
 
-    mpl.rcParams["font.family"] = "fantasy" 
+    # Font style for all texts in the simulation window.
+    mpl.rcParams["font.family"] = "fantasy"
     mpl.rcParams["font.size"] = 11
     mpl.rcParams["text.color"] = "black"
 
@@ -196,7 +197,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
     wm = plt.get_current_fig_manager()
     wm.window.wm_geometry(wgeometry)
 
-    # Get colors and types.
+    # Get colors and types of the cells
     cells = list(cellcolors.keys())
     types = {category: i for i, (category, *_) in enumerate(cells)}  # Types is a dictionary {category:position in cells}.
     colors = [cellcolors[cell] for cell in cells]
@@ -207,7 +208,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
     axca = fig.add_axes([X0, Y0, 0.45, 0.9])
     axca.set_aspect('equal', adjustable='box', anchor=(0, 1))
 
-    # CA initialization. The cells are encoded by their index of type in types to properly suit with colors.
+    # CA initialization. The cells are encoded by their index in types to properly suit with colors in DrawCA.
     ca_coded = np.array([[types[category] for category, *_ in row] for row in simulation[0]])
     caview = DrawCA(ca_coded, colors, axca).collections[0]
 
@@ -223,7 +224,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
         category: [sum([CountType(row, category) for row in ca]) for ca in simulation]
         for category in types}
 
-    visible_curves = [color != "white" for color in colors]  # All curves are visible but the white ones.
+    visible_curves = [color != "white" for color in colors]  # All the curves are visible but those drawn in white color.
     curves = {                                               # The curves are collected to a dictionary {type: counting curve}.
         category: axcurve.plot(
             [0],
@@ -298,7 +299,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
     _save_button.on_clicked(click_save_button)  # Event on save button.
 
     # || Tooltips handler
-    axmsg = fig.add_axes([X0, Y0 - 0.09, 0.45, 0.03], facecolor="gainsboro")   # The message area is below the slider
+    axmsg = fig.add_axes([X0, Y0 - 0.09, 0.45, 0.03], facecolor="gainsboro")   # The message box is below the slider
 
     def msgclear():         # Clear the message box.
         axmsg.cla()
@@ -309,7 +310,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
         msgclear()
         axmsg.text(0.01, 0.2, msg, fontsize=8, fontfamily='serif', fontstyle='italic')
 
-    # handling events :  move + click on the axes.
+    # handling events: move + click on the axes.
     def hover(event):
         if ax_save_button.contains(event)[0]:
             if saved.get():
@@ -336,7 +337,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
     fig.canvas.mpl_connect("motion_notify_event", hover)
     fig.canvas.mpl_connect("button_press_event", onclick)
 
-    msgclear()
+    msgclear()  # Initially clear the message box.
 
     # || Display simulation
     def updateanimation(_):         # Update from animation.
@@ -406,7 +407,7 @@ def GuiCA(
 
     # Windows parameters
     GUIWIDTH: float = 1.5                   # Width of the GUI.
-    GUISTEP: float = 0.15                   # Extra width step associated to characters of type labels.
+    GUISTRSTRIDE: float = 0.14              # Stride associated to character used for figure width definition.
     GUIHEIGHT: int = 4                      # Height of the GUI.
 
     # Button & Slider parameters
@@ -422,14 +423,14 @@ def GuiCA(
     RADIOSTRIDE: float = 0.01               # Stride between two radio buttons.
     BUTTONCOLOR: str = "silver"             # Standard color of buttons.
     HOVERCOLOR: str = "lightsalmon"         # Hover color of buttons.
-    UNSELECTCOLOR: str = 'lemonchiffon'     # Color of the radio button when it is unselected.
+    UNSELECTCOLOR: str = "lemonchiffon"     # Color of the radio button when it is unselected.
     SELECTCOLOR: str = 'gold'               # Color of the radio button when it is selected.
 
     # Initialization of the main variables
     _gridsize = gridsize // 2
     _duration = duration // 2
     cells = list(cellcolors.keys())
-    types = [type for type, *_ in cells]  # get all types of cells
+    types = [category for category, *_ in cells]  # get all types of cells
     colors = cellcolors.values()
     n = len(types)
     weights = Weights(types, 0.5)   # Create weights from types.
@@ -439,7 +440,7 @@ def GuiCA(
     mpl.rcParams["font.family"] = "sans"
     mpl.rcParams["font.size"] = 8
 
-    figui = plt.figure(figsize=(GUIWIDTH + max(map(len, types)) * GUISTEP, GUIHEIGHT), num="GUI")
+    figui = plt.figure(figsize=(GUIWIDTH + max(map(len, types)) * GUISTRSTRIDE, GUIHEIGHT), num="GUI")
     ax = figui.add_axes([0, 0, 1, 1])
     wm = plt.get_current_fig_manager()
     wm.window.wm_geometry("+50+100")
@@ -583,7 +584,7 @@ def GuiCA(
         _radiotypes[0].color = SELECTCOLOR  # The first button is the default button. Assign to the color 'selected'
         _cell = list(cellcolors.keys())[0]  # the default cell is the first one in cellcolors.
 
-        def radioclick(index : int):                      # Radio click call back with the index of the type as input.
+        def radioclick(index: int):                      # Radio click call back with the index of the type as input.
             global _cell
             for rb in _radiotypes:                  # Unselect all radio buttons.
                 rb.color = UNSELECTCOLOR

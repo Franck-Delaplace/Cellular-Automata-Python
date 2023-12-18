@@ -40,6 +40,7 @@
         "gridsize",
         "GUIHEIGHT",
         "GUISTEP",
+        "GUISTRSTRIDE",
         "GUIWIDTH",
         "HOVERCOLOR",
         "isweight",
