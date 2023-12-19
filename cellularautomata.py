@@ -463,14 +463,14 @@ def GuiCA(
         axneighbors_radio.spines[pos].set_color(FRMEDGECOLOR)
         axneighbors_radio.spines[pos].set_linewidth(2)
 
-    neighborhood = {"Moore": MOORE, "Von Neumann": VONNEUMANN}
+    neighborhood = {"Moore": MOORE, "Von Neumann": VONNEUMANN}  # Define the neighborhood selection by a dictionary
     neighbors_radio = RadioButtons(axneighbors_radio,
                                    list(neighborhood.keys()),
                                    activecolor=BUTTONCOLOR,
                                    radio_props={'s': 30},
                                    )
 
-    def neighborsclick(label):
+    def neighborsclick(label):  # Radio neighborhood callback.
         global _neighborhood
         _neighborhood = neighborhood[label]
     neighbors_radio.on_clicked(neighborsclick)
