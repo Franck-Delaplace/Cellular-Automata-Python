@@ -414,10 +414,10 @@ def GuiCA(
     GUISTRSTRIDE: float = 0.12              # Stride associated to character used for figure width definition.
     GUIHEIGHT: int = 5                     # Height of the GUI figure. This value must be adapted to the number of types.
 
-    # Rectangle 
-    FRMLEFT: float = 0.07  # Frame left position
-    FRMSIZE: float = 0.86  # Frame size
-    EDGECOLOR: str = "darkgray"
+    # Rectangle
+    FRMLEFT: float = 0.07                   # Frame left position
+    FRMSIZE: float = 0.86                   # Frame size
+    FRMEDGECOLOR: str = "darkgray"          # Frame color
     # Button & Slider parameters
     SLIDLEFT: float = 0.35                  # Left position of sliders.
     SLIDSIZE: float = 0.4                   # Size of sliders.
@@ -456,7 +456,7 @@ def GuiCA(
     #|| Neighborhood radio button ===
     axneighbors_radio = figui.add_axes([FRMLEFT, 0.92, FRMSIZE, WIDGHEIGHT])
     for pos in ['left', 'bottom','right','top']:
-        axneighbors_radio.spines[pos].set_color(EDGECOLOR)
+        axneighbors_radio.spines[pos].set_color(FRMEDGECOLOR)
         axneighbors_radio.spines[pos].set_linewidth(2)
 
     neighborhood = {"Moore":MOORE,"Von Neumann":VONNEUMANN}
@@ -517,7 +517,7 @@ def GuiCA(
             FRMSIZE,
             0.60,
             facecolor="whitesmoke",
-            edgecolor=EDGECOLOR,
+            edgecolor=FRMEDGECOLOR,
             linewidth=2,
         )
     )
