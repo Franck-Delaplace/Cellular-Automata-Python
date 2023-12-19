@@ -78,6 +78,7 @@ def DrawCA(cellautomaton: np.ndarray, colors: list, ax):
         ax=ax,
     )
 
+
 MOORE: list = [
             (0, -1),
             (0, 1),
@@ -88,12 +89,14 @@ MOORE: list = [
             (-1, 1),
             (-1, -1),
         ]
-VONNEUMANN: list =[
+VONNEUMANN: list = [
             (0, -1),
             (0, 1),
             (-1, 0),
             (1, 0),
         ]
+
+
 def SimulateCA(cellautomaton0: np.ndarray, f, neighborhood=MOORE, duration: int = 100) -> list:
     """Compute a simulation of a cellular automaton.
 
@@ -155,6 +158,7 @@ _autorun_button = None  # Button autorun ON/OFF, must be global to properly work
 _save_button = None     # Button to save Simulation, must be global to properly work.
 _curve_button = None    # CheckBox Button for curves, must be global to properly work.
 
+
 def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: int = 5, delay: int = 100):
     """Display the simulation trace of a cellular automaton.
 
@@ -189,6 +193,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
 
     if plt.fignum_exists(figtitle):                     # If a new simulation is launched the previous window MUST BE closed to avoid error.
         plt.figure(figtitle)
+        fig = plt.gcf()
         wm = plt.get_current_fig_manager()              # Get the window geometry and figure size
         wgeometry = wm.window.geometry()
         wgeometry = wgeometry[wgeometry.index("+"):]    # Keep the position only and remove the size. NECESSARY for appropriate figure scaling.
@@ -373,11 +378,10 @@ class Weights:
 # Global variables used for sliders and buttons in GuiCA
 _gridsize = 1           # CA grid.
 _duration = 1           # Duration of the simulation.
-_selector = None        # Rectangular selector.
 _cell = None            # Current cell used to paint the selected area with this cell.
-_radiotypes = None      # Radio button on types.
 _ca0 = None             # CA0 = initial automaton.
 _neighborhood = MOORE   # Cell neighborhood.
+
 
 def GuiCA(
     local_fun,
@@ -453,17 +457,17 @@ def GuiCA(
     wm = plt.get_current_fig_manager()
     wm.window.wm_geometry("+50+100")
 
-    #|| Neighborhood radio button ===
+    # || Neighborhood radio button ===
     axneighbors_radio = figui.add_axes([FRMLEFT, 0.92, FRMSIZE, WIDGHEIGHT])
-    for pos in ['left', 'bottom','right','top']:
+    for pos in ['left', 'bottom', 'right', 'top']:
         axneighbors_radio.spines[pos].set_color(FRMEDGECOLOR)
         axneighbors_radio.spines[pos].set_linewidth(2)
 
-    neighborhood = {"Moore":MOORE,"Von Neumann":VONNEUMANN}
-    neighbors_radio = RadioButtons(axneighbors_radio, 
+    neighborhood = {"Moore": MOORE, "Von Neumann": VONNEUMANN}
+    neighbors_radio = RadioButtons(axneighbors_radio,
                                    list(neighborhood.keys()),
                                    activecolor=BUTTONCOLOR,
-                                   radio_props={'s':30},
+                                   radio_props={'s': 30},
                                    )
 
     def neighborsclick(label):
@@ -566,9 +570,7 @@ def GuiCA(
     new_button = Button(axnew_button, "NEW", color=BUTTONCOLOR, hovercolor=HOVERCOLOR)
 
     def newclick(_):  # Callback of NEW button.
-        global _selector
         global _cell
-        global _radiotypes
         global _ca0
 
         # Figure of initial CA generation
@@ -599,21 +601,21 @@ def GuiCA(
         axradio = [figca0.add_axes([(0.5 - radiofullwidth/2) + i * radiospacing + RADIOSTRIDE, 0.02, radiospacing - RADIOSTRIDE, WIDGHEIGHT/1.5])
                    for i in range(n)]
 
-        _radiotypes = [Button(axradio[i], category, color=UNSELECTCOLOR, hovercolor=HOVERCOLOR) for i, category in enumerate(types)]
+        radiotypes = [Button(axradio[i], category, color=UNSELECTCOLOR, hovercolor=HOVERCOLOR) for i, category in enumerate(types)]
 
-        for rb in _radiotypes:              # Set style of the radio button labels.
+        for rb in radiotypes:              # Set style of the radio button labels.
             rb.label.set_fontfamily("fantasy")
             rb.label.set_fontsize(8)
 
         # Initialization of the radio button bar
-        _radiotypes[0].color = SELECTCOLOR  # The first button is the default button. Assign to the color 'selected'
+        radiotypes[0].color = SELECTCOLOR  # The first button is the default button. Assign to the color 'selected'
         _cell = list(cellcolors.keys())[0]  # the default cell is the first one in cellcolors.
 
         def radioclick(index: int):  # Radio click call back with the index of the type as input.
             global _cell
-            for rb in _radiotypes:                  # Unselect all radio buttons.
+            for rb in radiotypes:                  # Unselect all radio buttons.
                 rb.color = UNSELECTCOLOR
-            _radiotypes[index].color = SELECTCOLOR  # Select the radio button corresponding to index.
+            radiotypes[index].color = SELECTCOLOR  # Select the radio button corresponding to index.
             _cell = cells[index]
 
         radioclickfun = [  # Manually pre-defined 10 on-click radio-button functions. the problem is the same as weight sliders.
@@ -628,25 +630,25 @@ def GuiCA(
             lambda _: radioclick(8),
             lambda _: radioclick(9)]
         for i in range(n):
-            _radiotypes[i].on_clicked(radioclickfun[i])
+            radiotypes[i].on_clicked(radioclickfun[i])
 
         # || Region Selector
         def onselect(eclick, erelease):
             global _cell
-            xmin, xmax, ymin, ymax = (round(val) for val in _selector.extents)
+            xmin, xmax, ymin, ymax = (round(val) for val in selector.extents)
             _ca0[ymin:ymax, xmin:xmax] = _cell   # Fill the selected array area with the default cell.
             category, *_ = _cell
             ca0code[ymin:ymax, xmin:xmax] = types.index(category)   # Fill the array view area with the index of _cell category.
             ca0view.set_array(ca0code)
 
-        _selector = RectangleSelector(axca0,
-                                      onselect,
-                                      button=[1, 3],
-                                      interactive=False,
-                                      spancoords='data',
-                                      use_data_coordinates=True,
-                                      props=dict(facecolor='red', edgecolor='black', linewidth=2, alpha=0.3, fill=True),
-                                      )
+        selector = RectangleSelector(axca0,
+                                     onselect,
+                                     button=[1, 3],
+                                     interactive=False,
+                                     spancoords='data',
+                                     use_data_coordinates=True,
+                                     props=dict(facecolor='red', edgecolor='black', linewidth=2, alpha=0.3, fill=True),
+                                     )
         figca0.show()
         return  # end of newclick function
     new_button.on_clicked(newclick)
