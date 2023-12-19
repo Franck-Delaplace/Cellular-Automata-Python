@@ -382,7 +382,6 @@ _neighborhood = MOORE   # Cell neighborhood.
 def GuiCA(
     local_fun,
     cellcolors: dict,
-    guiheight:int = 3,
     figheight: int = 5,
     gridsize: int = 100,
     duration: int = 200,
@@ -394,7 +393,6 @@ def GuiCA(
     Args:
         local_fun (function): local update function of the CA.
         cellcolors (dict): {cell:color} colors associated to cells. Recall that a cell is a tuple (type, states ..)
-        guiheight (int, optional): height of the gui of the simulation view. Defaults to 3.
         figheight (int, optional): height of the figure of the simulation view. Defaults to 5.
         gridsize (int, optional): maximal size of the CA grid. Defaults to 100.
         duration (int, optional): maximal duration of the simulation. Defaults to 200.
