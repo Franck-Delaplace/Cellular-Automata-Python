@@ -8,11 +8,11 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 from random import choices
 import numpy as np
-from matplotlib.animation import FuncAnimation, PillowWriter                        # type: ignore
-import matplotlib.colors as color                                                   # type: ignore
-import seaborn as sns                                                               # type: ignore
-from matplotlib.widgets import Slider, Button, CheckButtons,  RectangleSelector     # type: ignore
-from matplotlib.patches import Rectangle                                            # type: ignore
+from matplotlib.animation import FuncAnimation, PillowWriter                                    # type: ignore
+import matplotlib.colors as color                                                               # type: ignore
+import seaborn as sns                                                                           # type: ignore
+from matplotlib.widgets import Slider, Button, CheckButtons, RadioButtons, RectangleSelector    # type: ignore
+from matplotlib.patches import Rectangle                                                        # type: ignore
 
 
 def CountType(cells: list, category: str) -> int:
@@ -78,13 +78,29 @@ def DrawCA(cellautomaton: np.ndarray, colors: list, ax):
         ax=ax,
     )
 
-
-def SimulateCA(cellautomaton0: np.ndarray, f, duration: int = 100) -> list:
+MOORE: list = [
+            (0, -1),
+            (0, 1),
+            (-1, 0),
+            (1, 0),
+            (1, 1),
+            (1, -1),
+            (-1, 1),
+            (-1, -1),
+        ]
+VONNEUMANN: list =[
+            (0, -1),
+            (0, 1),
+            (-1, 0),
+            (1, 0),
+        ]
+def SimulateCA(cellautomaton0: np.ndarray, f, neighborhood=MOORE, duration: int = 100) -> list:
     """Compute a simulation of a cellular automaton.
 
     Args:
         cellautomaton0 (np.ndarray): initial cellular automata
         f (fun): local update function
+        neighborhood (list[tuple], optional): cell neighborhood as list of 2D displacements (use MOORE or VONNEUMANN). Default MOORE.
         duration (int, optional): total number of steps. Default 100.
 
     Returns:
@@ -94,18 +110,9 @@ def SimulateCA(cellautomaton0: np.ndarray, f, duration: int = 100) -> list:
 
     def ca_step(cellautomaton: np.ndarray, f) -> np.ndarray:  # Compute 1 CA step.
         global _local_value
-        MOORE = [
-            (0, -1),
-            (0, 1),
-            (-1, 0),
-            (1, 0),
-            (1, 1),
-            (1, -1),
-            (-1, 1),
-            (-1, -1),
-        ]  # Displacement of the Moore neighborhood
+        # Displacement of the Moore neighborhood
         n = len(cellautomaton)
-        mooreshift = np.array([np.roll(cellautomaton, dis, axis=(0, 1)) for dis in MOORE])  # Copies of CA cyclically shifted according to Moore's neighborhood
+        mooreshift = np.array([np.roll(cellautomaton, dis, axis=(0, 1)) for dis in neighborhood])  # Copies of CA cyclically shifted according to Moore's neighborhood
         neighborsgrid = list(np.transpose(mooreshift, axes=(1, 2, 0, 3)))                   # Transposition to obtain a 2D array of neighbor lists
         canew = np.array(
                 [[f(cellautomaton[i][j], neighborsgrid[i][j]) for j in range(n)] for i in range(n)]
@@ -123,7 +130,7 @@ def SimulateCA(cellautomaton0: np.ndarray, f, duration: int = 100) -> list:
     return simulation
 
 
-# Switch for managing the Boolean flag.
+# Switch for managing the Boolean flags.
 class Switch:
     "Boolean value toggling for switch control."
     state: bool
@@ -147,7 +154,6 @@ _animation = None       # Variable storing the visualization, must be global.
 _autorun_button = None  # Button autorun ON/OFF, must be global to properly work.
 _save_button = None     # Button to save Simulation, must be global to properly work.
 _curve_button = None    # CheckBox Button for curves, must be global to properly work.
-
 
 def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: int = 5, delay: int = 100):
     """Display the simulation trace of a cellular automaton.
@@ -182,12 +188,11 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
     mpl.rcParams["text.color"] = "black"
 
     if plt.fignum_exists(figtitle):                     # If a new simulation is launched the previous window MUST BE closed to avoid error.
-        plt.figure(figtitle)                            # activate the figure of the simulation.
-        fig = plt.gcf()
-        wm = plt.get_current_fig_manager()              # Get the window position.
+        plt.figure(figtitle)
+        wm = plt.get_current_fig_manager()              # Get the window geometry and figure size
         wgeometry = wm.window.geometry()
         wgeometry = wgeometry[wgeometry.index("+"):]    # Keep the position only and remove the size. NECESSARY for appropriate figure scaling.
-        figsize = fig.get_size_inches()                 # Get the current figure size.
+        figsize = fig.get_size_inches()
         plt.close(fig)                                  # Close simulation figure.
     else:                                               # Otherwise set the default figure parameters: position and size.
         wgeometry = "+450+150"
@@ -220,7 +225,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
     axcurve.grid(linestyle="--")
 
     # Initialize the count curves.
-    typescount = {
+    typescount = {                  # Dictionary keeping the count of the different cell types.
         category: [sum([CountType(row, category) for row in ca]) for ca in simulation]
         for category in types}
 
@@ -237,12 +242,12 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
         for i, category in enumerate(types)}
 
     # || Check box button characterization for curves
-    chxboxheight = len(types) * 0.05                    # Depends on the number of categories.
-    chxboxwidth = 0.05 + max(map(len, types)) * 0.006   # Depends on the maximal string length of the categories.
-    axcurvebox = fig.add_axes(
+    chxboxheight = len(types) * 0.05                    # Check box height which depends on the number of categories.
+    chxboxwidth = 0.05 + max(map(len, types)) * 0.006   # Check box width which depends  on the maximal string length of the categories.
+    axcurves = fig.add_axes(
         [X0 + 0.52, Y0 + CHEIGHT - chxboxheight, chxboxwidth, chxboxheight])    # The check boxes are located in the upper left of the curve graphics.
 
-    _curve_button = CheckButtons(axcurvebox, types, visible_curves)
+    _curve_button = CheckButtons(axcurves, types, visible_curves)
 
     def chxboxupdate(category: str) -> bool:  # update the check boxes
         return curves[category].set_visible(not curves[category].get_visible())  # Toggle the visibility of curve.
@@ -254,7 +259,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
 
     xrange = np.arange(0, n, 1, dtype=int)
 
-    def updateslider(step):  # Update of slider.
+    def updateslider(step):  # Update of the slider.
         ca_coded = np.array([[types[category] for category, *_ in row] for row in simulation[step]])
         caview.set_array(ca_coded)          # Update CA
         for category in types:              # Update type count curves
@@ -275,7 +280,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
 
     buttonlabeling(autorun.get())     # Initialize button label from the initial autorun state.
 
-    def click_autorun_button(_):
+    def click_autorun_button(_):  # autorun button call back
         global _autorun_button
         autorun.switch()                                # Switch the autorun.
         buttonlabeling(autorun.get())                   # Update the button label.
@@ -370,25 +375,27 @@ _gridsize = 1           # CA grid.
 _duration = 1           # Duration of the simulation.
 _selector = None        # Rectangular selector.
 _cell = None            # Current cell used to paint the selected area with this cell.
-_radiobutton = None     # Radio button to select the current cell.
+#_radiobutton = None     # Radio button to select the current cell.
 _radiotypes = None      # Radio button on types.
 _ca0 = None             # CA0 = initial automaton.
-
+_neighborhood = MOORE   # Cell neighborhood.
 
 def GuiCA(
     local_fun,
     cellcolors: dict,
+    guiheight:int = 3,
     figheight: int = 5,
     gridsize: int = 100,
     duration: int = 200,
     delay: int = 100
 ):
     """Graphical interface for cellular Automata.
-        limited to 10 types at most.
+        The number of different cell types is limited to 10 at most.
 
     Args:
         local_fun (function): local update function of the CA.
         cellcolors (dict): {cell:color} colors associated to cells. Recall that a cell is a tuple (type, states ..)
+        guiheight (int, optional): height of the gui of the simulation view. Defaults to 3.
         figheight (int, optional): height of the figure of the simulation view. Defaults to 5.
         gridsize (int, optional): maximal size of the CA grid. Defaults to 100.
         duration (int, optional): maximal duration of the simulation. Defaults to 200.
@@ -407,19 +414,23 @@ def GuiCA(
 
     # Windows parameters
     GUIWIDTH: float = 1.5                   # Minimal width of the GUI figure.
-    GUISTRSTRIDE: float = 0.14              # Stride associated to character used for figure width definition.
-    GUIHEIGHT: int = 4                      # Height of the GUI figure. This value must be adapted to the number of types.
+    GUISTRSTRIDE: float = 0.12              # Stride associated to character used for figure width definition.
+    GUIHEIGHT: int = 5                     # Height of the GUI figure. This value must be adapted to the number of types.
 
+    # Rectangle 
+    FRMLEFT: float = 0.07  # Frame left position
+    FRMSIZE: float = 0.86  # Frame size
+    EDGECOLOR: str = "darkgray"
     # Button & Slider parameters
     SLIDLEFT: float = 0.35                  # Left position of sliders.
     SLIDSIZE: float = 0.4                   # Size of sliders.
     WIDGHEIGHT: float = 0.07                # Height of sliders and buttons.
-    SLIDSTART: float = 0.7                  # Vertical start position for weight sliders.
+    SLIDSTART: float = 0.69                 # Vertical start position for weight sliders.
     SLIDDIST: float = 0.05                  # Distance between two weight sliders.
     SLIDCOLOR: str = "gray"                 # Slider color bar.
     # Radio button parameters
     RADIOFFSET: float = 0.015               # Minimal incompressible distance in a radio button.
-    RADIOSTRSTRIDE: float = 0.013           # Stride for characters in radio button.
+    RADIOSTRSTRIDE: float = 0.010           # Stride for characters in radio button.
     RADIOSTRIDE: float = 0.01               # Stride between two radio buttons.
     BUTTONCOLOR: str = "silver"             # Standard color of buttons.
     HOVERCOLOR: str = "lightsalmon"         # Hover color of buttons.
@@ -445,8 +456,26 @@ def GuiCA(
     wm = plt.get_current_fig_manager()
     wm.window.wm_geometry("+50+100")
 
+    #|| Neighborhood radio button ===
+    axneighbors_radio = figui.add_axes([FRMLEFT, 0.92, FRMSIZE, WIDGHEIGHT])
+    for pos in ['left', 'bottom','right','top']:
+        axneighbors_radio.spines[pos].set_color(EDGECOLOR)
+        axneighbors_radio.spines[pos].set_linewidth(2)
+
+    neighborhood = {"Moore":MOORE,"Von Neumann":VONNEUMANN}
+    neighbors_radio = RadioButtons(axneighbors_radio, 
+                                   list(neighborhood.keys()),
+                                   activecolor=BUTTONCOLOR,
+                                   radio_props={'s':30},
+                                   )
+
+    def neighborsclick(label):
+        global _neighborhood
+        _neighborhood = neighborhood[label]
+    neighbors_radio.on_clicked(neighborsclick)
+
     # || Grid size slider ======
-    axsize_slider = figui.add_axes([SLIDLEFT, 0.92, SLIDSIZE, WIDGHEIGHT])
+    axsize_slider = figui.add_axes([SLIDLEFT, 0.85, SLIDSIZE, WIDGHEIGHT])
     size_slider = Slider(
         axsize_slider,
         "Size  ",
@@ -464,7 +493,7 @@ def GuiCA(
     size_slider.on_changed(update_slider_size)  # Event on size slider
 
     # || Duration/Time sliders ======
-    axduration_slider = figui.add_axes([SLIDLEFT, 0.86, SLIDSIZE, WIDGHEIGHT])
+    axduration_slider = figui.add_axes([SLIDLEFT, 0.80, SLIDSIZE, WIDGHEIGHT])
     duration_slider = Slider(
         axduration_slider,
         "Time  ",
@@ -483,20 +512,19 @@ def GuiCA(
 
     # || Weights  sliders ======
     # header and rectangle
-    FRMLEFT: float = 0.07  # Frame left position
-    FRMSIZE: float = 0.86  # Frame size
+
     font = {"weight": "bold", "size": 10}
-    ax.text(0.5, 0.79, "WEIGHTS", fontdict=font, ha="center")
     ax.add_patch(
         Rectangle(
             (FRMLEFT, 0.2),
             FRMSIZE,
-            0.65,
+            0.60,
             facecolor="whitesmoke",
-            edgecolor="darkgray",
+            edgecolor=EDGECOLOR,
             linewidth=2,
         )
     )
+    ax.text(0.5, 0.76, "WEIGHTS", fontdict=font, ha="center")
 
     # Weight sliders definition
     weight_sliders = []
@@ -578,7 +606,7 @@ def GuiCA(
 
         for rb in _radiotypes:              # Set style of the radio button labels.
             rb.label.set_fontfamily("fantasy")
-            rb.label.set_fontsize(10)
+            rb.label.set_fontsize(8)
 
         # Initialization of the radio button bar
         _radiotypes[0].color = SELECTCOLOR  # The first button is the default button. Assign to the color 'selected'
@@ -635,11 +663,12 @@ def GuiCA(
         global _duration
         global _animation
         global _ca0
+        global _neighborhood
 
         if _ca0 is None:  # When CA0 is not yet generated.
             _ca0 = GenerateCA(_gridsize, cellcolors, weights.weights)
 
-        simulation = SimulateCA(_ca0, local_fun, duration=_duration)
+        simulation = SimulateCA(_ca0, local_fun, neighborhood=_neighborhood, duration=_duration)
         _animation = ShowSimulation(simulation, cellcolors, figheight=figheight, delay=delay)
     run_button.on_clicked(runclick)  # Event on button
 
