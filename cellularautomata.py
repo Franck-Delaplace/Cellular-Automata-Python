@@ -375,7 +375,6 @@ _gridsize = 1           # CA grid.
 _duration = 1           # Duration of the simulation.
 _selector = None        # Rectangular selector.
 _cell = None            # Current cell used to paint the selected area with this cell.
-#_radiobutton = None     # Radio button to select the current cell.
 _radiotypes = None      # Radio button on types.
 _ca0 = None             # CA0 = initial automaton.
 _neighborhood = MOORE   # Cell neighborhood.
