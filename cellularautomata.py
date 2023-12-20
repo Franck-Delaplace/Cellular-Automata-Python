@@ -392,8 +392,9 @@ _duration = 1               # Duration of the simulation.
 _cell = None                # Current cell used to paint the selected area with this cell.
 _ca0 = None                 # CA0 = initial automaton.
 _neighborhood = Moore(1)    # Cell neighborhood.
-figca0 = None
-
+_radiotypes = None          # Radio button
+_selector = None            # Cell selector
+_neighbors_radio = None     # neighborhood radio button
 
 def GuiCA(
     local_fun,
@@ -424,7 +425,7 @@ def GuiCA(
 
     global _gridsize
     global _duration
-    global figca0
+    global _neighbors_radio
 
     # Windows parameters
     GUIWIDTH: float = 1.5                   # Minimal width of the GUI figure.
@@ -477,7 +478,7 @@ def GuiCA(
         axneighbors_radio.spines[pos].set_linewidth(2)
 
     neighborhood = {"Moore": Moore(1), "Von Neumann": VonNeumann(1)}  # Define the neighborhood selection by a dictionary
-    neighbors_radio = RadioButtons(axneighbors_radio,
+    _neighbors_radio = RadioButtons(axneighbors_radio,
                                    list(neighborhood.keys()),
                                    activecolor=BUTTONCOLOR,
                                    radio_props={'s': 30},
@@ -486,7 +487,7 @@ def GuiCA(
     def neighborsclick(label):  # Radio neighborhood callback.
         global _neighborhood
         _neighborhood = neighborhood[label]
-    neighbors_radio.on_clicked(neighborsclick)
+    _neighbors_radio.on_clicked(neighborsclick)
 
     # || Grid size slider ======
     axsize_slider = figui.add_axes([SLIDLEFT, 0.85, SLIDSIZE, WIDGHEIGHT])
@@ -585,6 +586,8 @@ def GuiCA(
     def newclick(_):  # Callback of NEW button.
         global _cell
         global _ca0
+        global _radiotypes
+        global _selector
 
         # Figure of initial CA generation
         figca0_title = "CA0"
@@ -612,23 +615,22 @@ def GuiCA(
         radiospacing = radiofullwidth/n                                                             # Distance between 2 radio buttons.
 
         axradio = [figca0.add_axes([(0.5 - radiofullwidth/2) + i * radiospacing + RADIOSTRIDE, 0.02, radiospacing - RADIOSTRIDE, WIDGHEIGHT/1.5])
-                   for i in range(n)]
+                     for i in range(n)]
 
-        radiotypes = [Button(axradio[i], category, color=UNSELECTCOLOR, hovercolor=HOVERCOLOR) for i, category in enumerate(types)]
-
-        for rb in radiotypes:              # Set style of the radio button labels.
+        _radiotypes = [Button(axradio[i], category, color=UNSELECTCOLOR, hovercolor=HOVERCOLOR) for i, category in enumerate(types)]
+        for rb in _radiotypes:              # Set style of the radio button labels.
             rb.label.set_fontfamily("fantasy")
             rb.label.set_fontsize(8)
 
         # Initialization of the radio button bar
-        radiotypes[0].color = SELECTCOLOR  # The first button is the default button. Assign to the color 'selected'
+        _radiotypes[0].color = SELECTCOLOR  # The first button is the default button. Assign to the color 'selected'
         _cell = list(cellcolors.keys())[0]  # the default cell is the first one in cellcolors.
 
         def radioclick(index: int):  # Radio click call back with the index of the type as input.
             global _cell
-            for rb in radiotypes:                  # Unselect all radio buttons.
+            for rb in _radiotypes:                  # Unselect all radio buttons.
                 rb.color = UNSELECTCOLOR
-            radiotypes[index].color = SELECTCOLOR  # Select the radio button corresponding to index.
+            _radiotypes[index].color = SELECTCOLOR  # Select the radio button corresponding to index.
             _cell = cells[index]
 
         radioclickfun = [  # Manually pre-defined 10 on-click radio-button functions. the problem is the same as weight sliders.
@@ -643,18 +645,18 @@ def GuiCA(
             lambda _: radioclick(8),
             lambda _: radioclick(9)]
         for i in range(n):
-            radiotypes[i].on_clicked(radioclickfun[i])
+            _radiotypes[i].on_clicked(radioclickfun[i])
 
         # || Region Selector
         def onselect(eclick, erelease):
             global _cell
-            xmin, xmax, ymin, ymax = (round(val) for val in selector.extents)
+            xmin, xmax, ymin, ymax = (round(val) for val in _selector.extents)
             _ca0[ymin:ymax, xmin:xmax] = _cell   # Fill the selected array area with the default cell.
             category, *_ = _cell
             ca0code[ymin:ymax, xmin:xmax] = types.index(category)   # Fill the array view area with the index of _cell category.
             ca0view.set_array(ca0code)
 
-        selector = RectangleSelector(axca0,
+        _selector = RectangleSelector(axca0,
                                      onselect,
                                      button=[1, 3],
                                      interactive=False,
