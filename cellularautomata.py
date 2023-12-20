@@ -279,7 +279,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
         caview.set_array(ca_coded)          # Update CA
         for category in types:              # Update type count curves
             curves[category].set_data(xrange[:step], typescount[category][:step])
-        return 
+        return
     slider.on_changed(updateslider)         # Event on slider.
 
     # || ON/OFF autorun Button.
@@ -657,7 +657,15 @@ def GuiCA(
                                      spancoords='data',
                                      use_data_coordinates=True,
                                      props=dict(facecolor='red', edgecolor='black', linewidth=2, alpha=0.3, fill=True),
-                                     )
+        )
+        def hover(event):
+            if axca0.contains(event)[0]:
+                print("CA 0")
+                plt.figure("CA0")
+            else:
+                pass
+
+        figca0.canvas.mpl_connect("motion_notify_event", hover)
         figca0.show()
         return  # end of newclick function
     new_button.on_clicked(newclick)
