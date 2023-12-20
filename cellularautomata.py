@@ -429,7 +429,7 @@ def GuiCA(
     # Windows parameters
     GUIWIDTH: float = 1.5                   # Minimal width of the GUI figure.
     GUISTRSTRIDE: float = 0.12              # Stride associated to character used for figure width definition.
-    GUIHEIGHT: int = 5                     # Height of the GUI figure. This value must be adapted to the number of types.
+    GUIHEIGHT: float = 5.                   # Height of the GUI figure. This value must be adapted to the number of types.
 
     # Rectangle
     FRMLEFT: float = 0.07                   # Frame left position
