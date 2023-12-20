@@ -386,11 +386,11 @@ class Weights:
 
 
 # Global variables used for sliders and buttons in GuiCA
-_gridsize = 1           # CA grid.
-_duration = 1           # Duration of the simulation.
-_cell = None            # Current cell used to paint the selected area with this cell.
-_ca0 = None             # CA0 = initial automaton.
-_neighborhood = Moore(1) # Cell neighborhood.
+_gridsize = 1               # CA grid.
+_duration = 1               # Duration of the simulation.
+_cell = None                # Current cell used to paint the selected area with this cell.
+_ca0 = None                 # CA0 = initial automaton.
+_neighborhood = Moore(1)    # Cell neighborhood.
 
 def GuiCA(
     local_fun,
