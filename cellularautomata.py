@@ -53,6 +53,32 @@ def GenerateCA(n: int, cellcolors: dict, weights: dict | None = None) -> np.ndar
 
     return np.array([[randca[i + n * j] for i in range(n)] for j in range(n)])  # Reshape to get a 2D array
 
+def Moore(r:int) -> list[tuple[int]]:
+    """Compute the Moore neighborhood of radius r.
+
+    Args:
+        r (int): radius.
+
+    Returns:
+        list[tuple[int]]: Moore neighborhood.
+    """
+    moore = [(x,y) for x in range(-r,r+1) for y in range (-r,r+1)]
+    moore.remove((0,0))
+    return moore
+
+def VonNeumann(r:int)-> list[tuple[int]]:
+    """Compute the Von Neumann neighborhood of radius r.
+
+    Args:
+        r (int): radius.
+
+    Returns:
+        list[tuple[int]]: Von Neumann neighborhood.
+    """
+    vonneumann = [(x,0) for x in range(-r,r+1)]+[(0,y) for y in range (-r,r+1)]
+    vonneumann.remove((0,0))
+    vonneumann.remove((0,0))
+    return vonneumann
 
 def DrawCA(cellautomaton: np.ndarray, colors: list, ax):
     """Draw a 2D cellular automaton
@@ -79,25 +105,7 @@ def DrawCA(cellautomaton: np.ndarray, colors: list, ax):
     )
 
 
-MOORE: list = [
-            (0, -1),
-            (0, 1),
-            (-1, 0),
-            (1, 0),
-            (1, 1),
-            (1, -1),
-            (-1, 1),
-            (-1, -1),
-        ]
-VONNEUMANN: list = [
-            (0, -1),
-            (0, 1),
-            (-1, 0),
-            (1, 0),
-        ]
-
-
-def SimulateCA(cellautomaton0: np.ndarray, f, neighborhood=MOORE, duration: int = 100) -> list:
+def SimulateCA(cellautomaton0: np.ndarray, f, neighborhood=Moore(1), duration: int = 100) -> list:
     """Compute a simulation of a cellular automaton.
 
     Args:
@@ -380,8 +388,7 @@ _gridsize = 1           # CA grid.
 _duration = 1           # Duration of the simulation.
 _cell = None            # Current cell used to paint the selected area with this cell.
 _ca0 = None             # CA0 = initial automaton.
-_neighborhood = MOORE   # Cell neighborhood.
-
+_neighborhood = Moore(1) # Cell neighborhood.
 
 def GuiCA(
     local_fun,
@@ -463,7 +470,7 @@ def GuiCA(
         axneighbors_radio.spines[pos].set_color(FRMEDGECOLOR)
         axneighbors_radio.spines[pos].set_linewidth(2)
 
-    neighborhood = {"Moore": MOORE, "Von Neumann": VONNEUMANN}  # Define the neighborhood selection by a dictionary
+    neighborhood = {"Moore": Moore(1), "Von Neumann": VonNeumann(1)}  # Define the neighborhood selection by a dictionary
     neighbors_radio = RadioButtons(axneighbors_radio,
                                    list(neighborhood.keys()),
                                    activecolor=BUTTONCOLOR,
