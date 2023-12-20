@@ -14,7 +14,6 @@ import seaborn as sns                                                           
 from matplotlib.widgets import Slider, Button, CheckButtons, RadioButtons, RectangleSelector    # type: ignore
 from matplotlib.patches import Rectangle                                                        # type: ignore
 
-import keyboard
 
 def CountType(cells: list, category: str) -> int:
     """Return the number of cells whose type matches with the category in a list of cells.
@@ -54,7 +53,8 @@ def GenerateCA(n: int, cellcolors: dict, weights: dict | None = None) -> np.ndar
 
     return np.array([[randca[i + n * j] for i in range(n)] for j in range(n)])  # Reshape to get a 2D array
 
-def Moore(r:int) -> list[tuple[int]]:
+
+def Moore(r: int) -> list[tuple[int, int]]:
     """Compute the Moore neighborhood of radius r.
 
     Args:
@@ -63,11 +63,12 @@ def Moore(r:int) -> list[tuple[int]]:
     Returns:
         list[tuple[int]]: Moore neighborhood.
     """
-    moore = [(x,y) for x in range(-r,r+1) for y in range (-r,r+1)]
-    moore.remove((0,0))
+    moore = [(x, y) for x in range(-r, r+1) for y in range(-r, r+1)]
+    moore.remove((0, 0))
     return moore
 
-def VonNeumann(r:int)-> list[tuple[int]]:
+
+def VonNeumann(r: int) -> list[tuple[int, int]]:
     """Compute the Von Neumann neighborhood of radius r.
 
     Args:
@@ -76,10 +77,11 @@ def VonNeumann(r:int)-> list[tuple[int]]:
     Returns:
         list[tuple[int]]: Von Neumann neighborhood.
     """
-    vonneumann = [(x,0) for x in range(-r,r+1)]+[(0,y) for y in range (-r,r+1)]
-    vonneumann.remove((0,0))
-    vonneumann.remove((0,0))
+    vonneumann = [(x, 0) for x in range(-r, r+1)]+[(0, y) for y in range(-r, r+1)]
+    vonneumann.remove((0, 0))
+    vonneumann.remove((0, 0))
     return vonneumann
+
 
 def DrawCA(cellautomaton: np.ndarray, colors: list, ax):
     """Draw a 2D cellular automaton
@@ -104,7 +106,6 @@ def DrawCA(cellautomaton: np.ndarray, colors: list, ax):
         yticklabels=False,
         ax=ax,
     )
-
 
 
 def SimulateCA(cellautomaton0: np.ndarray, f, neighborhood=Moore(1), duration: int = 100) -> list:
@@ -201,14 +202,14 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
     mpl.rcParams["font.size"] = 11
     mpl.rcParams["text.color"] = "black"
 
-    if plt.fignum_exists(figtitle):                     # If a new simulation is launched the previous window MUST BE closed to avoid error.
+    if plt.fignum_exists(figtitle):                     # Activate and identify the figure if it already exists
         plt.figure(figtitle)
         fig = plt.gcf()
         wm = plt.get_current_fig_manager()              # Get the window geometry and figure size
         wgeometry = wm.window.geometry()
         wgeometry = wgeometry[wgeometry.index("+"):]    # Keep the position only and remove the size. NECESSARY for appropriate figure scaling.
         figsize = fig.get_size_inches()
-        plt.close(fig)                                  # Close simulation figure.
+        # ! plt.close(fig)                               # seems to be needless
     else:                                               # Otherwise set the default figure parameters: position and size.
         wgeometry = "+450+150"
         figsize = (2 * figheight, figheight)
@@ -391,6 +392,8 @@ _duration = 1               # Duration of the simulation.
 _cell = None                # Current cell used to paint the selected area with this cell.
 _ca0 = None                 # CA0 = initial automaton.
 _neighborhood = Moore(1)    # Cell neighborhood.
+figca0 = None
+
 
 def GuiCA(
     local_fun,
@@ -421,6 +424,7 @@ def GuiCA(
 
     global _gridsize
     global _duration
+    global figca0
 
     # Windows parameters
     GUIWIDTH: float = 1.5                   # Minimal width of the GUI figure.
@@ -657,17 +661,10 @@ def GuiCA(
                                      spancoords='data',
                                      use_data_coordinates=True,
                                      props=dict(facecolor='red', edgecolor='black', linewidth=2, alpha=0.3, fill=True),
-        )
-        def hover(event):
-            if axca0.contains(event)[0]:
-                print("CA 0")
-                plt.figure("CA0")
-            else:
-                pass
+                                     )
 
-        figca0.canvas.mpl_connect("motion_notify_event", hover)
         figca0.show()
-        return  # end of newclick function
+        return  # * end of newclick function
     new_button.on_clicked(newclick)
 
     # || Run Button ======
@@ -691,5 +688,3 @@ def GuiCA(
     plt.show(block=True)
 
     return  # End of GuiCA
-
-
