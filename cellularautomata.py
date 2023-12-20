@@ -397,6 +397,7 @@ _selector = None            # Cell selector
 _neighbors_radio = None     # neighborhood radio button
 _radius = 1                 # neighborhood radius
 
+
 def GuiCA(
     local_fun,
     cellcolors: dict,
@@ -472,7 +473,7 @@ def GuiCA(
     wm = plt.get_current_fig_manager()
     wm.window.wm_geometry("+50+100")
 
-    #|| Slider of neighborhood radius ===
+    # || Slider of neighborhood radius ===
     axradius_slider = figui.add_axes([SLIDLEFT, 0.93, SLIDSIZE, WIDGHEIGHT])
     radius_slider = Slider(
         axradius_slider,
@@ -484,11 +485,11 @@ def GuiCA(
         facecolor=SLIDCOLOR,
         valfmt="%3d",
         )
-    def update_radius_slider(val: int):
+
+    def update_radius_slider(val: int):  # Event of radius slider
         global _radius
         _radius = val
-
-    radius_slider.on_changed(update_radius_slider)  #  Event on radius slider
+    radius_slider.on_changed(update_radius_slider)
 
     # || Neighborhood radio button ===
     axneighbors_radio = figui.add_axes([FRMLEFT, 0.86, FRMSIZE, WIDGHEIGHT])
@@ -498,10 +499,9 @@ def GuiCA(
 
     neighborhood = {"Moore": Moore, "Von Neumann": VonNeumann}  # Define the neighborhood selection by a dictionary
     _neighbors_radio = RadioButtons(axneighbors_radio,
-                                   list(neighborhood.keys()),
-                                   activecolor=BUTTONCOLOR,
-                                   radio_props={'s': 30},
-                                   )
+                                    list(neighborhood.keys()),
+                                    activecolor=BUTTONCOLOR,
+                                    radio_props={'s': 30},)
 
     def neighborsclick(label):  # Radio neighborhood callback.
         global _neighborfun
@@ -634,7 +634,7 @@ def GuiCA(
         radiospacing = radiofullwidth/n                                                             # Distance between 2 radio buttons.
 
         axradio = [figca0.add_axes([(0.5 - radiofullwidth/2) + i * radiospacing + RADIOSTRIDE, 0.02, radiospacing - RADIOSTRIDE, WIDGHEIGHT/1.5])
-                     for i in range(n)]
+                   for i in range(n)]
 
         _radiotypes = [Button(axradio[i], category, color=UNSELECTCOLOR, hovercolor=HOVERCOLOR) for i, category in enumerate(types)]
         for rb in _radiotypes:              # Set style of the radio button labels.
@@ -676,13 +676,13 @@ def GuiCA(
             ca0view.set_array(ca0code)
 
         _selector = RectangleSelector(axca0,
-                                     onselect,
-                                     button=[1, 3],
-                                     interactive=False,
-                                     spancoords='data',
-                                     use_data_coordinates=True,
-                                     props=dict(facecolor='red', edgecolor='black', linewidth=2, alpha=0.3, fill=True),
-                                     )
+                                      onselect,
+                                      button=[1, 3],
+                                      interactive=False,
+                                      spancoords='data',
+                                      use_data_coordinates=True,
+                                      props=dict(facecolor='red', edgecolor='black', linewidth=2, alpha=0.3, fill=True),
+                                      )
 
         figca0.show()
         return  # * end of newclick function
