@@ -209,7 +209,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
         wgeometry = wm.window.geometry()
         wgeometry = wgeometry[wgeometry.index("+"):]    # Keep the position only and remove the size. NECESSARY for appropriate figure scaling.
         figsize = fig.get_size_inches()
-        # ! plt.close(fig)                               # seems to be needless
+        # ! plt.close(fig)                              # seems to be needless
     else:                                               # Otherwise set the default figure parameters: position and size.
         wgeometry = "+450+150"
         figsize = (2 * figheight, figheight)
@@ -391,10 +391,11 @@ _gridsize = 1               # CA grid.
 _duration = 1               # Duration of the simulation.
 _cell = None                # Current cell used to paint the selected area with this cell.
 _ca0 = None                 # CA0 = initial automaton.
-_neighborhood = Moore(1)    # Cell neighborhood.
+_neighborfun = Moore        # Cell neighborhood.
 _radiotypes = None          # Radio button
 _selector = None            # Cell selector
 _neighbors_radio = None     # neighborhood radio button
+_radius = 1                 # neighborhood radius
 
 def GuiCA(
     local_fun,
@@ -430,7 +431,7 @@ def GuiCA(
     # Windows parameters
     GUIWIDTH: float = 1.5                   # Minimal width of the GUI figure.
     GUISTRSTRIDE: float = 0.12              # Stride associated to character used for figure width definition.
-    GUIHEIGHT: float = 5.                   # Height of the GUI figure. This value must be adapted to the number of types.
+    GUIHEIGHT: float = 5.5                  # Height of the GUI figure. This value must be adapted to the number of types.
 
     # Rectangle
     FRMLEFT: float = 0.07                   # Frame left position
@@ -440,7 +441,7 @@ def GuiCA(
     SLIDLEFT: float = 0.35                  # Left position of sliders.
     SLIDSIZE: float = 0.4                   # Size of sliders.
     WIDGHEIGHT: float = 0.07                # Height of sliders and buttons.
-    SLIDSTART: float = 0.69                 # Vertical start position for weight sliders.
+    SLIDSTART: float = 0.64                 # Vertical start position for weight sliders.
     SLIDDIST: float = 0.05                  # Distance between two weight sliders.
     SLIDCOLOR: str = "gray"                 # Slider color bar.
     # Radio button parameters
@@ -471,13 +472,31 @@ def GuiCA(
     wm = plt.get_current_fig_manager()
     wm.window.wm_geometry("+50+100")
 
+    #|| Slider of neighborhood radius ===
+    axradius_slider = figui.add_axes([SLIDLEFT, 0.93, SLIDSIZE, WIDGHEIGHT])
+    radius_slider = Slider(
+        axradius_slider,
+        "Radius  ",
+        1,
+        3,
+        valstep=1,
+        valinit=1,
+        facecolor=SLIDCOLOR,
+        valfmt="%3d",
+        )
+    def update_radius_slider(val: int):
+        global _radius
+        _radius = val
+
+    radius_slider.on_changed(update_radius_slider)  #  Event on radius slider
+
     # || Neighborhood radio button ===
-    axneighbors_radio = figui.add_axes([FRMLEFT, 0.92, FRMSIZE, WIDGHEIGHT])
+    axneighbors_radio = figui.add_axes([FRMLEFT, 0.86, FRMSIZE, WIDGHEIGHT])
     for pos in ['left', 'bottom', 'right', 'top']:
         axneighbors_radio.spines[pos].set_color(FRMEDGECOLOR)
         axneighbors_radio.spines[pos].set_linewidth(2)
 
-    neighborhood = {"Moore": Moore(1), "Von Neumann": VonNeumann(1)}  # Define the neighborhood selection by a dictionary
+    neighborhood = {"Moore": Moore, "Von Neumann": VonNeumann}  # Define the neighborhood selection by a dictionary
     _neighbors_radio = RadioButtons(axneighbors_radio,
                                    list(neighborhood.keys()),
                                    activecolor=BUTTONCOLOR,
@@ -485,12 +504,12 @@ def GuiCA(
                                    )
 
     def neighborsclick(label):  # Radio neighborhood callback.
-        global _neighborhood
-        _neighborhood = neighborhood[label]
+        global _neighborfun
+        _neighborfun = neighborhood[label]
     _neighbors_radio.on_clicked(neighborsclick)
 
     # || Grid size slider ======
-    axsize_slider = figui.add_axes([SLIDLEFT, 0.85, SLIDSIZE, WIDGHEIGHT])
+    axsize_slider = figui.add_axes([SLIDLEFT, 0.79, SLIDSIZE, WIDGHEIGHT])
     size_slider = Slider(
         axsize_slider,
         "Size  ",
@@ -508,7 +527,7 @@ def GuiCA(
     size_slider.on_changed(update_slider_size)  # Event on size slider
 
     # || Duration/Time sliders ======
-    axduration_slider = figui.add_axes([SLIDLEFT, 0.80, SLIDSIZE, WIDGHEIGHT])
+    axduration_slider = figui.add_axes([SLIDLEFT, 0.74, SLIDSIZE, WIDGHEIGHT])
     duration_slider = Slider(
         axduration_slider,
         "Time  ",
@@ -533,13 +552,13 @@ def GuiCA(
         Rectangle(
             (FRMLEFT, 0.2),
             FRMSIZE,
-            0.60,
+            0.54,
             facecolor="whitesmoke",
             edgecolor=FRMEDGECOLOR,
             linewidth=2,
         )
     )
-    ax.text(0.5, 0.76, "WEIGHTS", fontdict=font, ha="center")
+    ax.text(0.5, 0.71, "WEIGHTS", fontdict=font, ha="center")
 
     # Weight sliders definition
     weight_sliders = []
@@ -678,12 +697,13 @@ def GuiCA(
         global _duration
         global _animation
         global _ca0
-        global _neighborhood
+        global _neighborfun
+        global _radius
 
         if _ca0 is None:  # When CA0 is not yet generated.
             _ca0 = GenerateCA(_gridsize, cellcolors, weights.weights)
 
-        simulation = SimulateCA(_ca0, local_fun, neighborhood=_neighborhood, duration=_duration)
+        simulation = SimulateCA(_ca0, local_fun, neighborhood=_neighborfun(_radius), duration=_duration)
         _animation = ShowSimulation(simulation, cellcolors, figheight=figheight, delay=delay)
     run_button.on_clicked(runclick)  # Event on button
 
