@@ -474,12 +474,13 @@ def GuiCA(
     wm.window.wm_geometry("+50+100")
 
     # || Slider of neighborhood radius ===
+    maxradius = 3
     axradius_slider = figui.add_axes([SLIDLEFT, 0.93, SLIDSIZE, WIDGHEIGHT])
     radius_slider = Slider(
         axradius_slider,
         "Radius  ",
         1,
-        3,
+        maxradius,
         valstep=1,
         valinit=1,
         facecolor=SLIDCOLOR,
