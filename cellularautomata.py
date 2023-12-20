@@ -14,6 +14,7 @@ import seaborn as sns                                                           
 from matplotlib.widgets import Slider, Button, CheckButtons, RadioButtons, RectangleSelector    # type: ignore
 from matplotlib.patches import Rectangle                                                        # type: ignore
 
+import keyboard
 
 def CountType(cells: list, category: str) -> int:
     """Return the number of cells whose type matches with the category in a list of cells.
@@ -278,7 +279,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
         caview.set_array(ca_coded)          # Update CA
         for category in types:              # Update type count curves
             curves[category].set_data(xrange[:step], typescount[category][:step])
-        return curves
+        return 
     slider.on_changed(updateslider)         # Event on slider.
 
     # || ON/OFF autorun Button.
@@ -679,4 +680,8 @@ def GuiCA(
         _animation = ShowSimulation(simulation, cellcolors, figheight=figheight, delay=delay)
     run_button.on_clicked(runclick)  # Event on button
 
-    plt.show()
+    plt.show(block=True)
+
+    return  # End of GuiCA
+
+

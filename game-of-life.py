@@ -15,7 +15,7 @@ from cellularautomata import CountType, GuiCA
 # The evolution function has two parameters: the cell and the list of neighboring cells.
 
 # GAME OF LIFE RULE
-# A dead cell with exactly three living neighbors becomes alive (is born)
+# A dead cell with exactly three living neighbors become alive (is born)
 # A living cell with two or three living neighbors remains so.
 # Otherwise, the cell dies or stay died.
 # for GoL the cell type (name) suffices therefore the state is useless and set to None.
