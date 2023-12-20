@@ -105,6 +105,7 @@ def DrawCA(cellautomaton: np.ndarray, colors: list, ax):
     )
 
 
+
 def SimulateCA(cellautomaton0: np.ndarray, f, neighborhood=Moore(1), duration: int = 100) -> list:
     """Compute a simulation of a cellular automaton.
 
