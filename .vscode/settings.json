@@ -53,6 +53,7 @@
         "linewidth",
         "lockhover",
         "maxlabel",
+        "maxradius",
         "msgclear",
         "msgput",
         "needca",
