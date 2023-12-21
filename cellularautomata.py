@@ -139,7 +139,7 @@ def SimulateCA(cellautomaton0: np.ndarray, f, neighborhood=Moore(1), duration: i
         for i in tqdm(range(duration), desc="CA Step", ascii=False, bar_format="{l_bar}{bar:65} {r_bar}", colour='#3d8c40'):  # With progress bar.
             simulation.append(ca_step(simulation[i], f))
     except ValueError:
-        ("** CA ERROR: Invalid cell format encountered. A condition on cell is probably missing in the local function.")
+        print("** CA ERROR: Invalid cell format encountered. A condition on cell is probably missing in the local function.")
         exit()
 
     return simulation
