@@ -15,6 +15,7 @@ from matplotlib.widgets import Slider, Button, CheckButtons, RadioButtons, Recta
 from matplotlib.patches import Rectangle                                                        # type: ignore
 from tqdm import tqdm
 
+
 def CountType(cells: list, category: str) -> int:
     """Return the number of cells whose type matches with the category in a list of cells.
 
@@ -135,7 +136,7 @@ def SimulateCA(cellautomaton0: np.ndarray, f, neighborhood=Moore(1), duration: i
 
     simulation = [cellautomaton0]
     try:
-        for i in tqdm(range(duration), desc="CA Step", ascii=False, bar_format="{l_bar}{bar:65} {r_bar}"):  # With progress bar.
+        for i in tqdm(range(duration), desc="CA Step", ascii=False, bar_format="{l_bar}{bar:65} {r_bar}", colour='#3d8c40'):  # With progress bar.
             simulation.append(ca_step(simulation[i], f))
     except ValueError:
         ("** CA ERROR: Invalid cell format encountered. A condition on cell is probably missing in the local function.")
