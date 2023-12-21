@@ -208,7 +208,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
         wm = plt.get_current_fig_manager()              # Get the window geometry and figure size
         wgeometry = wm.window.geometry()
         wgeometry = wgeometry[wgeometry.index("+"):]    # Keep the position only and remove the size. NECESSARY for appropriate figure scaling.
-        figsize = fig.get_size_inches()
+        figsize = tuple(fig.get_size_inches())
         plt.close(fig)                                  # ! Check if really needed, seems to be to avoid error.
     else:                                               # Otherwise set the default figure parameters: position and size.
         wgeometry = "+450+150"

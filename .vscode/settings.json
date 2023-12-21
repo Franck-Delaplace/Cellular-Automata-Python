@@ -89,6 +89,7 @@
         "STRHEIGHT",
         "STRSTRIDE",
         "TFIRE",
+        "tqdm",
         "typecells",
         "typeheight",
         "typescount",
