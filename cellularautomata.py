@@ -541,7 +541,7 @@ def GuiCA(
         valfmt="%3d",
     )
 
-    def update_slider_duration(val: int):
+    def update_slider_duration(val):
         global _duration
         _duration = val
     duration_slider.on_changed(update_slider_duration)  # Event on duration slider
