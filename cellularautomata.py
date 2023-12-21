@@ -7,7 +7,7 @@
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 from random import choices
-import numpy as np
+import numpy as np                                                                              # type: ignore
 from matplotlib.animation import FuncAnimation, PillowWriter                                    # type: ignore
 import matplotlib.colors as color                                                               # type: ignore
 import seaborn as sns                                                                           # type: ignore
@@ -195,7 +195,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
     autorun = Switch()
 
     # Figure definition
-    figtitle = "CELLULAR AUTOMATON - FD MASTER COURSE"  # Feel free to change the title.
+    figtitle = "CELLULAR AUTOMATON - FD MASTER COURSE"  # Simulation title.
 
     # Font style for all texts in the simulation window.
     mpl.rcParams["font.family"] = "fantasy"
@@ -209,7 +209,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
         wgeometry = wm.window.geometry()
         wgeometry = wgeometry[wgeometry.index("+"):]    # Keep the position only and remove the size. NECESSARY for appropriate figure scaling.
         figsize = fig.get_size_inches()
-        plt.close(fig)                                  # ! Check if needed
+        plt.close(fig)                                  # ! Check if really needed, seems to be to avoid error.
     else:                                               # Otherwise set the default figure parameters: position and size.
         wgeometry = "+450+150"
         figsize = (2 * figheight, figheight)
@@ -229,9 +229,9 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
     axca = fig.add_axes([X0, Y0, 0.45, 0.9])
     axca.set_aspect('equal', adjustable='box', anchor=(0, 1))
 
-    # CA initialization. The cells are encoded by their index in types to properly suit with colors in DrawCA.
-    ca_coded = np.array([[types[category] for category, *_ in row] for row in simulation[0]])
-    caview = DrawCA(ca_coded, colors, axca).collections[0]
+    # The cells are encoded by the index of the category in types to suit with array format of heatmap in DrawCA.
+    ca_heatmap = np.array([[types[category] for category, *_ in row] for row in simulation[0]])
+    caview = DrawCA(ca_heatmap, colors, axca).collections[0]
 
     # Axe of curves
     CHEIGHT: float = 0.87  # Height of the curve axe.
@@ -241,7 +241,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
     axcurve.grid(linestyle="--")
 
     # Initialize the count curves.
-    typescount = {                  # Dictionary keeping the count of the different cell types.
+    typescount = {  # Dictionary keeping the count of the different cell types.
         category: [sum([CountType(row, category) for row in ca]) for ca in simulation]
         for category in types}
 
@@ -250,7 +250,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
         category: axcurve.plot(
             [0],
             typescount[category][0],
-            color=colors[i] if colors[i] != "white" else "lightgray",  # The white color is transformed into a light gray
+            color=colors[i] if colors[i] != "white" else "lightgray",  # The white color is transformed into a light gray.
             linewidth=2.5,
             marker=" ",
             visible=visible_curves[i],
@@ -265,7 +265,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
 
     _curve_button = CheckButtons(axcurves, types, visible_curves)
 
-    def chxboxupdate(category: str) -> bool:  # update the check boxes
+    def chxboxupdate(category: str) -> bool:  # Update the check boxes.
         return curves[category].set_visible(not curves[category].get_visible())  # Toggle the visibility of curve.
     _curve_button.on_clicked(chxboxupdate)
 
@@ -288,13 +288,13 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
     _autorun_button = Button(ax_autorun_button, " ")
 
     # Button labeling to indicate autorun status.
-    OFF_ICON: str = "$\u25a0$"  # square
-    ON_ICON: str = "$\u25B6$"   # right triangle
+    OFF_ICON: str = "$\u25a0$"  # Square
+    ON_ICON: str = "$\u25B6$"   # Right triangle
 
     def buttonlabeling(state: bool):  # Set the label ON/OFF to the button w.r.t. to a Boolean state.
         _autorun_button.label.set_text({False: ON_ICON, True: OFF_ICON}[state])
 
-    buttonlabeling(autorun.get())     # Initialize button label from the initial autorun state.
+    buttonlabeling(autorun.get())  # Initialize button label from the initial autorun state.
 
     def click_autorun_button(_):  # autorun button call back
         global _autorun_button
@@ -302,10 +302,10 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
         buttonlabeling(autorun.get())                   # Update the button label.
     _autorun_button.on_clicked(click_autorun_button)    # Event on autorun button.
 
-    # || Button save Animation
+    # || Button to save Animation
     ax_save_button = fig.add_axes([X0, Y0 - 0.05, 0.015, 0.03])  # ON/OFF button is on the left side of slider.
-    SAVED_ICON = "$\u25BD$"  # triangle pointing down, empty shape
-    SAVE_ICON = "$\u25BC$"   # triangle pointing down, filled shape
+    SAVED_ICON = "$\u25BD$"  # Triangle pointing down, empty shape
+    SAVE_ICON = "$\u25BC$"   # Triangle pointing down, filled shape
     _save_button = Button(ax_save_button, SAVE_ICON)
     saved = Switch(False)
 
@@ -386,16 +386,17 @@ class Weights:
         return self.weights[category]
 
 
-# Global variables used for sliders and buttons in GuiCA
+# Global variables used to pass arguments in sliders and buttons in GuiCA
 _gridsize = 1               # CA grid.
 _duration = 1               # Duration of the simulation.
 _cell = None                # Current cell used to paint the selected area with this cell.
 _ca0 = None                 # CA0 = initial automaton.
-_neighborfun = Moore        # Function qualifying the neighborhood.
-_radiotypes = None          # Radio button
-_selector = None            # Cell selector
-_neighbors_radio = None     # neighborhood radio button
+_neighborfun = Moore        # Function qualifying the neighborhood shape (Moore or VonNeumann).
 _radius = 1                 # neighborhood radius
+# Widgets
+_radiotypes = None          # Radio button of NEW window.
+_selector = None            # Cell selector of NEW window.
+_neighbors_radio = None     # neighborhood radio button
 
 
 def GuiCA(
@@ -433,16 +434,16 @@ def GuiCA(
     GUIWIDTH: float = 1.5                   # Minimal width of the GUI figure.
     GUISTRSTRIDE: float = 0.12              # Stride associated to character used for figure width definition.
     GUIHEIGHT: float = 5.5                  # Height of the GUI figure. This value must be adapted to the number of types.
-
-    # Rectangle
+    # Rectangles
     FRMLEFT: float = 0.07                   # Frame left position
-    FRMSIZE: float = 0.86                   # Frame size
+    FRMHEIGHT: float = 0.86                 # Frame size
     FRMEDGECOLOR: str = "darkgray"          # Frame color
     # Button & Slider parameters
+    MAXRADIUS: int = 3                      # Maximal neighborhood radius size
     SLIDLEFT: float = 0.35                  # Left position of sliders.
     SLIDSIZE: float = 0.4                   # Size of sliders.
     WIDGHEIGHT: float = 0.07                # Height of sliders and buttons.
-    SLIDSTART: float = 0.64                 # Vertical start position for weight sliders.
+    SLIDSTART: float = 0.67                 # Vertical start position for weight sliders.
     SLIDDIST: float = 0.05                  # Distance between two weight sliders.
     SLIDCOLOR: str = "gray"                 # Slider color bar.
     # Radio button parameters
@@ -458,10 +459,10 @@ def GuiCA(
     _gridsize = gridsize // 2
     _duration = duration // 2
     cells = list(cellcolors.keys())
-    types = [category for category, *_ in cells]  # get all types of cells
+    types = [category for category, *_ in cells]  # Get all types of cells
     colors = cellcolors.values()
     n = len(types)
-    weights = Weights(types, 0.5)   # Create weights from types.
+    weights = Weights(types, 0.5)                 # Create weights from types.
 
     # Initialization of the figure
     mpl.rcParams["toolbar"] = "None"    # No tool bars on GUI figure.
@@ -474,13 +475,12 @@ def GuiCA(
     wm.window.wm_geometry("+50+100")
 
     # || Slider of neighborhood radius ===
-    maxradius = 3
     axradius_slider = figui.add_axes([SLIDLEFT, 0.93, SLIDSIZE, WIDGHEIGHT])
     radius_slider = Slider(
         axradius_slider,
         "Radius  ",
         1,
-        maxradius,
+        MAXRADIUS,
         valstep=1,
         valinit=1,
         facecolor=SLIDCOLOR,
@@ -493,15 +493,17 @@ def GuiCA(
     radius_slider.on_changed(update_radius_slider)
 
     # || Neighborhood radio button ===
-    axneighbors_radio = figui.add_axes([FRMLEFT, 0.86, FRMSIZE, WIDGHEIGHT])
+    axneighbors_radio = figui.add_axes([FRMLEFT, 0.86, FRMHEIGHT, WIDGHEIGHT])
     for pos in ['left', 'bottom', 'right', 'top']:
         axneighbors_radio.spines[pos].set_color(FRMEDGECOLOR)
         axneighbors_radio.spines[pos].set_linewidth(2)
 
-    neighborhood = {"Moore": Moore, "Von Neumann": VonNeumann}  # Define the neighborhood selection by a dictionary
+    # Dictionary for neighborhood selection. The values are neighborhood design function.
+    neighborhood = {"Moore": Moore, "Von Neumann": VonNeumann}
     _neighbors_radio = RadioButtons(axneighbors_radio,
                                     list(neighborhood.keys()),
-                                    activecolor=BUTTONCOLOR,radio_props={'s': 30},)
+                                    activecolor=BUTTONCOLOR,
+                                    radio_props={'s': 30},)
 
     def neighborsclick(label):  # Radio neighborhood callback.
         global _neighborfun
@@ -545,30 +547,22 @@ def GuiCA(
     duration_slider.on_changed(update_slider_duration)  # Event on duration slider
 
     # || Weights  sliders ======
-    # header and rectangle
-
-    font = {"weight": "bold", "size": 10}
+    # Rectangle
     ax.add_patch(
         Rectangle(
             (FRMLEFT, 0.2),
-            FRMSIZE,
+            FRMHEIGHT,
             0.54,
             facecolor="whitesmoke",
             edgecolor=FRMEDGECOLOR,
             linewidth=2,
         )
     )
-    ax.text(0.5, 0.71, "WEIGHTS", fontdict=font, ha="center")
 
     # Weight sliders definition
-    weight_sliders = []
-    for i in range(n):
-        axslider = figui.add_axes(
-            [SLIDLEFT, SLIDSTART - i * SLIDDIST, SLIDSIZE, WIDGHEIGHT],
-            facecolor=SLIDCOLOR,
-        )
-        slider = Slider(
-            axslider,
+    weight_sliders = [
+        Slider(
+            figui.add_axes([SLIDLEFT, SLIDSTART - i * SLIDDIST, SLIDSIZE, WIDGHEIGHT], facecolor=SLIDCOLOR,),
             str(types[i]) + "  ",
             0.0,
             1.0,
@@ -576,11 +570,11 @@ def GuiCA(
             valinit=0.5,
             facecolor=SLIDCOLOR,
             valfmt="%1.3f",
-        )
-        weight_sliders.append(slider)
+        ) for i in range(n)
+        ]
 
-    # All possible updates for weight sliders from 0 to 9
-    # ! I don't find a better solution than setting i for types[i] by an explicit number. This constrains the number of used parameters to 10.
+    # All possible updates for 10 weight sliders at most.
+    # ! I don't find a better solution than setting i for types[i] by an explicit number.
     # [lambda val:weights.set(types[i],val) for i in range(n)] and [lambda val:weights.set(category,val) for category in types]  DOES NOT WORK (i = max for all buttons !?)
     weight_update_fun = [
         lambda val: weights.set(types[0], val),
@@ -599,7 +593,7 @@ def GuiCA(
         weight_sliders[i].on_changed(weight_update_fun[i])
 
     # || New CA button ===
-    axnew_button = figui.add_axes([FRMLEFT, 0.11, FRMSIZE, WIDGHEIGHT])
+    axnew_button = figui.add_axes([FRMLEFT, 0.11, FRMHEIGHT, WIDGHEIGHT])
     new_button = Button(axnew_button, "NEW", color=BUTTONCOLOR, hovercolor=HOVERCOLOR)
 
     def newclick(_):  # Callback of NEW button.
@@ -689,7 +683,7 @@ def GuiCA(
     new_button.on_clicked(newclick)
 
     # || Run Button ======
-    axrun_button = figui.add_axes([FRMLEFT, 0.025, FRMSIZE, WIDGHEIGHT])
+    axrun_button = figui.add_axes([FRMLEFT, 0.025, FRMHEIGHT, WIDGHEIGHT])
     run_button = Button(axrun_button, "RUN", color=BUTTONCOLOR, hovercolor=HOVERCOLOR)
 
     def runclick(_):  # Run Button clicked
@@ -703,7 +697,8 @@ def GuiCA(
         if _ca0 is None:  # When CA0 is not yet generated.
             _ca0 = GenerateCA(_gridsize, cellcolors, weights.weights)
 
-        simulation = SimulateCA(_ca0, local_fun, neighborhood=_neighborfun(_radius), duration=_duration)
+        neighborhood = _neighborfun(_radius)
+        simulation = SimulateCA(_ca0, local_fun, neighborhood=neighborhood, duration=_duration)
         _animation = ShowSimulation(simulation, cellcolors, figheight=figheight, delay=delay)
     run_button.on_clicked(runclick)  # Event on button
 
