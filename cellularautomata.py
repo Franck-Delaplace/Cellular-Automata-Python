@@ -124,7 +124,6 @@ def SimulateCA(cellautomaton0: np.ndarray, f, neighborhood=Moore(1), duration: i
     assert duration >= 0
 
     def ca_step(cellautomaton: np.ndarray, fun) -> np.ndarray:  # Compute 1 CA step.
-        global _local_value
         # Displacement of the Moore neighborhood
         n = len(cellautomaton)
         mooreshift = np.array([np.roll(cellautomaton, dis, axis=(0, 1)) for dis in neighborhood])  # Copies of CA cyclically shifted according to Moore's neighborhood
@@ -147,7 +146,7 @@ def SimulateCA(cellautomaton0: np.ndarray, f, neighborhood=Moore(1), duration: i
 
 # Switch for managing the Boolean flags.
 class Switch:
-    "Boolean value toggling for switch control."
+    """Boolean value toggling for switch control."""
     state: bool
 
     def __init__(self, val: bool = True):
@@ -246,7 +245,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
         category: [sum([CountType(row, category) for row in ca]) for ca in simulation]
         for category in types}
 
-    visible_curves = [color != "white" for color in colors]  # All the curves are visible but those drawn in white color.
+    visible_curves = [thecolor != "white" for thecolor in colors]  # All the curves are visible but those drawn in white color.
     curves = {                                               # The curves are collected to a dictionary {type: counting curve}.
         category: axcurve.plot(
             [0],
@@ -374,7 +373,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
 
 # Class to manage weights for random definition of the CA grid.
 class Weights:
-    "Weights = dictionary associating cells to their weights which are floats between 0 and 1"
+    """Weights = dictionary associating cells to their weights which are floats between 0 and 1"""
     weights: dict = {}
 
     def __init__(self, types: list, value: float = 0.0):
@@ -512,7 +511,7 @@ def GuiCA(
     _neighbors_radio.on_clicked(neighborsclick)
 
     # || Grid size slider ======
-    axsize_slider = figui.add_axes([SLIDLEFT, 0.79, SLIDSIZE, WIDGHEIGHT])
+    axsize_slider = figui.add_axes((SLIDLEFT, 0.79, SLIDSIZE, WIDGHEIGHT))
     size_slider = Slider(
         axsize_slider,
         "Size  ",
@@ -530,7 +529,7 @@ def GuiCA(
     size_slider.on_changed(update_slider_size)  # Event on size slider
 
     # || Duration/Time sliders ======
-    axduration_slider = figui.add_axes([SLIDLEFT, 0.74, SLIDSIZE, WIDGHEIGHT])
+    axduration_slider = figui.add_axes((SLIDLEFT, 0.74, SLIDSIZE, WIDGHEIGHT))
     duration_slider = Slider(
         axduration_slider,
         "Time  ",
