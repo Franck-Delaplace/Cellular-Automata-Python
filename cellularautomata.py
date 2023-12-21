@@ -365,7 +365,6 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
         if autorun.get():           # The update is conditional on the state of autorun.
             step = (slider.val + 1) % slider.valmax
             slider.set_val(step)    # Updating slider value also triggers the updateslider function
-        return
 
     _animation = FuncAnimation(fig, updateanimation, interval=delay, save_count=n)  # Run animation.
     fig.show()
@@ -542,7 +541,7 @@ def GuiCA(
         valfmt="%3d",
     )
 
-    def update_slider_duration(val):
+    def update_slider_duration(val: int):
         global _duration
         _duration = val
     duration_slider.on_changed(update_slider_duration)  # Event on duration slider
@@ -597,7 +596,6 @@ def GuiCA(
     axnew_button = figui.add_axes((FRMLEFT, 0.11, FRMHEIGHT, WIDGHEIGHT))
     new_button = Button(axnew_button, "NEW", color=BUTTONCOLOR, hovercolor=HOVERCOLOR)
 
-    # noinspection PyTypeChecker
     def newclick(_):  # Callback of NEW button.
         global _cell
         global _ca0
