@@ -39,6 +39,7 @@ def GenerateCA(n: int, cellcolors: dict, weights: dict | None = None) -> np.ndar
 
     Returns: (n,n) 2D cellular automaton.
     """
+    global randca, randca
     assert n > 0
     cells = list(cellcolors.keys())  # Get cell definitions
 
@@ -109,7 +110,6 @@ def DrawCA(cellautomaton: np.ndarray, colors: list, ax):
     )
 
 
-# noinspection PyDefaultArgument
 def SimulateCA(cellautomaton0: np.ndarray, f, neighborhood=Moore(1), duration: int = 100) -> list:
     """Compute a simulation of a cellular automaton.
 
@@ -171,7 +171,6 @@ _save_button = None     # Button to save Simulation, must be global to properly 
 _curve_button = None    # CheckBox Button for curves, must be global to properly work.
 
 
-# noinspection PyTypeChecker
 def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: int = 5, delay: int = 100):
     """Display the simulation trace of a cellular automaton.
 
