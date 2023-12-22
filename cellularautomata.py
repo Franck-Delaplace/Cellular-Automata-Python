@@ -48,11 +48,10 @@ def GenerateCA(n: int, cellcolors: dict, weights: dict | None = None) -> np.ndar
         weights_ = [weights[category] for category, *_ in cells]    # Collect the weights in list from the weight dictionary.
     try:    # Generate the cells randomly
         randca = choices(cells, weights=weights_, k=n * n)
+        return np.array([[randca[i + n * j] for i in range(n)] for j in range(n)])  # Reshape to get a 2D array
     except ValueError:
         print("** CA ERROR: At least one weight must be greater to 0.")
         exit()
-
-    return np.array([[randca[i + n * j] for i in range(n)] for j in range(n)])  # Reshape to get a 2D array
 
 
 def Moore(r: int) -> list[tuple[int, int]]:
