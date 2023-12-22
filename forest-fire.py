@@ -4,7 +4,6 @@
 # ** MASTER TUTORIAL
 # ** Paris Saclay University
 
-
 # The simulation studies the spread of a fire in a forest.
 # If a tree catches fire, there is a certain probability that neighboring trees will also burn. (e.g. 0.2).
 # The probability that a tree will be on fire is proportional to the number of neighboring burning trees.
