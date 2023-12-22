@@ -39,7 +39,6 @@ def GenerateCA(n: int, cellcolors: dict, weights: dict | None = None) -> np.ndar
 
     Returns: (n,n) 2D cellular automaton.
     """
-    global randca, randca
     assert n > 0
     cells = list(cellcolors.keys())  # Get cell definitions
 
