@@ -4,8 +4,6 @@
 # ** MASTER TUTORIAL
 # ** Paris Saclay University
 
-from cellularautomata import CountType, GuiCA
-from random import random
 
 # The simulation studies the spread of a fire in a forest.
 # If a tree catches fire, there is a certain probability that neighboring trees will also burn. (e.g. 0.2).
@@ -34,6 +32,9 @@ def FoF(cell, neighbors: list):
 
 
 # Main program ============================================================
+from cellularautomata import CountType, GuiCA
+from random import random
+
 cellcolors = {   # color assigned to cells in their initial states.
     ('Soil', None): 'white',
     ('Tree', None): 'forestgreen',
