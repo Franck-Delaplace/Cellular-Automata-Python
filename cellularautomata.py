@@ -331,7 +331,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
         msgclear()
         axmsg.text(0.01, 0.2, msg, fontsize=8, fontfamily='serif', fontstyle='italic')
 
-    # Handling events: move + click on the axes.
+    # || Handling events: move + click on the axes.
     def hover(event):
         if ax_save_button.contains(event)[0]:
             if saved.get():
