@@ -12,4 +12,4 @@ Clicking NEW generates a new initial state and opens a window where you can modi
 To display the simulation, simply click on RUN, and a new window will open. You can then save the simulation as a GIF. The waiting delay depends on the number of steps requested, as the simulation is pre-calculated.
 
 The GUI is based on matplotlib.widgets library.
-The used modules are: matplotlib,random, seaborn, tqdm 
+The used modules are: matplotlib,random, seaborn, tqdm
