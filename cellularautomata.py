@@ -109,6 +109,7 @@ def DrawCA(cellautomaton: np.ndarray, colors: list, ax):
     )
 
 
+# noinspection PyDefaultArgument
 def SimulateCA(cellautomaton0: np.ndarray, f, neighborhood=Moore(1), duration: int = 100) -> list:
     """Compute a simulation of a cellular automaton.
 
@@ -121,15 +122,15 @@ def SimulateCA(cellautomaton0: np.ndarray, f, neighborhood=Moore(1), duration: i
     Returns:
         list: Simulation trace corresponding to a list of cellular automata.
     """
-    assert duration >= 0
+    assert duration > 0
 
     def ca_step(cellautomaton: np.ndarray, fun) -> np.ndarray:  # Compute 1 CA step.
-        # Displacement of the Moore neighborhood
+        # Displacement of the Moore neighborhood.
         n = len(cellautomaton)
-        mooreshift = np.array([np.roll(cellautomaton, dis, axis=(0, 1)) for dis in neighborhood])  # Copies of CA cyclically shifted according to Moore's neighborhood
-        neighborsgrid = list(np.transpose(mooreshift, axes=(1, 2, 0, 3)))                   # Transposition to obtain a 2D array of neighbor lists
+        mooreshift = np.array([np.roll(cellautomaton, dis, axis=(0, 1)) for dis in neighborhood])   # Copies of CA cyclically shifted according to Moore's neighborhood
+        neighborsgrid = list(np.transpose(mooreshift, axes=(1, 2, 0, 3)))                           # Transposition to obtain a 2D array of neighbor lists
         canew = np.array(
-                [[fun(cellautomaton[i][j], neighborsgrid[i][j]) for j in range(n)] for i in range(n)]
+                [[fun(cellautomaton[k][j], neighborsgrid[k][j]) for j in range(n)] for k in range(n)]
                 )  # apply the local evolution function
         return canew
 
@@ -170,6 +171,7 @@ _save_button = None     # Button to save Simulation, must be global to properly 
 _curve_button = None    # CheckBox Button for curves, must be global to properly work.
 
 
+# noinspection PyTypeChecker
 def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: int = 5, delay: int = 100):
     """Display the simulation trace of a cellular automaton.
 
@@ -309,6 +311,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
     _save_button = Button(ax_save_button, SAVE_ICON)
     saved = Switch(False)
 
+    # noinspection PyUnresolvedReferences
     def click_save_button(_):
         global _save_button
         fps = 1000//delay  # Estimation of the fps from the delay between frames to have the same time.
@@ -611,8 +614,8 @@ def GuiCA(
         else:                                               # Otherwise create a new figure for the visualization of the initial CA = CA0.
             figsize = (figheight, figheight + 0.5)
             figca0 = plt.figure(figca0_title, figsize=figsize)
-            wm = plt.get_current_fig_manager()
-            wm.window.wm_geometry("+450+150")
+            window_manager = plt.get_current_fig_manager()
+            window_manager.window.wm_geometry("+450+150")
 
         # Cellular automata initialization - generation of the initial CA (CA0).
         axca0 = figca0.add_axes((0.01, 0.0, 0.98, 0.98))
@@ -641,8 +644,8 @@ def GuiCA(
 
         def radioclick(index: int):  # Radio click call back with the index of the type as input.
             global _cell
-            for rb in _radiotypes:                  # Unselect all radio buttons.
-                rb.color = UNSELECTCOLOR
+            for radiotype in _radiotypes:                  # Unselect all radio buttons.
+                radiotype.color = UNSELECTCOLOR
             _radiotypes[index].color = SELECTCOLOR  # Select the radio button corresponding to index.
             _cell = cells[index]
 
@@ -661,7 +664,7 @@ def GuiCA(
             _radiotypes[i].on_clicked(radioclickfun[i])
 
         # || Region Selector
-        def onselect(eclick, erelease):
+        def onselect(_1, _2):
             global _cell
             xmin, xmax, ymin, ymax = (round(val) for val in _selector.extents)
             _ca0[ymin:ymax, xmin:xmax] = _cell   # Fill the selected array area with the default cell.
