@@ -93,9 +93,10 @@ def DrawCA(cellautomaton: np.ndarray, colors: list, ax):
 
     Returns: a heatmap representing the CA.
     """
+    coloring = color.ListedColormap(colors)
     return sns.heatmap(
         cellautomaton,
-        cmap=color.ListedColormap(colors),
+        cmap=coloring,
         linewidths=0.5,
         cbar=False,
         linecolor="lightgrey",
@@ -308,7 +309,6 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
     _save_button = Button(ax_save_button, SAVE_ICON)
     saved = Switch(False)
 
-    # noinspection PyUnresolvedReferences
     def click_save_button(_):
         global _save_button
         fps = 1000//delay  # Estimation of the fps from the delay between frames to have the same time.
