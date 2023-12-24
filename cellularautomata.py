@@ -438,7 +438,7 @@ def GuiCA(
     FRMHEIGHT: float = 0.86                 # Frame size
     FRMEDGECOLOR: str = "darkgray"          # Frame color
     # Button & Slider parameters
-    MAXRADIUS: int = 3                      # Maximal neighborhood radius size
+    MAXRADIUS: int = 3                      # Maximal neighborhood radius.
     SLIDLEFT: float = 0.35                  # Left position of sliders.
     SLIDSIZE: float = 0.4                   # Size of sliders.
     WIDGHEIGHT: float = 0.07                # Height of sliders and buttons.
@@ -452,7 +452,7 @@ def GuiCA(
     BUTTONCOLOR: str = "silver"             # Standard color of buttons.
     HOVERCOLOR: str = "lightsalmon"         # Hover color of buttons.
     UNSELECTCOLOR: str = "lemonchiffon"     # Color of the radio button when it is unselected.
-    SELECTCOLOR: str = 'gold'               # Color of the radio button when it is selected.
+    SELECTCOLOR: str = "gold"               # Color of the radio button when it is selected.
 
     # Initialization of the main variables
     _gridsize = gridsize // 2
@@ -497,7 +497,7 @@ def GuiCA(
         axneighbors_radio.spines[pos].set_color(FRMEDGECOLOR)
         axneighbors_radio.spines[pos].set_linewidth(2)
 
-    # Dictionary for neighborhood selection. The values are neighborhood design function.
+    # Dictionary for neighborhood selection. The values are neighborhood function.
     neighborhood = {"Moore": Moore, "Von Neumann": VonNeumann}
     _neighbors_radio = RadioButtons(axneighbors_radio,
                                     list(neighborhood.keys()),
