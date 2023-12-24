@@ -93,10 +93,9 @@ def DrawCA(cellautomaton: np.ndarray, colors: list, ax):
 
     Returns: a heatmap representing the CA.
     """
-    coloring = color.ListedColormap(colors)
     return sns.heatmap(
         cellautomaton,
-        cmap=coloring,
+        cmap=color.ListedColormap(colors),
         linewidths=0.5,
         cbar=False,
         linecolor="lightgrey",
