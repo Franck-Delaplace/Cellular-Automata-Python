@@ -164,9 +164,9 @@ class Switch:
 
 
 _animation = None       # Variable storing the visualization, must be global.
-_autorun_button = None  # Button autorun ON/OFF, must be global to properly work.
-_save_button = None     # Button to save Simulation, must be global to properly work.
-_curve_button = None    # CheckBox Button for curves, must be global to properly work.
+_autorun_button = None  # Button autorun ON/OFF.
+_save_button = None     # Button to save Simulation.
+_curve_button = None    # CheckBox Button for curves.
 
 
 def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: int = 5, delay: int = 100):
@@ -208,7 +208,7 @@ def ShowSimulation(simulation: list, cellcolors: dict[tuple, str], figheight: in
         wgeometry = wm.window.geometry()
         wgeometry = wgeometry[wgeometry.index("+"):]    # Keep the position only and remove the size. NECESSARY for appropriate figure scaling.
         figsize = tuple(fig.get_size_inches())
-        plt.close(fig)                                  # ! Check if really needed, seems to be to avoid error.
+        plt.close(fig)                                  # ! Check if really needed, seems to avoid error.
     else:                                               # Otherwise set the default figure parameters: position and size.
         wgeometry = "+450+150"
         figsize = (2 * figheight, figheight)
