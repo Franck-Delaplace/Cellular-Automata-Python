@@ -1,8 +1,7 @@
 /.mypy_cache
-/cellularautomata-no-counts.py
+/__pycache__
 /sir -improved.py
 /sir.py
-/__pycache__
 /test-prog.py
 /CA-SIMULATION.gif
 /city.py
