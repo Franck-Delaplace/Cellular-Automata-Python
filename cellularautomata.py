@@ -15,7 +15,7 @@ from matplotlib.widgets import Slider, Button, CheckButtons, RadioButtons, Recta
 from matplotlib.patches import Rectangle                                                        # type: ignore
 from tqdm import tqdm
 
-mpl.use('TkAgg') # set Tkhinter as Matplotlib backend
+mpl.use('TkAgg') # set Tkinter as Matplotlib backend
 
 def CountType(cells: list, category: str) -> int:
     """Return the number of cells whose type matches with the category in a list of cells.
