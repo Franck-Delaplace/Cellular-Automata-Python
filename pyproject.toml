@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "Cellular Automata"
-version = "2.32"
+version = "2.33"
 authors = [
   { name = "Franck Delaplace", email = "franck.delaplace@univ-evry.fr" }
 ]
