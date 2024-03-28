@@ -1,0 +1,26 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "Cellular Automata"
+version = "2.32"
+authors = [
+  { name = "Franck Delaplace", email = "franck.delaplace@univ-evry.fr" }
+]
+description = "Cellular Automata Simulator"
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+keywords = ["Cellular Automata"]
+
+dependencies = ["matplotlib","random","numpy","seaborn","tqdm"]
+
+
+[project.urls]
+Homepage = "https://github.com/Franck-Delaplace/Cellular-Automata-Python"
+Repository = "https://github.com/Franck-Delaplace/Cellular-Automata-Python"
