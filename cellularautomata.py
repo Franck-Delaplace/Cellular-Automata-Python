@@ -16,6 +16,8 @@ from tqdm import tqdm
 
 mpl.use('TkAgg')  # set Tkinter as Matplotlib backend
 
+def errmsg(content,arg=""):
+    print("** CA ERROR>> ",content,": " if arg !="" else "",arg)
 
 def CountType(cells: list, category: str) -> int:
     """Return the number of cells whose type matches with the category in a list of cells.
@@ -51,7 +53,7 @@ def GenerateCA(n: int, cellcolors: dict, weights: dict | None = None) -> np.ndar
         randca = choices(cells, weights=weights_, k=n * n)
         return np.array([[randca[i + n * j] for i in range(n)] for j in range(n)])  # Reshape to get a 2D array
     except ValueError:
-        print("** CA ERROR: At least one weight must be greater to 0.")
+        errmsg("At least one weight must be greater to 0", weights_)
         exit()
 
 
@@ -138,7 +140,7 @@ def SimulateCA(cellautomaton0: np.ndarray, f, neighborhood=Moore(1), duration: i
         for i in tqdm(range(duration), desc="CA Step", ascii=False, bar_format="{l_bar}{bar:65} {r_bar}", colour='#3d8c40'):  # With progress bar.
             simulation.append(ca_step(simulation[i], f))
     except ValueError:
-        print("** CA ERROR: Invalid cell format encountered. A condition on cell is probably missing in the local function.")
+        errmsg("Invalid cell format encountered. A condition on cell is probably missing in the local function.")
         exit()
 
     return simulation
